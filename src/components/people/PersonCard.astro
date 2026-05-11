@@ -1,0 +1,20 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Avatar from './Avatar.astro';
+
+interface Props {
+  person: CollectionEntry<'people'>;
+}
+
+const { person } = Astro.props;
+const { data } = person;
+---
+
+<div class="person">
+  <Avatar person={person} />
+  <div>
+    <div class="role">{data.role}</div>
+    <h3 style="margin-top: 4px; font-family: var(--font-serif); font-size: 20px; font-weight: 500;">{data.name}</h3>
+    <p class="topic" style="margin-top: 6px;">{data.topic}</p>
+  </div>
+</div>

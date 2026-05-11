@@ -1,0 +1,64 @@
+---
+import { getCollection } from 'astro:content';
+import { latestN } from '../../lib/pubs';
+import { getAuthorMap, resolveAuthors } from '../../lib/people';
+
+const all = await getCollection('publications');
+const pubs = latestN(all, 4);
+const authorMap = await getAuthorMap();
+
+const fmt = (d: Date) =>
+  `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+---
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="kicker">03 / Latest publications</div>
+        <h2>Out of the lab</h2>
+      </div>
+      <p class="section-lead">
+        New preprints, conference papers, and code releases.
+      </p>
+    </div>
+
+    <ul class="pub-list">
+      {
+        pubs.map((p) => (
+          <li>
+            <span class="pub-tag pill">{p.data.tag}</span>
+            <span class="pub-date mono">{fmt(p.data.date)}</span>
+            <div class="pub-body">
+              <h3 class="pub-title">{p.data.title}</h3>
+              <p class="pub-meta">
+                {resolveAuthors(p.data.authors, authorMap).map((a, i, arr) => (
+                  <>
+                    {a.id ? (
+                      <a class="author-link" href={`/about/${a.id}`}>{a.name}</a>
+                    ) : a.name}
+                    {i < arr.length - 1 ? ', ' : ''}
+                  </>
+                ))}
+                <span class="pub-dot">·</span>
+                <span class="pub-venue">{p.data.venue}</span>
+              </p>
+            </div>
+            <div class="pub-actions">
+              {p.data.arxiv && (
+                <a class="btn btn-sm" href={`https://arxiv.org/abs/${p.data.arxiv}`}>
+                  arXiv
+                </a>
+              )}
+              <a class="btn btn-sm btn-ghost" href={`/publications/${p.id}`} aria-label={`Read ${p.data.title}`}>→</a>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div style="margin-top: 32px; display: flex; justify-content: center;">
+      <a class="btn" href="/publications">All publications →</a>
+    </div>
+  </div>
+</section>

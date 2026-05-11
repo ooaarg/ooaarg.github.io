@@ -1,0 +1,31 @@
+---
+title: "Practical MCTS-based Query Optimization: A Reproducibility Study and new MCTS algorithm for complex queries"
+authors:
+  [
+    "Vladimir Burlakov",
+    "Alena Rybakina",
+    "Sergey Kudashev",
+    "Konstantin Gilev",
+    "Alexander Demin",
+    "Denis Ponomaryov",
+    "Yuriy Dorn",
+  ]
+date: 2026-3-17
+venue: "arXiv"
+tag: "Paper"
+type: "preprint"
+area: "dbms"
+featured: false
+span: 2
+tags:
+  [
+    "databases",
+    "query optimization",
+    "monte carlo tree search",
+    "reproducibility",
+  ]
+arxiv: "2603.16474"
+summary: "This paper presents a comprehensive reproducibility study of these methods, revealing that they often fail to support the claimed performance gains when subjected to diverse workloads."
+---
+
+This paper presents a comprehensive reproducibility study of these methods, revealing that they often fail to support the claimed performance gains when subjected to diverse workloads. Through an ablation study, we diagnose the root cause of this instability: while the MCTS search strategy is effective, the accompanying learned cost models suffer from severe out-of-distribution generalization errors. Addressing this, we propose a novel MCTS framework. Unlike prior methods that rely on unstable learned components, our approach utilizes the database standard internal cost model, augmented by a new Extreme UCT (Upper Confidence Bound applied to Trees) selection policy to navigate the search space more robustly. We benchmark our method against the original AlphaJoin and HyperQO, as well as industry-standard baselines including Dynamic Programming (DP) and Genetic Query Optimization (GEQO), using the well-known Join Order Benchmark (JOB) and the new JOB-Complex benchmark.

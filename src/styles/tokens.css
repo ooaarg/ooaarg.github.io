@@ -1,0 +1,52 @@
+/* OOAARG — design tokens. Verbatim from prototype styles.css. */
+
+:root {
+  /* Light theme defaults; overridden by [data-theme="dark"] */
+  --bg: #fafaf9;
+  --bg-elev: #ffffff;
+  --bg-sunken: #f4f4f3;
+  --fg: #0a0a0a;
+  --fg-muted: #57534e;
+  --fg-subtle: #a8a29e;
+  --border: #e7e5e4;
+  --border-strong: #d6d3d1;
+  --accent: #dc2626;
+  --accent-hover: #b91c1c;
+  --accent-fg: #ffffff;
+  --code-bg: #f4f4f3;
+
+  --font-serif:
+    "Source Serif 4 Variable", "Source Serif 4", "Source Serif Pro", Georgia,
+    serif;
+  --font-sans:
+    "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --max-w: 1280px;
+  --gutter: clamp(20px, 4vw, 56px);
+
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 16px;
+
+  --shadow-sm: 0 1px 2px rgba(10, 10, 10, 0.04);
+  --shadow: 0 1px 3px rgba(10, 10, 10, 0.06), 0 4px 12px rgba(10, 10, 10, 0.04);
+
+  --t-fast: 120ms ease;
+  --t: 200ms ease;
+}
+
+[data-theme="dark"] {
+  --bg: #0a0a0a;
+  --bg-elev: #141414;
+  --bg-sunken: #1c1c1c;
+  --fg: #fafaf9;
+  --fg-muted: #a8a29e;
+  --fg-subtle: #57534e;
+  --border: #262626;
+  --border-strong: #404040;
+  --accent: #ef4444;
+  --accent-hover: #f87171;
+  --accent-fg: #0a0a0a;
+  --code-bg: #1c1c1c;
+}

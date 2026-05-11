@@ -1,0 +1,163 @@
+/* Publications page — bento grid */
+
+.pubs-hero {
+  padding: 96px 0 32px;
+}
+
+.pubs-hero h1 {
+  font-size: clamp(56px, 7vw, 104px);
+  letter-spacing: -0.035em;
+}
+
+.pubs-hero p {
+  margin-top: 24px;
+  max-width: 56ch;
+  color: var(--fg-muted);
+  font-size: 18px;
+}
+
+.pubs-toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 20px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.toolbar-spacer {
+  flex: 1;
+}
+
+/* Bento grid */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+  margin-top: 40px;
+}
+
+.bento-tile {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-elev);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition:
+    border-color var(--t-fast),
+    transform var(--t-fast);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+}
+
+.bento-tile:hover {
+  border-color: var(--border-strong);
+}
+
+.bento-tile.feature {
+  padding: 32px;
+}
+
+.bento-tile.span-3 {
+  grid-column: span 3;
+}
+.bento-tile.span-2 {
+  grid-column: span 2;
+}
+.bento-tile.span-4 {
+  grid-column: span 4;
+}
+.bento-tile.span-6 {
+  grid-column: span 6;
+}
+
+.bento-tile .figure {
+  height: 220px;
+  border-radius: var(--radius-sm);
+  margin: -8px -8px 0;
+  overflow: hidden;
+  position: relative;
+  background: var(--bg-sunken);
+  display: grid;
+  place-items: center;
+}
+
+.bento-tile.feature .figure {
+  height: 280px;
+}
+
+.bento-tile h3 {
+  font-size: 22px;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.bento-tile.feature h3 {
+  font-size: 30px;
+  line-height: 1.1;
+}
+
+.bento-tile .meta {
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+
+.bento-tile .actions {
+  margin-top: auto;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Figures */
+.fig-regret {
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--accent) 14%, var(--bg-elev)) 0%,
+    var(--bg-sunken) 100%
+  );
+}
+
+.fig-grid {
+  background: var(--bg-sunken);
+}
+
+/* Year filter via data-year attribute on the bento root */
+.bento[data-year-filter] .bento-tile {
+  display: none;
+}
+.bento[data-year-filter="all"] .bento-tile,
+.bento[data-year-filter="2026"] .bento-tile[data-year="2026"],
+.bento[data-year-filter="2025"] .bento-tile[data-year="2025"],
+.bento[data-year-filter="2024"] .bento-tile[data-year="2024"],
+.bento[data-year-filter="2023"] .bento-tile[data-year="2023"] {
+  display: flex;
+}
+
+@media (max-width: 900px) {
+  .bento-tile.span-3,
+  .bento-tile.span-2,
+  .bento-tile.span-4 {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 640px) {
+  .bento-tile {
+    padding: 16px;
+  }
+  .bento-tile.feature {
+    padding: 20px;
+  }
+  .bento-tile .figure {
+    height: 160px;
+  }
+  .bento-tile.feature .figure {
+    height: 200px;
+  }
+}

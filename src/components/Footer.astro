@@ -1,0 +1,45 @@
+---
+import KineticLogo from './KineticLogo.astro';
+
+const buildTime = import.meta.env.BUILD_TIME ?? new Date().toISOString();
+const buildDate = new Date(buildTime).toISOString().slice(0, 10);
+---
+
+<footer class="site-footer" id="contact">
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <div style="margin-bottom: 14px;">
+          <KineticLogo size="28px" />
+        </div>
+        <p style="max-width: 32ch; color: var(--fg-muted);">
+          Online Optimization And Applications Research Group.
+        </p>
+      </div>
+      <div>
+        <h2 class="foot-label">Research</h2>
+        <ul>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/publications">Publications</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="foot-label">Group</h2>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/#join">Join us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="foot-label">Elsewhere</h2>
+        <ul>
+          <li><a href="https://github.com/ooaarg">GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© {new Date().getFullYear()} OOAARG · CC BY 4.0 unless noted</span>
+      <span>Last build: {buildDate}</span>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,16 @@
+---
+title: "Training-Free Query Optimization via LLM-Based Plan Similarity"
+authors: ["Nikita Vasilenko", "Alexander Demin", "Vladimir Burlakov"]
+date: 2025-6-6
+venue: "arXiv"
+tag: "Paper"
+type: "preprint"
+area: "dbms"
+featured: false
+span: 2
+tags: ["databases", "query optimization", "language models", "embeddings"]
+arxiv: "2506.05853"
+summary: "We introduce LLM-based Plan Mapping, a framework that embeds the default execution plan of a query, finds its k nearest neighbors among previously executed plans, and recommends database hintsets based on neighborhood voting."
+---
+
+Large language model (LLM) embeddings offer a promising new avenue for database query optimization. In this paper, we explore how pre-trained execution plan embeddings can guide SQL query execution without the need for additional model training. We introduce LLM-PM (LLM-based Plan Mapping), a framework that embeds the default execution plan of a query, finds its k nearest neighbors among previously executed plans, and recommends database hintsets based on neighborhood voting. A lightweight consistency check validates the selected hint, while a fallback mechanism searches the full hint space when needed. Evaluated on the JOB-CEB benchmark using OpenGauss, LLM-PM achieves an average speed-up of 21% query latency reduction. This work highlights the potential of LLM-powered embeddings to deliver practical improvements in query performance and opens new directions for training-free, embedding-based optimizer guidance systems.

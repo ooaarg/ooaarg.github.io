@@ -1,0 +1,77 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import SeoHead from '../components/SeoHead.astro';
+
+import '@fontsource-variable/inter/index.css';
+import '@fontsource-variable/source-serif-4/index.css';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/500.css';
+
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/chrome.css';
+import '../styles/components.css';
+import '../styles/kinetic-logo.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  active?: 'home' | 'blog' | 'pubs' | 'about';
+}
+
+const { title, description, ogImage, active } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)" />
+    <SeoHead title={title} description={description} ogImage={ogImage} />
+
+    {/* Inline theme init — runs BEFORE paint to avoid dark↔light flash. */}
+    <script is:inline>
+      (function () {
+        function applyTheme() {
+          try {
+            var stored = localStorage.getItem('ooaarg-theme');
+            document.documentElement.setAttribute('data-theme', stored || 'dark');
+          } catch (_) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+          }
+        }
+        applyTheme();
+        // Astro's ClientRouter overwrites <html> attributes from the new page on swap;
+        // re-assert the theme right before the new DOM paints.
+        document.addEventListener('astro:before-swap', function (e) {
+          // The 'newDocument' is the doc Astro is about to swap in.
+          var stored;
+          try { stored = localStorage.getItem('ooaarg-theme'); } catch (_) {}
+          e.newDocument.documentElement.setAttribute('data-theme', stored || 'dark');
+        });
+        document.addEventListener('astro:after-swap', applyTheme);
+        // Stale hash-route mitigation: rewrite #/foo → /foo (legacy prototype links)
+        if (location.hash && location.hash.startsWith('#/')) {
+          var newPath = location.hash.slice(1);
+          location.replace(newPath);
+        }
+      })();
+    </script>
+
+    <ClientRouter />
+  </head>
+  <body>
+    <Header active={active} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

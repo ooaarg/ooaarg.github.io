@@ -1,0 +1,81 @@
+---
+import { getCollection } from 'astro:content';
+import Site from '../layouts/Site.astro';
+import PersonCard from '../components/people/PersonCard.astro';
+import PersonLead from '../components/people/PersonLead.astro';
+
+import '../styles/people.css';
+
+const all = await getCollection('people');
+const byOrder = (a: typeof all[number], b: typeof all[number]) =>
+  a.data.order - b.data.order;
+
+const lead = all.find((p) => p.data.group === 'faculty');
+
+// Staff = postdoc, phd, and any non-lead faculty. Sort by group hierarchy first
+// (postdoc → phd → other faculty), then by `order` within group.
+const STAFF_RANK: Record<string, number> = { postdoc: 0, phd: 1, faculty: 2 };
+const staff = all
+  .filter((p) => p.data.group !== 'alumni' && p.id !== lead?.id)
+  .sort((a, b) => {
+    const r = (STAFF_RANK[a.data.group] ?? 9) - (STAFF_RANK[b.data.group] ?? 9);
+    return r !== 0 ? r : byOrder(a, b);
+  });
+
+const alumni = all.filter((p) => p.data.group === 'alumni').sort(byOrder);
+---
+
+<Site
+  active="about"
+  title="About · OOAARG"
+  description="Online Optimization And Applications Research Group — lead, staff, and alumni."
+>
+  <section class="people-hero">
+    <div class="container">
+      <h2 class="kicker">About</h2>
+      <h1 class="about-title">Online Optimization And Applications Research Group</h1>
+      <p style="margin-top: 24px; color: var(--fg-muted); max-width: 52ch; font-size: 18px;">
+          A research group studying decisions under uncertainty. Theory, algorithms, and the messy real-world problems that motivate both.
+      </p>
+    </div>
+  </section>
+
+  {lead && (
+    <section class="people-section">
+      <div class="container">
+        <h2 class="kicker">Lead</h2>
+        <PersonLead person={lead} />
+      </div>
+    </section>
+  )}
+
+  {staff.length > 0 && (
+    <section class="people-section">
+      <div class="container">
+        <h2 class="kicker">Staff</h2>
+        <div class="people-grid">
+          {staff.map((p) => (
+            <a class="person-card-link" href={`/about/${p.id}`}>
+              <PersonCard person={p} />
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {alumni.length > 0 && (
+    <section class="people-section">
+      <div class="container">
+        <h2 class="kicker">Alumni</h2>
+        <div class="people-grid">
+          {alumni.map((p) => (
+            <a class="person-card-link" href={`/about/${p.id}`}>
+              <PersonCard person={p} />
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</Site>

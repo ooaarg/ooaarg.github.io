@@ -1,0 +1,54 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+
+interface Props {
+  item: CollectionEntry<'news'>;
+  span?: 2 | 3 | 4 | 6;
+}
+
+const { item, span: spanOverride } = Astro.props;
+const { data, id } = item;
+const year = data.date.getFullYear();
+const span = spanOverride ?? data.span ?? 3;
+const dateLabel = data.date.toLocaleDateString('en-US', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric',
+});
+const detailHref = `/blog/${id}`;
+---
+
+<article class={`bento-tile span-${span} news-tile`} data-year={year}>
+  {data.image && (
+    <div class="figure news-figure">
+      <Image src={data.image} alt={data.imageAlt} loading="lazy" decoding="async" />
+    </div>
+  )}
+  <div class="meta">
+    <span class="pill accent">News</span>
+    <span style="margin-left: 8px;">{dateLabel}</span>
+  </div>
+  <h3>
+    <a href={detailHref} style="color: inherit; text-decoration: none;">{data.title}</a>
+  </h3>
+  <p style="color: var(--fg-muted); font-size: 14px;">{data.summary}</p>
+  <div class="actions">
+    {data.href && (
+      <a class="btn btn-sm" href={data.href} target="_blank" rel="noopener">Read more →</a>
+    )}
+    <a class="btn btn-sm btn-ghost" href={detailHref}>Read →</a>
+  </div>
+</article>
+
+<style>
+  .news-figure {
+    background: var(--bg-sunken);
+  }
+  .news-figure img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+</style>

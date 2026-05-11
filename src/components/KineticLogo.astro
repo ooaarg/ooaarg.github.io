@@ -1,0 +1,65 @@
+---
+interface Props {
+  href?: string;
+  size?: number | string;
+  className?: string;
+  /** When true, applies the .hero size cap (clamped to viewport width). */
+  hero?: boolean;
+  /** Astro view-transition name to morph between pages. */
+  transitionName?: string;
+}
+
+const { href = '/', size, hero = false, className = '', transitionName } = Astro.props;
+const sizeStyle = size ? `--ooaarg-size: ${typeof size === 'number' ? `${size}px` : size};` : '';
+const transitionStyle = transitionName ? `view-transition-name: ${transitionName};` : '';
+const style = [sizeStyle, transitionStyle].filter(Boolean).join(' ');
+const classes = ['ooaarg-mark', hero ? 'hero' : '', className].filter(Boolean).join(' ');
+---
+
+<a class={classes} href={href} aria-label="OOAARG home" style={style}>
+  <span>ÕO</span><span class="ooaarg-stretch">AARG</span>
+</a>
+
+<script>
+  // Document-delegated hover/focus → graceful animation finish.
+  // Adds .is-bouncing on enter; on leave, waits for the next animationiteration
+  // event so the wordmark always finishes its cycle at scaleX(1) instead of
+  // freezing mid-stretch. Idempotent across view transitions.
+  type MarkState = { leaving: boolean };
+  const state = new WeakMap<HTMLElement, MarkState>();
+
+  function onEnter(e: Event) {
+    const mark = (e.target as HTMLElement).closest<HTMLElement>('.ooaarg-mark');
+    if (!mark) return;
+    state.set(mark, { leaving: false });
+    mark.classList.add('is-bouncing');
+  }
+
+  function onLeave(e: Event) {
+    const mark = (e.target as HTMLElement).closest<HTMLElement>('.ooaarg-mark');
+    if (!mark || !mark.classList.contains('is-bouncing')) return;
+    state.set(mark, { leaving: true });
+  }
+
+  function onIteration(e: AnimationEvent) {
+    if (e.animationName !== 'ooaargStretch') return;
+    const stretch = e.target as HTMLElement;
+    const mark = stretch.closest<HTMLElement>('.ooaarg-mark');
+    if (!mark) return;
+    const s = state.get(mark);
+    if (s?.leaving) {
+      mark.classList.remove('is-bouncing');
+      state.delete(mark);
+    }
+  }
+
+  // Install once.
+  if (!(window as unknown as { __ooaargBound?: boolean }).__ooaargBound) {
+    document.addEventListener('pointerenter', onEnter, true);
+    document.addEventListener('pointerleave', onLeave, true);
+    document.addEventListener('focusin', onEnter, true);
+    document.addEventListener('focusout', onLeave, true);
+    document.addEventListener('animationiteration', onIteration as EventListener, true);
+    (window as unknown as { __ooaargBound: boolean }).__ooaargBound = true;
+  }
+</script>

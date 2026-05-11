@@ -1,0 +1,62 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Site from '../../layouts/Site.astro';
+import PubTile from '../../components/publications/PubTile.astro';
+import NewsTile from '../../components/publications/NewsTile.astro';
+import YearFilter from '../../components/publications/YearFilter.tsx';
+import { packBento, type TileSpan } from '../../lib/pubs';
+
+import '../../styles/publications.css';
+
+type BlogItem =
+  | { kind: 'pub'; entry: CollectionEntry<'publications'> }
+  | { kind: 'news'; entry: CollectionEntry<'news'> };
+
+const pubs = await getCollection('publications');
+const news = await getCollection('news');
+
+const items: BlogItem[] = [
+  ...pubs.map<BlogItem>((entry) => ({ kind: 'pub', entry })),
+  ...news.map<BlogItem>((entry) => ({ kind: 'news', entry })),
+].sort((a, b) => b.entry.data.date.getTime() - a.entry.data.date.getTime());
+
+const allYears = [...new Set(items.map((i) => i.entry.data.date.getFullYear()))].sort(
+  (a, b) => b - a,
+);
+
+const tiles = packBento<BlogItem>(items, (i) => (i.entry.data.span ?? 2) as TileSpan);
+---
+
+<Site
+  active="blog"
+  title="Blog · OOAARG"
+  description="Papers, preprints, code, talks, and news from the OOAARG research group."
+>
+  <section class="pubs-hero">
+    <div class="container">
+      <div class="kicker">Blog</div>
+      <h1>What we've shipped</h1>
+      <p>
+        Browse our research.
+      </p>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="pubs-toolbar">
+      <h2 class="kicker" style="margin-right: 4px;">Filter</h2>
+      <YearFilter client:load years={allYears} total={items.length} />
+      <a class="btn btn-sm" href="/publications">Search index →</a>
+    </div>
+
+    <div class="bento" data-year-filter="all">
+      {tiles.map(({ item, span }) =>
+        item.kind === 'pub' ? (
+          <PubTile pub={item.entry} span={span} />
+        ) : (
+          <NewsTile item={item.entry} span={span} />
+        ),
+      )}
+    </div>
+  </div>
+</Site>

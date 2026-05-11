@@ -1,0 +1,45 @@
+---
+title: "Hint Based Query Optimization with LLM Agent and Plan Similarity"
+authors: ["Nikita Vasilenko", "Alexander Demin", "Vladimir Burlakov"]
+date: 2025-11-14
+venue: "APEIE 2025"
+tag: "Paper"
+type: "paper"
+area: "dbms"
+featured: true
+span: 2
+tags:
+  [
+    "databases",
+    "query optimization",
+    "language models",
+    "embeddings",
+    "agent guided search",
+  ]
+links:
+  - {
+      label: "ResearchGate",
+      url: "https://www.researchgate.net/publication/398845655_Hint_Based_Query_Optimization_with_LLM_Agent_and_Plan_Similarity",
+    }
+summary: "A two–path architecture for query–optimizer hint selection that combines fast nearest–neighbor transfer in an LLM–derived plan–embedding space with a budgeted LLM agent that searches the hint space under DBMS feedback."
+---
+
+Cost based SQL optimizers remain brittle under
+real world data and engine diversity; small errors in cardinality
+or cost estimates can cascade into poor plans. We propose a
+conceptual architecture for hint based query optimization and
+describe two modules in detail: a fast module which encodes
+physical plans as text, embeds with a pretrained language model,
+retrieves nearest neighbors, and produces a compact binary hint
+vector with a safety check against the default plan; and an
+agent guided module powered by a fine tuned Large Language
+Model, which refines hints through iterative search with database
+feedback under a strict evaluation budget. We specify interfaces,
+data flow, and decision policies for both modules, and outline
+integration through standard hint mechanisms without engine
+changes. Preliminary module level results on JOB CEB indicate
+roughly twenty percent average runtime reduction for the fast
+module and fewer trial executions than a greedy baseline for
+the agent guided module. The paper focuses on architecture and
+module behavior rather than a single end to end deployment, so
+system wide testing is intentionally out of scope.

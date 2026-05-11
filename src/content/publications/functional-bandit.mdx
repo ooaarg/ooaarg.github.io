@@ -1,0 +1,22 @@
+---
+title: "Functional multi-armed bandit and the best function identification problems"
+authors:
+  ["Yuriy Dorn", "Aleksandr Katrutsa", "Ilgam Latypov", "Anastasiia Soboleva"]
+date: 2025-03-01
+venue: "AAMAS 2026"
+tag: "Paper"
+type: "paper"
+area: "bandits"
+featured: true
+span: 2
+tags:
+  [
+    "Multi-armed bandits",
+    "functional multi-armed bandits",
+    "best function identification",
+  ]
+arxiv: "2503.00509"
+summary: "We propose two new classes of problems: the functional multi-armed bandit problem (FMAB) and the best function identification problem."
+---
+
+Bandit optimization usually refers to the class of online optimization problems with limited feedback, namely, a decision maker uses only the objective value at the current point to make a new decision and does not have access to the gradient of the objective function. While this name accurately captures the limitation in feedback, it is somehow misleading since it does not have any connection with the multi-armed bandits (MAB) problem class. We propose two new classes of problems: the functional multi-armed bandit problem (FMAB) and the best function identification problem. They are modifications of a multi-armed bandit problem and the best arm identification problem, respectively, where each arm represents an unknown black-box function. These problem classes are a surprisingly good fit for modeling real-world problems such as competitive LLM training. To solve the problems from these classes, we propose a new reduction scheme to construct UCB-type algorithms, namely, the F-LCB algorithm, based on algorithms for nonlinear optimization with known convergence rates. We provide the regret upper bounds for this reduction scheme based on the base algorithms' convergence rates. We add numerical experiments that demonstrate the performance of the proposed scheme.

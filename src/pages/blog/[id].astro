@@ -1,0 +1,96 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Site from '../../layouts/Site.astro';
+
+import '../../styles/publication.css';
+
+export async function getStaticPaths() {
+  const news = await getCollection('news');
+  return news.map((item) => ({
+    params: { id: item.id },
+    props: { item },
+  }));
+}
+
+const { item } = Astro.props;
+const { data } = item;
+const { Content } = await render(item);
+
+const fmt = (d: Date) =>
+  `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+---
+
+<Site
+  active="blog"
+  title={`${data.title} · OOAARG`}
+  description={data.summary}
+>
+  <section class="pub-detail">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="/blog">Blog</a> <span>/</span> News
+      </div>
+
+      <div class="badge-row">
+        <span class="pill accent">News</span>
+        <span class="pill">{fmt(data.date)}</span>
+      </div>
+
+      <h1 style="margin-top: 24px; view-transition-name: hero-title;">{data.title}</h1>
+
+      <p class="authors" style="max-width: 60ch;">{data.summary}</p>
+
+      {data.href && (
+        <div class="actions">
+          <a class="btn btn-primary" href={data.href} target="_blank" rel="noopener">
+            Visit link →
+          </a>
+        </div>
+      )}
+
+      {data.image && (
+        <figure class="news-hero-figure">
+          <Image src={data.image} alt={data.imageAlt} loading="eager" />
+        </figure>
+      )}
+
+      <div class="pub-content">
+        <article>
+          <Content />
+        </article>
+
+        <aside class="pub-aside">
+          <div class="group">
+            <h3 class="aside-label">Posted</h3>
+            <p class="mono" style="color: var(--fg);">{fmt(data.date)}</p>
+          </div>
+          <div class="group">
+            <h3 class="aside-label">Category</h3>
+            <p>News</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</Site>
+
+<style>
+  .news-hero-figure {
+    margin: 56px 0 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg-sunken);
+  }
+  .news-hero-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  @media (max-width: 900px) {
+    .news-hero-figure {
+      margin-top: 32px;
+    }
+  }
+</style>

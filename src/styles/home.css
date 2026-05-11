@@ -1,0 +1,479 @@
+/* Home page — hero, sections, areas-of-research grid, latest pubs, join strip */
+
+/* ---------- HERO ---------- */
+.hero {
+  padding: 88px 0 64px;
+}
+
+.hero-meta {
+  display: flex;
+  gap: 24px;
+  align-items: baseline;
+  margin-bottom: 28px;
+}
+
+.hero-date {
+  font-size: 12px;
+  color: var(--fg-muted);
+}
+
+.hero-title {
+  font-size: clamp(44px, 6.5vw, 96px);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  font-weight: 400;
+  max-width: 22ch;
+}
+
+.hero-title em {
+  font-style: italic;
+  font-family: var(--font-serif);
+  color: var(--accent);
+}
+
+.hero-accent {
+  color: var(--accent);
+  font-style: italic;
+}
+
+.hero-foot {
+  margin-top: 64px;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 64px;
+  align-items: end;
+  border-top: 1px solid var(--border);
+  padding-top: 32px;
+}
+
+.hero-figcap {
+  font-size: 14px;
+  color: var(--fg-muted);
+  max-width: 52ch;
+}
+
+.hero-figcap .figlabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.hero-eq {
+  margin-top: 16px;
+  color: var(--fg);
+  font-size: 18px;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.hero-sub {
+  font-size: 18px;
+  color: var(--fg-muted);
+  max-width: 52ch;
+  margin-top: 24px;
+}
+
+/* ---- Regret-plot hero (default) ---- */
+/* Layout adapts to child presence via :has(): when the slide includes a
+ * figure column, the grid splits 1fr 1fr at fixed height; without one, the
+ * text column spans the full container, left-aligned, with no figure frame.
+ * Using :has() instead of a JS-toggled class avoids a race during
+ * ClientRouter swaps where the React state and the rendered class can
+ * desync mid-transition. */
+.hero-plot-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 64px;
+  align-items: start;
+  /* Stable carousel height — sized to fit the tallest title we ship so
+   * paging between slides doesn't jump the layout. */
+  min-height: 560px;
+}
+
+.hero-plot-grid:has(.hero-slide-fig) {
+  grid-template-columns: 1fr 1fr;
+}
+
+.hero-plot-grid:not(:has(.hero-slide-fig)) h1 {
+  max-width: 28ch;
+}
+
+.hero-plot-grid:not(:has(.hero-slide-fig)) .hero-sub {
+  max-width: 64ch;
+}
+
+.hero-plot-grid h1 {
+  font-size: clamp(32px, 3.4vw, 48px);
+  max-width: 18ch;
+  text-wrap: balance;
+  line-height: 1.05;
+}
+
+.hero-slide-text {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.hero-slide-fig {
+  align-self: start;
+}
+
+.hero-plot-grid em {
+  color: var(--accent);
+}
+
+.regret-plot {
+  color: var(--fg-muted);
+}
+
+/* ---------- Section heads ---------- */
+.section-head {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 64px;
+  align-items: end;
+  border-top: 1px solid var(--border);
+  padding-top: 32px;
+}
+
+.section-lead {
+  font-size: 16px;
+  color: var(--fg-muted);
+  max-width: 48ch;
+}
+
+/* ---------- Areas of research ---------- */
+.areas-grid {
+  margin-top: 48px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.area-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 32px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-elev);
+  color: var(--fg);
+  text-decoration: none;
+  transition:
+    border-color var(--t-fast),
+    background var(--t-fast),
+    transform var(--t-fast);
+}
+
+.area-card:hover {
+  border-color: var(--border-strong);
+  background: color-mix(in oklab, var(--bg-elev) 60%, var(--bg-sunken));
+}
+
+.area-card:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--accent) 65%, transparent);
+  outline-offset: 2px;
+}
+
+.area-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.area-card-head h3 {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.area-card-arrow {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  color: var(--fg-subtle);
+  transition:
+    color var(--t-fast),
+    transform var(--t-fast);
+  flex-shrink: 0;
+}
+
+.area-card:hover .area-card-arrow {
+  color: var(--accent);
+  transform: translateX(3px);
+}
+
+.area-card-blurb {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--fg-muted);
+}
+
+.area-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+}
+
+.area-card-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--fg-muted);
+}
+
+.area-count {
+  color: var(--fg);
+  font-weight: 500;
+}
+
+.area-dot {
+  color: var(--fg-subtle);
+}
+
+.area-latest {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+.area-card.is-nascent {
+  background: transparent;
+  border-style: dashed;
+}
+
+.area-card.is-nascent .area-card-head h3 {
+  color: var(--fg-muted);
+}
+
+.area-card.is-nascent .area-nascent-label {
+  color: var(--fg-muted);
+  font-weight: 400;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ---------- Pub list ---------- */
+.pub-list {
+  list-style: none;
+  padding: 0;
+  margin: 48px 0 0;
+}
+
+.pub-list > li {
+  display: grid;
+  grid-template-columns: 110px 110px 1fr auto;
+  gap: 24px;
+  align-items: center;
+  padding: 24px 0;
+  border-top: 1px solid var(--border);
+  transition: background var(--t-fast);
+}
+
+.pub-list > li:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+.pub-list > li:hover {
+  background: color-mix(in oklab, var(--bg-sunken) 60%, transparent);
+}
+
+.pub-tag {
+  justify-self: start;
+}
+
+.pub-date {
+  font-size: 12px;
+  color: var(--fg-muted);
+}
+
+.pub-title {
+  margin: 0 0 4px;
+  overflow-wrap: anywhere;
+  font-family: var(--font-sans);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  line-height: 1.3;
+}
+
+.pub-meta {
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+
+.pub-dot {
+  color: var(--fg-subtle);
+  margin: 0 6px;
+}
+
+.pub-actions {
+  display: flex;
+  gap: 6px;
+}
+
+/* ---------- Join strip ---------- */
+.join-strip {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-elev);
+  padding: 56px;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 64px;
+  align-items: end;
+}
+
+.join-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .hero-foot,
+  .hero-plot-grid,
+  .section-head,
+  .join-strip {
+    grid-template-columns: 1fr;
+  }
+  .areas-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .area-card {
+    padding: 24px;
+  }
+  /* Visual sits above text on phones. flex-direction is `column` (not
+   * column-reverse) so text-only slides don't pin to the bottom of the
+   * min-height container; on figure slides, `order: -1` on the figure
+   * still places it above the text. min-height is dropped entirely on
+   * mobile — content drives height. The 64px desktop gap is too loose for
+   * a single-column phone layout — tighten to match the hero's top
+   * padding so the figure-to-text breathing room reads as one consistent
+   * scale of vertical rhythm. */
+  .hero-plot-grid {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+    gap: 24px;
+  }
+  .hero-slide-fig {
+    order: -1;
+  }
+  .hero {
+    padding: 24px 0 32px;
+  }
+  .pub-list > li {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .join-strip {
+    padding: 32px;
+  }
+}
+
+@media (max-width: 640px) {
+  .area-card-head h3 {
+    font-size: 22px;
+  }
+}
+
+/* ---------- Featured-papers carousel ---------- */
+.hero-plot {
+  position: relative;
+}
+
+@keyframes hero-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.hero-slide {
+  animation: hero-slide-in 180ms ease both;
+}
+
+/* CTAs and controls share a tight vertical stack below the grid, both at
+ * fixed Y because the grid has a fixed height. */
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.hero-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.hero-dots {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.hero-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    transform 120ms ease;
+}
+.hero-dot:hover {
+  background: var(--fg-muted);
+}
+.hero-dot[aria-selected="true"] {
+  background: var(--accent);
+  transform: scale(1.25);
+}
+
+.hero-counter {
+  font-size: 12px;
+  color: var(--fg-muted);
+  margin-left: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide {
+    animation: none;
+  }
+  .hero-dot {
+    transition: none;
+  }
+}

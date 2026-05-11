@@ -1,0 +1,135 @@
+---
+import { getCollection, render } from 'astro:content';
+import Site from '../../layouts/Site.astro';
+import Avatar from '../../components/people/Avatar.astro';
+import {
+  getAuthorMap,
+  getPersonPubs,
+  groupPubsByYear,
+  resolveAuthors,
+} from '../../lib/people';
+
+import '../../styles/people.css';
+
+export async function getStaticPaths() {
+  const people = await getCollection('people');
+  return people.map((person) => ({
+    params: { id: person.id },
+    props: { person },
+  }));
+}
+
+const { person } = Astro.props;
+const { data } = person;
+const { Content } = await render(person);
+
+const allPubs = await getCollection('publications');
+const personPubs = getPersonPubs(person, allPubs);
+const yearGroups = groupPubsByYear(personPubs);
+const authorMap = await getAuthorMap();
+
+const hasBio = (person.body ?? '').trim().length > 0;
+
+const linkRow = [
+  data.links.website && { label: 'Website', href: data.links.website },
+  data.links.scholar && { label: 'Google Scholar', href: data.links.scholar },
+  data.links.orcid && { label: 'ORCID', href: data.links.orcid },
+  data.links.dblp && { label: 'DBLP', href: data.links.dblp },
+  data.links.researchgate && { label: 'ResearchGate', href: data.links.researchgate },
+  data.links.github && { label: 'GitHub', href: data.links.github },
+  data.links.cv && { label: 'CV', href: data.links.cv },
+  ...data.links.other.map((l) => ({ label: l.label, href: l.url })),
+  data.email && { label: data.email, href: `mailto:${data.email}` },
+].filter(Boolean) as Array<{ label: string; href: string }>;
+
+const fmt = (d: Date) =>
+  `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+---
+
+<Site
+  active="about"
+  title={`${data.name} · OOAARG`}
+  description={`${data.role} — ${data.topic}`}
+>
+  <section class="person-detail">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="/about">About</a> <span>/</span> {data.name}
+      </div>
+
+      <div class="person-detail-hero">
+        <Avatar person={person} />
+        <div>
+          <div class="role">{data.role}</div>
+          <h1 style="margin-top: 8px;">{data.name}</h1>
+          <p class="topic" style="margin-top: 12px; font-size: 18px; max-width: 56ch;">
+            {data.topic}
+          </p>
+          {data.office && (
+            <p class="mono" style="margin-top: 12px; font-size: 13px; color: var(--fg-muted);">
+              {data.office}
+            </p>
+          )}
+          {linkRow.length > 0 && (
+            <div class="person-links">
+              {linkRow.map((l, i) => (
+                <a class={i === 0 ? 'btn' : 'btn btn-ghost'} href={l.href}>
+                  {l.label}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <section class="person-section">
+        <h2 class="kicker">About</h2>
+        <div class="person-bio">
+          {hasBio ? <Content /> : <p>Bio coming soon.</p>}
+        </div>
+      </section>
+
+      <section class="person-section">
+        <h2 class="kicker">Publications</h2>
+        {yearGroups.length === 0 ? (
+          <p class="person-pubs-empty">No publications listed yet.</p>
+        ) : (
+          <div class="person-pubs">
+            {yearGroups.map(([year, pubs]) => (
+              <div class="person-pubs-year">
+                <h3>{year}</h3>
+                <ul>
+                  {pubs.map((p) => {
+                    const authors = resolveAuthors(p.data.authors, authorMap);
+                    return (
+                      <li class="person-pubs-row">
+                        <span class="pill accent">{p.data.tag}</span>
+                        <div>
+                          <a class="person-pubs-title" href={`/publications/${p.id}`}>
+                            {p.data.title}
+                          </a>
+                          <p class="person-pubs-authors">
+                            {authors.map((a, i) => {
+                              const isSelf = a.name === data.name;
+                              const tail = i < authors.length - 1 ? ', ' : '';
+                              if (isSelf) return <><strong>{a.name}</strong>{tail}</>;
+                              if (a.id) return <><a href={`/about/${a.id}`}>{a.name}</a>{tail}</>;
+                              return <>{a.name}{tail}</>;
+                            })}
+                          </p>
+                          <p class="person-pubs-meta mono">
+                            {p.data.venue} · {fmt(p.data.date)}
+                          </p>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+    </div>
+  </section>
+</Site>

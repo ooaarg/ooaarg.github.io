@@ -1,0 +1,73 @@
+/* Kinetic OOAARG wordmark — from "OOAARG Kinetic Snippet.html" */
+
+.ooaarg-mark {
+  --ooaarg-size: 96px;
+  --ooaarg-ink: currentColor;
+  --ooaarg-accent: var(--accent, oklch(62% 0.18 35));
+  --ooaarg-duration: 3.2s;
+
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+  font-family:
+    "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+  font-weight: 900;
+  font-size: var(--ooaarg-size);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--ooaarg-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.ooaarg-mark .ooaarg-stretch {
+  display: inline-block;
+  transform-origin: left center;
+  /* Animation is always defined but paused; .is-bouncing toggles play-state.
+     A small inline script (KineticLogo.astro) waits for the next animationiteration
+     after the user un-hovers, so the stretch always finishes at scaleX(1) instead
+     of freezing mid-cycle. */
+  animation: ooaargStretch var(--ooaarg-duration) cubic-bezier(0.4, 0, 0.2, 1)
+    infinite;
+  animation-play-state: paused;
+}
+
+.ooaarg-mark.is-bouncing .ooaarg-stretch {
+  animation-play-state: running;
+}
+
+@keyframes ooaargStretch {
+  0% {
+    transform: scaleX(1);
+  }
+  15% {
+    transform: scaleX(1.35);
+  }
+  25% {
+    transform: scaleX(1.35);
+  }
+  45% {
+    transform: scaleX(0.92);
+  }
+  60% {
+    transform: scaleX(1.05);
+  }
+  75% {
+    transform: scaleX(0.98);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ooaarg-mark .ooaarg-stretch {
+    animation: none;
+  }
+}
+
+/* Hero size cap to prevent overflow on narrow viewports */
+.ooaarg-mark.hero {
+  --ooaarg-size: min(160px, 36vw);
+}

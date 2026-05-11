@@ -1,0 +1,25 @@
+---
+import Site from '../layouts/Site.astro';
+import KineticLogo from '../components/KineticLogo.astro';
+---
+
+<Site title="Not found · OOAARG" description="That page doesn't exist on this site.">
+  <section class="hero">
+    <div class="container" style="display: grid; place-items: center; gap: 32px; text-align: center; padding: 96px 0;">
+      <KineticLogo size="120px" hero />
+      <div>
+        <div class="kicker">404 · not found</div>
+        <h1 style="margin-top: 16px;">No regret bound at this URL.</h1>
+        <p style="color: var(--fg-muted); margin-top: 16px; max-width: 48ch; margin-left: auto; margin-right: auto;">
+          The page you were looking for doesn't exist. Try one of the destinations below.
+        </p>
+      </div>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+        <a class="btn btn-accent" href="/">Home →</a>
+        <a class="btn" href="/blog">Blog</a>
+        <a class="btn" href="/publications">Publications</a>
+        <a class="btn" href="/about">About</a>
+      </div>
+    </div>
+  </section>
+</Site>

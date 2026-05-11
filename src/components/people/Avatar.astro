@@ -1,0 +1,41 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  person: CollectionEntry<'people'>;
+}
+
+const { person } = Astro.props;
+const { data, id } = person;
+
+/* Resolve a photo at `src/assets/people/<id>.{jpg,jpeg,png,webp}` if one
+ * exists for this person; otherwise fall back to the gradient-initials
+ * block. Same sibling-file pattern as PaperFigure. */
+const modules = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/people/*.{jpg,jpeg,png,webp,avif}',
+  { eager: true },
+);
+const PHOTO_MAP: Record<string, ImageMetadata> = Object.fromEntries(
+  Object.entries(modules).map(([path, mod]) => {
+    const slug = path.split('/').pop()!.replace(/\.(jpg|jpeg|png|webp|avif)$/i, '');
+    return [slug, mod.default];
+  }),
+);
+const photo = PHOTO_MAP[id];
+---
+
+<div class="avatar">
+  {photo ? (
+    <Image
+      src={photo}
+      alt={data.name}
+      widths={[240, 360, 560]}
+      sizes="(max-width: 900px) 50vw, 280px"
+      class="avatar-photo"
+    />
+  ) : (
+    <div class="initials">{data.initials}</div>
+  )}
+</div>

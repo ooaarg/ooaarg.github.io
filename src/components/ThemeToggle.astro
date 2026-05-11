@@ -1,0 +1,53 @@
+---
+// Vanilla theme toggle. Plain HTML + inline script — no React island, so it
+// can't be re-mounted at the wrong moment during a view transition. The
+// document delegated handler also survives ClientRouter swaps.
+---
+
+<button
+  type="button"
+  id="theme-toggle"
+  class="btn btn-ghost btn-icon"
+  aria-label="Toggle theme"
+  title="Toggle theme"
+>
+  <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+    <circle cx="12" cy="12" r="4"></circle>
+    <path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4"></path>
+  </svg>
+  <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+  </svg>
+</button>
+
+<style>
+  /* Show one icon at a time based on current theme */
+  .theme-icon-sun,
+  .theme-icon-moon { display: none; }
+  :global([data-theme='dark']) .theme-icon-sun { display: inline-block; }
+  :global([data-theme='light']) .theme-icon-moon { display: inline-block; }
+</style>
+
+<script>
+  // Single delegated click handler. Idempotent across view transitions.
+  if (!(window as unknown as { __ooaargThemeBound?: boolean }).__ooaargThemeBound) {
+    document.addEventListener(
+      'click',
+      (e) => {
+        const target = e.target as HTMLElement;
+        const btn = target.closest('#theme-toggle');
+        if (!btn) return;
+        // Stop the click from bubbling into anything else (e.g. ClientRouter prefetch).
+        e.stopPropagation();
+        const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+        const next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        try {
+          localStorage.setItem('ooaarg-theme', next);
+        } catch {}
+      },
+      true,
+    );
+    (window as unknown as { __ooaargThemeBound: boolean }).__ooaargThemeBound = true;
+  }
+</script>

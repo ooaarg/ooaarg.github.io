@@ -1,0 +1,32 @@
+---
+title: "Robust autobidding for noisy conversion prediction models"
+authors:
+  [
+    "Andrey Pudovikov",
+    "Aleksandra Khirianova",
+    "Ekaterina Solodneva",
+    "Gleb Molodtsov",
+    "Aleksandr Katrutsa",
+    "Yuriy Dorn",
+    "Egor Samosvat",
+  ]
+date: 2025-10-9
+venue: "AAMAS 2026"
+tag: "Paper"
+type: "paper"
+area: "autobidding"
+featured: true
+span: 2
+tags:
+  [
+    "autobidding problem",
+    "robust optimization",
+    "uncertainty quantification of CTR model",
+  ]
+arxiv: "2510.08788"
+links:
+  - { label: "GitHub", url: "https://github.com/IAIOnline/RobustBid" }
+summary: "We propose RobustBid, an efficient method for robust autobidding taking into account uncertainty in CTR and CVR predictions."
+---
+
+Managing millions of digital auctions is an essential task for modern advertising auction systems. The main approach to managing digital auctions is an autobidding approach, which depends on the Click-Through Rate and Conversion Rate values. While these quantities are estimated with ML models, their prediction uncertainty directly impacts advertisers' revenue and bidding strategies. To address this issue, we propose RobustBid, an efficient method for robust autobidding taking into account uncertainty in CTR and CVR predictions. Our approach leverages advanced, robust optimization techniques to prevent large errors in bids if the estimates of CTR/CVR are perturbed. We derive the analytical solution of the stated robust optimization problem, which leads to the runtime efficiency of the RobustBid method. The synthetic, iPinYou, and BAT benchmarks are used in our experimental evaluation of RobustBid. We compare our method with the non-robust baseline and the RiskBid algorithm in terms of total conversion volume (TCV) and average cost-per-click ($CPC_{avg}$) performance metrics. The experiments demonstrate that RobustBid provides bids that yield larger TCV and smaller $CPC_{avg}$ than competitors in the case of large perturbations in CTR/CVR predictions.

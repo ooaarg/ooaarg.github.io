@@ -1,0 +1,48 @@
+---
+import { getCollection } from 'astro:content';
+import Site from '../../layouts/Site.astro';
+import SearchIndex from '../../components/research-index/SearchIndex.tsx';
+import type { IndexedPub } from '../../components/research-index/SearchIndex.tsx';
+import { getAuthorMap, resolveAuthors } from '../../lib/people';
+
+const all = await getCollection('publications');
+const authorMap = await getAuthorMap();
+
+const fmt = (d: Date) =>
+  `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`;
+
+const pubs: IndexedPub[] = all.map((p) => ({
+  id: p.id,
+  title: p.data.title,
+  authors: p.data.authors,
+  authorLinks: resolveAuthors(p.data.authors, authorMap),
+  date: fmt(p.data.date),
+  year: p.data.date.getFullYear(),
+  venue: p.data.venue,
+  type: p.data.type,
+  area: p.data.area,
+  tags: p.data.tags,
+  abstract: p.data.summary,
+}));
+---
+
+<Site
+  active="pubs"
+  title="Publications · OOAARG"
+  description="Search and filter every OOAARG publication by topic, venue, year, author, or type."
+>
+  <section class="pubs-hero">
+    <div class="container">
+      <div class="kicker">Publications</div>
+      <h1>Search</h1>
+      <p>
+        Filter by area, type, author, year, or venue — or just type a few words.
+      </p>
+    </div>
+  </section>
+
+  <div class="container">
+    <h2 class="kicker" style="margin-bottom: 8px;">Search the corpus</h2>
+    <SearchIndex client:load pubs={pubs} />
+  </div>
+</Site>

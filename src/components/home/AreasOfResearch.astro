@@ -1,0 +1,58 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { AREAS, computeAreaStats } from '../../data/areas';
+
+interface Props {
+  pubs: CollectionEntry<'publications'>[];
+}
+
+const { pubs } = Astro.props;
+const stats = computeAreaStats(pubs);
+
+const MONTH = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const fmtLatest = (d: Date | null) => (d ? `${MONTH[d.getMonth()]} ${d.getFullYear()}` : null);
+---
+
+<div class="areas-grid" role="list">
+  {AREAS.map((area) => {
+    const s = stats[area.id];
+    const active = s.count > 0;
+    const latest = fmtLatest(s.latest);
+    return (
+      <a
+        class={`area-card${active ? '' : ' is-nascent'}`}
+        href={active ? `/publications?area=${area.id}` : '/publications'}
+        role="listitem"
+        aria-label={`${area.name} — ${s.count} ${s.count === 1 ? 'paper' : 'papers'}`}
+      >
+        <div class="area-card-head">
+          <h3>{area.name}</h3>
+          <span class="area-card-arrow" aria-hidden="true">→</span>
+        </div>
+        <p class="area-card-blurb">{area.blurb}</p>
+
+        {s.topTags.length > 0 && (
+          <div class="area-card-tags">
+            {s.topTags.map((t) => <span class="pill">{t}</span>)}
+          </div>
+        )}
+
+        <div class="area-card-foot">
+          {active ? (
+            <>
+              <span class="area-count">{s.count} {s.count === 1 ? 'paper' : 'papers'}</span>
+              {latest && (
+                <>
+                  <span class="area-dot" aria-hidden="true">·</span>
+                  <span class="area-latest mono">latest {latest}</span>
+                </>
+              )}
+            </>
+          ) : (
+            <span class="area-count area-nascent-label">In development</span>
+          )}
+        </div>
+      </a>
+    );
+  })}
+</div>

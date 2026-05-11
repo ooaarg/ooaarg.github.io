@@ -1,0 +1,27 @@
+---
+title: "Zeroth-order methods for non-smooth stochastic problems under heavy-tailed noise"
+authors: ["Nail Bashirov", "Alexander Gasnikov", "Aleksandr Lobanov"]
+date: 2026-02-05
+venue: "Optimization Methods and Software"
+tag: "Journal"
+type: "paper"
+area: "optimization"
+featured: true
+span: 2
+tags:
+  [
+    "zeroth-order methods",
+    "convex optimization",
+    "saddle point problems",
+    "stochastic optimization",
+    "heavy-tailed noise",
+  ]
+links:
+  - {
+      label: "Taylor & Francis",
+      url: "https://www.tandfonline.com/doi/abs/10.1080/10556788.2026.2617623",
+    }
+summary: "We propose gradient-free algorithms with zeroth-order oracle under adversarial noise with unbounded variance, for non-smooth convex and convex-concave optimization problems."
+---
+
+Recently gradient-free optimization methods have become a major tool in reinforcement learning and memory-efficient LLM fine-tuning. Under the standard setting of uniformly bounded noise variance an optimal accelerated algorithm has been derived. However, the assumption of bounded variance is strict and usually is not fulfilled in practice. Therefore, we will relax it, allowing the noise distribution to be heavy-tailed and, thus, broadening the class of problems to be solved. We propose gradient-free algorithms with zeroth-order oracle under adversarial noise with unbounded variance, for non-smooth convex and convex-concave optimization problems. We apply clipping operator to deal with heavy-tailedness and batching to allow efficient computation via parallelization. Our analysis provides asymptotic bounds for such key parameters as iteration complexity, oracle complexity and maximal adversarial noise level.

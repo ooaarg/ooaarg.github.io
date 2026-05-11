@@ -1,0 +1,133 @@
+---
+import { getCollection, render } from 'astro:content';
+import Site from '../../layouts/Site.astro';
+import PubFigure from '../../components/publication/PubFigure.astro';
+import { hasPaperFigure } from '../../components/publication/PaperFigure.tsx';
+import CiteButton from '../../components/publications/CiteButton.tsx';
+import { getAuthorMap, resolveAuthors } from '../../lib/people';
+
+import 'katex/dist/katex.min.css';
+import '../../styles/publication.css';
+
+export async function getStaticPaths() {
+  const pubs = await getCollection('publications');
+  return pubs.map((pub) => ({
+    params: { id: pub.id },
+    props: { pub },
+  }));
+}
+
+const { pub } = Astro.props;
+const { data, id } = pub;
+const { Content } = await render(pub);
+const authorMap = await getAuthorMap();
+const authorEntries = resolveAuthors(data.authors, authorMap);
+
+const fmt = (d: Date) =>
+  `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+
+const AREA_LABEL: Record<string, string> = {
+  bandits: 'Bandits and online learning',
+  autobidding: 'Autobidding, ranking and recommended systems',
+  dbms: 'DBMS',
+  optimization: 'Optimization',
+};
+
+const citable = {
+  id,
+  title: data.title,
+  authors: data.authors,
+  dateISO: data.date.toISOString(),
+  venue: data.venue,
+  arxiv: data.arxiv,
+};
+
+const showFigure = hasPaperFigure(id);
+---
+
+<Site
+  active="pubs"
+  title={`${data.title} · OOAARG`}
+  description={data.summary}
+>
+  <section class="pub-detail">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="/publications">Publications</a> <span>/</span> {data.venue} <span>/</span>{' '}
+        {data.authors[0].split(/\s+/).pop()} et al.
+      </div>
+
+      <div class="badge-row">
+        <span class="pill accent">{data.tag}</span>
+        <span class="pill">{data.venue}</span>
+        <span class="pill">{AREA_LABEL[data.area]}</span>
+      </div>
+
+      <h1 style="margin-top: 24px; view-transition-name: hero-title;">{data.title}</h1>
+
+      <p class="authors">
+        {authorEntries.map((a, i) => (
+          <>
+            {a.id ? (
+              <a class="author-link" href={`/about/${a.id}`}><strong>{a.name}</strong></a>
+            ) : (
+              <strong>{a.name}</strong>
+            )}
+            {i < authorEntries.length - 1 ? ', ' : ''}
+          </>
+        ))}
+        <span style="color: var(--fg-subtle); margin-left: 12px;">·</span>
+        <span style="margin-left: 12px;">OOAARG</span>
+      </p>
+
+      <div class="actions">
+        {data.arxiv && (
+          <a class="btn btn-primary" href={`https://arxiv.org/abs/${data.arxiv}`}>
+            arXiv:{data.arxiv}
+          </a>
+        )}
+        {data.pdf && <a class="btn" href={data.pdf}>PDF</a>}
+        {data.github && <a class="btn" href={data.github}>GitHub</a>}
+        {data.links.map((l) => (
+          <a class="btn" href={l.url}>{l.label}</a>
+        ))}
+        <CiteButton client:visible pub={citable} variant="accent" size="md" label="Cite" />
+      </div>
+
+      {showFigure && <PubFigure pubId={id} />}
+
+      <div class="pub-content">
+        <article>
+          <Content />
+        </article>
+
+        <aside class="pub-aside">
+          <div class="group">
+            <h3 class="aside-label">Published</h3>
+            <p class="mono" style="color: var(--fg);">{fmt(data.date)}</p>
+          </div>
+          <div class="group">
+            <h3 class="aside-label">Venue</h3>
+            <p>{data.venue}</p>
+          </div>
+          {data.tags.length > 0 && (
+            <div class="group">
+              <h3 class="aside-label">Keywords</h3>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px;">
+                {data.tags.map((t) => (
+                  <a class="pill" href={`/publications?tag=${encodeURIComponent(t)}`}>{t}</a>
+                ))}
+              </div>
+            </div>
+          )}
+          {data.funding && (
+            <div class="group">
+              <h3 class="aside-label">Funding</h3>
+              <p>{data.funding}</p>
+            </div>
+          )}
+        </aside>
+      </div>
+    </div>
+  </section>
+</Site>

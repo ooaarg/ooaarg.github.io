@@ -1,0 +1,20 @@
+---
+title: "Fast UCB-type algorithms for stochastic bandits with heavy and super heavy symmetric noise"
+authors:
+  ["Yuriy Dorn", "Aleksandr Katrutsa", "Ilgam Latypov", "Andrey Pudovikov"]
+date: 2025-06-05
+venue: "AAMAS 2025"
+tag: "Paper"
+type: "paper"
+area: "bandits"
+featured: true
+span: 2
+tags:
+  ["expert algorithms", "budget-constrained learning", "multi-armed bandits"]
+arxiv: "2402.07062"
+links:
+  - { label: "GitHub", url: "https://github.com/tmpuser1233/Clipped-SGD-UCB" }
+summary: "We propose a new method for constructing UCB-type algorithms for stochastic multi-armed bandits based on general convex optimization methods with an inexact oracle."
+---
+
+In this study, we propose a new method for constructing UCB-type algorithms for stochastic multi-armed bandits based on general convex optimization methods with an inexact oracle. We derive the regret bounds corresponding to the convergence rates of the optimization methods. We propose a new algorithm Clipped-SGD-UCB and show, both theoretically and empirically, that in the case of symmetric noise in the reward, we can achieve an $O(\log T\sqrt{KT\log T})$ regret bound instead of $O\left (T^{\frac{1}{1+\alpha}} K^{\frac{\alpha}{1+\alpha}} \right)$ for the case when the reward distribution satisfies $\mathbb{E}_{X \in D}[|X|^{1+\alpha}] \leq \sigma^{1+\alpha} (\alpha \in (0, 1])$, i.e. perform better than it is assumed by the general lower bound for bandits with heavy-tails. Moreover, the same bound holds even when the reward distribution does not have the expectation, that is, when $\alpha < 0$.

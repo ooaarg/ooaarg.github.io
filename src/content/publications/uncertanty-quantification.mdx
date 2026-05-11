@@ -1,0 +1,17 @@
+---
+title: "Uncertainty Quantification of Click and Conversion Estimates for the Autobidding"
+authors:
+  ["Ivan Zhigalskii", "Andrey Pudovikov", "Aleksandr Katrutsa", "Egor Samosvat"]
+date: 2026-03-02
+venue: "arXiv"
+tag: "Paper"
+type: "preprint"
+area: "autobidding"
+featured: true
+span: 2
+tags: ["autobidding problem", "uncertainty quantification"]
+arxiv: "2603.01825"
+summary: "We propose the DenoiseBid method, which corrects the generated CTRs and CVRs to make the resulting bids more efficient in auctions."
+---
+
+Modern e-commerce platforms employ various auction mechanisms to allocate paid slots for a given item. To scale this approach to the millions of auctions, the platforms suggest promotion tools based on the autobidding algorithms. These algorithms typically depend on the Click-Through-Rate (CTR) and Conversion-Rate (CVR) estimates provided by a pre-trained machine learning model. However, the predictions of such models are uncertain and can significantly affect the performance of the autobidding algorithm. To address this issue, we propose the DenoiseBid method, which corrects the generated CTRs and CVRs to make the resulting bids more efficient in auctions. The underlying idea of our method is to employ a Bayesian approach and replace noisy CTR or CVR estimates with those from recovered distributions. To demonstrate the performance of the proposed approach, we perform extensive experiments on the synthetic, iPinYou, and BAT datasets. To evaluate the robustness of our approach to the noise scale, we use synthetic noise and noise estimated from the predictions of the pre-trained machine learning model.

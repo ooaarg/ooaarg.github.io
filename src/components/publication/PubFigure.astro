@@ -1,0 +1,12 @@
+---
+import PaperFigure from './PaperFigure.tsx';
+
+interface Props {
+  pubId: string;
+}
+const { pubId } = Astro.props;
+---
+
+<div class="pub-figure">
+  <PaperFigure id={pubId} />
+</div>

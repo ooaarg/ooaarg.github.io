@@ -1,0 +1,79 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import PaperFigure, { hasPaperFigure } from '../publication/PaperFigure.tsx';
+import CiteButton from './CiteButton.tsx';
+import { getAuthorMap, resolveAuthors } from '../../lib/people';
+
+interface Props {
+  pub: CollectionEntry<'publications'>;
+  /** Override `pub.data.span` — used by the publications page to expand
+   *  tiles that would otherwise sit alone on a row, so the bento has no gaps. */
+  span?: 2 | 3 | 4 | 6;
+}
+
+const { pub, span: spanOverride } = Astro.props;
+const { data, id } = pub;
+const year = data.date.getFullYear();
+const span = spanOverride ?? data.span ?? 2;
+const featured = data.featured;
+const detailHref = `/publications/${id}`;
+/* Figure presence is decoupled from `featured`: any paper with a sibling
+ * .tsx figure file renders its figure on the bento tile. `featured` only
+ * controls visual prominence (padding, typography). */
+const showFigure = hasPaperFigure(id);
+const authorMap = await getAuthorMap();
+const authorEntries = resolveAuthors(data.authors, authorMap);
+const citable = {
+  id,
+  title: data.title,
+  authors: data.authors,
+  dateISO: data.date.toISOString(),
+  venue: data.venue,
+  arxiv: data.arxiv,
+};
+---
+
+<article class={`bento-tile span-${span}${featured ? ' feature' : ''}`} data-year={year}>
+  {showFigure && (
+    <div class="figure">
+      <PaperFigure id={id} />
+    </div>
+  )}
+  <div class="meta">
+    <span class={`pill${featured ? ' accent' : ''}`}>{data.tag}</span>
+    <span style="margin-left: 8px;">{data.venue} · {year}</span>
+  </div>
+  <h3>
+    <a href={detailHref} style="color: inherit; text-decoration: none;">{data.title}</a>
+  </h3>
+  <p style={`color: var(--fg-muted); font-size: ${featured ? 14 : 13}px;`}>
+    {featured ? data.summary : authorEntries.map((a, i) => (
+      <>
+        {a.id ? <a class="author-link" href={`/about/${a.id}`}>{a.name}</a> : a.name}
+        {i < authorEntries.length - 1 ? ', ' : ''}
+      </>
+    ))}
+  </p>
+  {featured && (
+    <p style="font-size: 13px; color: var(--fg-muted);">
+      {authorEntries.map((a, i) => (
+        <>
+          {a.id ? <a class="author-link" href={`/about/${a.id}`}>{a.name}</a> : a.name}
+          {i < authorEntries.length - 1 ? ', ' : ''}
+        </>
+      ))}
+    </p>
+  )}
+  <div class="actions">
+    {data.arxiv ? (
+      <a class="btn btn-sm" href={`https://arxiv.org/abs/${data.arxiv}`}>arXiv</a>
+    ) : data.links.length > 0 ? (
+      <a class="btn btn-sm" href={data.links[0].url}>{data.links[0].label}</a>
+    ) : null}
+    {data.github && (
+      <a class="btn btn-sm" href={data.github}>GitHub</a>
+    )}
+    <CiteButton client:visible pub={citable} />
+    <a class="btn btn-sm btn-ghost" href={detailHref}>Read →</a>
+  </div>
+</article>

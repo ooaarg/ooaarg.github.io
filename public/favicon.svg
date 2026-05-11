@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <mask id="o-counter">
+    <rect width="64" height="64" fill="#fff"/>
+    <ellipse cx="32" cy="40" rx="8" ry="10" fill="#000"/>
+  </mask>
+  <ellipse cx="32" cy="40" rx="18" ry="20" fill="oklch(62% 0.18 35)" mask="url(#o-counter)"/>
+  <path d="M 14 12 Q 22 8 32 12 T 50 12"
+        stroke="oklch(62% 0.18 35)"
+        stroke-width="6"
+        stroke-linecap="round"
+        fill="none"/>
+</svg>
