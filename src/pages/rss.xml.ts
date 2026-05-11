@@ -9,7 +9,7 @@ export async function GET(context: APIContext) {
     title: "OOAARG — Publications",
     description:
       "Papers, preprints, code, and talks from the OOAARG research group.",
-    site: context.site ?? "https://ooaarg.org",
+    site: context.site ?? "https://ooaarg.github.io",
     items: all.map((p) => ({
       title: p.data.title,
       pubDate: p.data.date,

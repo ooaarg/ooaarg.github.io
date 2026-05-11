@@ -7,7 +7,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 
 export default defineConfig({
-  site: "https://ooaarg.org",
+  site: "https://ooaarg.github.io",
   integrations: [react(), mdx(), sitemap()],
   markdown: {
     remarkPlugins: [remarkMath],

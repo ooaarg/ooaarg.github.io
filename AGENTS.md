@@ -155,4 +155,6 @@ The home page renders these as a 2×2 card grid (`AreasOfResearch.astro` — pur
 
 ## Deployment
 
-Static output, deployable to any host. A GitHub Actions workflow for Pages was scoped in the plan but is **not yet wired**. Confirm hosting target with the user before adding `.github/workflows/`.
+Static output, deployed to GitHub Pages at https://ooaarg.github.io via `.github/workflows/deploy.yml`. Every push to `main` triggers a Bun build and pushes the `dist/` artifact through `actions/deploy-pages`. Pages source is set to **GitHub Actions** in repo settings (not a branch).
+
+If switching to a custom domain later, drop a `public/CNAME` file with the domain and update `site` in `astro.config.mjs` + the fallbacks in `SeoHead.astro`, `rss.xml.ts`, and `public/robots.txt` in lockstep.

@@ -13,8 +13,8 @@ const {
   canonical,
 } = Astro.props;
 
-const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site ?? 'https://ooaarg.org').href;
-const ogImageUrl = new URL(ogImage, Astro.site ?? 'https://ooaarg.org').href;
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site ?? 'https://ooaarg.github.io').href;
+const ogImageUrl = new URL(ogImage, Astro.site ?? 'https://ooaarg.github.io').href;
 ---
 
 <title>{title}</title>

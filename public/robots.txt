@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ooaarg.org/sitemap-index.xml
+Sitemap: https://ooaarg.github.io/sitemap-index.xml

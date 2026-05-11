@@ -1,6 +1,6 @@
 # OOAARG website
 
-Source for [ooaarg.org](https://ooaarg.org) — the public site for the Online Optimization And Applications Research Group. Astro 6 + React islands + MDX content collections, deployed as a static site.
+Source for [ooaarg.github.io](https://ooaarg.github.io) — the public site for the Online Optimization And Applications Research Group. Astro 6 + React islands + MDX content collections, deployed as a static site to GitHub Pages.
 
 This README is for **adding content** (publications, people, news). For architecture and dev guidance see [`AGENTS.md`](./AGENTS.md).
 
