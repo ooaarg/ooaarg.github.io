@@ -226,5 +226,3 @@ rm -rf .astro node_modules/.astro && bun dev
 | `bun run preview`          | Serve `dist/` locally.                                                                                                         |
 | `bun run build:og`         | Regenerate `public/og-image.png` from the inline SVG.                                                                          |
 | `bun run build:standalone` | Build `dist/` then bundle `dist/index.html` into a single self-contained `dist/OOAARG-standalone.html` (CSS/JS/fonts inlined). |
-
-For deeper docs on the architecture (theme system, view transitions, kinetic logo, bento packing, etc.), see [`CLAUDE.md`](./CLAUDE.md).
