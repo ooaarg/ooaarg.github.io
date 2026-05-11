@@ -18,11 +18,10 @@ import '../styles/kinetic-logo.css';
 interface Props {
   title?: string;
   description?: string;
-  ogImage?: string;
   active?: 'home' | 'blog' | 'pubs' | 'about';
 }
 
-const { title, description, ogImage, active } = Astro.props;
+const { title, description, active } = Astro.props;
 ---
 
 <!doctype html>
@@ -34,7 +33,7 @@ const { title, description, ogImage, active } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)" />
-    <SeoHead title={title} description={description} ogImage={ogImage} />
+    <SeoHead title={title} description={description} />
 
     {/* Inline theme init — runs BEFORE paint to avoid dark↔light flash. */}
     <script is:inline>

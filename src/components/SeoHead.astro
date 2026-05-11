@@ -2,19 +2,16 @@
 interface Props {
   title?: string;
   description?: string;
-  ogImage?: string;
   canonical?: string;
 }
 
 const {
   title = 'OOAARG — Online Optimization And Applications Research Group',
   description = 'Online optimization, online learning, bandits, and DBMS optimization research at OOAARG.',
-  ogImage = '/og-image.png',
   canonical,
 } = Astro.props;
 
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site ?? 'https://ooaarg.github.io').href;
-const ogImageUrl = new URL(ogImage, Astro.site ?? 'https://ooaarg.github.io').href;
 ---
 
 <title>{title}</title>
@@ -25,9 +22,7 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? 'https://ooaarg.github.io').hr
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonicalUrl} />
-<meta property="og:image" content={ogImageUrl} />
 
-<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={ogImageUrl} />
