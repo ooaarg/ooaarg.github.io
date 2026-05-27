@@ -25,6 +25,49 @@
   margin-top: 32px;
 }
 
+/* Partners grouped by organization */
+.partner-orgs {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  margin-top: 32px;
+}
+
+.partner-org-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.partner-org-marker {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--accent);
+  flex: none;
+}
+
+.partner-org-name {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+
+.partner-org-count {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-subtle);
+}
+
+.partner-org .people-grid {
+  margin-top: 24px;
+}
+
 .person {
   display: flex;
   flex-direction: column;

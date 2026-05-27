@@ -13,14 +13,30 @@ const byOrder = (a: typeof all[number], b: typeof all[number]) =>
 const lead = all.find((p) => p.data.group === 'faculty');
 
 // Staff = postdoc, phd, and any non-lead faculty. Sort by group hierarchy first
-// (postdoc → phd → other faculty), then by `order` within group.
+// (postdoc → phd → other faculty), then by `order` within group. `STAFF_RANK`
+// doubles as the membership test, so partners/alumni never leak in here.
 const STAFF_RANK: Record<string, number> = { postdoc: 0, phd: 1, faculty: 2 };
 const staff = all
-  .filter((p) => p.data.group !== 'alumni' && p.id !== lead?.id)
+  .filter((p) => p.data.group in STAFF_RANK && p.id !== lead?.id)
   .sort((a, b) => {
     const r = (STAFF_RANK[a.data.group] ?? 9) - (STAFF_RANK[b.data.group] ?? 9);
     return r !== 0 ? r : byOrder(a, b);
   });
+
+const partners = all.filter((p) => p.data.group === 'partner').sort(byOrder);
+
+// Group partners by organization. `partners` is already order-sorted, so each
+// group's first member carries its lowest `order`; sorting groups by that keeps
+// the org sequence data-driven (e.g. NVIDIA first via low order values).
+const partnersByOrg = [
+  ...partners
+    .reduce((acc, p) => {
+      const org = p.data.org ?? 'Other';
+      (acc.get(org) ?? acc.set(org, []).get(org)!).push(p);
+      return acc;
+    }, new Map<string, typeof partners>())
+    .entries(),
+].sort((a, b) => a[1][0].data.order - b[1][0].data.order);
 
 const alumni = all.filter((p) => p.data.group === 'alumni').sort(byOrder);
 ---
@@ -58,6 +74,31 @@ const alumni = all.filter((p) => p.data.group === 'alumni').sort(byOrder);
             <a class="person-card-link" href={`/about/${p.id}`}>
               <PersonCard person={p} />
             </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {partners.length > 0 && (
+    <section class="people-section">
+      <div class="container">
+        <h2 class="kicker">Partners</h2>
+        <div class="partner-orgs">
+          {partnersByOrg.map(([org, members]) => (
+            <div class="partner-org">
+              <div class="partner-org-label">
+                <span class="partner-org-marker" aria-hidden="true"></span>
+                <span class="partner-org-name">{org}</span>
+              </div>
+              <div class="people-grid">
+                {members.map((p) => (
+                  <a class="person-card-link" href={`/about/${p.id}`}>
+                    <PersonCard person={p} />
+                  </a>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </div>

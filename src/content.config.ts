@@ -23,6 +23,9 @@ const publications = defineCollection({
     type: z.enum(["paper", "preprint", "code", "talk"]),
     area: z.enum(["bandits", "autobidding", "dbms", "optimization"]),
     featured: z.boolean().default(false),
+    /** Lower numbers lead the home featured carousel. Unset entries keep their
+     *  natural (collection) order after all explicitly-ranked ones. */
+    featuredOrder: z.number().int().optional(),
     span: z
       .union([z.literal(2), z.literal(3), z.literal(4), z.literal(6)])
       .default(2),
@@ -53,7 +56,10 @@ const people = defineCollection({
     initials: z.string().min(1).max(3),
     role: z.string(),
     topic: z.string(),
-    group: z.enum(["faculty", "postdoc", "phd", "alumni"]),
+    group: z.enum(["faculty", "postdoc", "phd", "alumni", "partner"]),
+    /** Affiliation for `partner`-group members. Drives the per-organization
+     *  grouping of the Partners section on /about. */
+    org: z.string().optional(),
     order: z.number().int().default(100),
     office: z.string().optional(),
     email: z.string().email().optional(),
