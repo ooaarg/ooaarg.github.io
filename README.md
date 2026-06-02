@@ -1,6 +1,6 @@
 # OOAARG website
 
-Source for [ooaarg.github.io](https://ooaarg.github.io) — the public site for the Online Optimization And Applications Research Group.
+Source for [ooaarg.github.io](https://ooaarg.github.io): the public site for the Online Optimization And Applications Research Group.
 
 This README covers setup and content editing. Step-by-step guides for each content type live in [`docs/`](./docs).
 
