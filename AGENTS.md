@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Agents when working with code in this repository.
+This file provides guidance to agents working with code in this repository.
 
 ## Project
 
@@ -42,7 +42,7 @@ There is no test runner; verification is `astro check` plus visual diff against 
 ## Stack
 
 - **Astro 6** (was scaffolded as 5; the latest installed is 6.2.x). File-based routing, static output (`output: 'static'`).
-- **React 18** for client islands only. Default to `.astro` and use React only when state is genuinely required (search, modals, mobile-nav sheet).
+- **React 19** for client islands only. Default to `.astro` and use React only when state is genuinely required (search, modals, mobile-nav sheet).
 - **`<ClientRouter />`** in the Site layout enables View Transitions API. Same-origin nav is a DOM swap, not a reload — see "Cross-navigation gotchas" below.
 - **MDX content collections** (`src/content/{publications,people,news}/*.{md,mdx}`) with **Zod schemas** in `src/content.config.ts`. Filenames become collection ids (`oon-2026.mdx` → `/publications/oon-2026`; `neurips-2026-accepted.mdx` → `/blog/neurips-2026-accepted`). The `news` schema uses Astro's `image()` helper, so news images are co-located in `src/content/news/` (not `public/`) and processed at build time via `<Image />`.
 - **KaTeX** via `remark-math` + `rehype-katex` in `astro.config.mjs`. KaTeX CSS is imported only on `pages/publications/[id].astro` so other routes don't pay for ~70KB of CSS.
@@ -129,7 +129,9 @@ If you add a new island or a heavy CSS dep, re-run Lighthouse mobile before clai
 
 Required: `title`, `authors[]`, `date` (ISO), `venue`, `tag` (`Oral|Spotlight|Paper|Preprint|Journal|Code|Talk`), `type` (`paper|preprint|code|talk`), `area` (`bandits|autobidding|dbms|optimization`), `summary` (≤320 chars).
 
-Optional: `featured` (bool), `span` (`2|3|4|6` — base, may be expanded by bento packer), `figure` (`regret|grid|none`), `tags[]`, `arxiv`, `github`, `pdf`, `cited_by`.
+Optional: `featured` (bool), `featuredOrder` (int — lower leads the home carousel), `span` (`2|3|4|6` — base, may be expanded by bento packer), `tags[]`, `arxiv`, `github`, `pdf`, `links[]`, `cited_by`, `funding`.
+
+A paper figure is **not** a frontmatter field. It's a co-located React component, `src/content/publications/<id>.tsx` exporting a default component, auto-registered by slug via `import.meta.glob` in `src/components/publication/PaperFigure.tsx`. Drop the file next to the `.mdx` and it renders on the bento tile and detail page.
 
 The MDX body is rendered as the article on `/publications/<id>`. Use `$inline$` and `$$display$$` for math (KaTeX). The `AREA_LABEL` map in `src/pages/publications/[id].astro` is the single source of truth for human-readable area names — keep it in sync with the Zod enum.
 
@@ -143,9 +145,9 @@ Filename → URL slug: `src/content/news/neurips-2026-accepted.mdx` → `/blog/n
 
 ### People frontmatter (`src/content/people/<id>.md`)
 
-Required: `name`, `initials` (1-3 chars; used in avatar gradient placeholder), `role`, `topic`, `group` (`faculty|postdoc|phd|alumni`).
+Required: `name`, `initials` (1-3 chars; used in avatar gradient placeholder), `role`, `topic`, `group` (`faculty|postdoc|phd|alumni|partner`).
 
-Optional: `order` (sort within group), `office`, `email`, `links.{website,scholar,orcid,dblp,researchgate,github,cv}` (each an optional URL), and `links.other` (an array of `{label, url}` for arbitrary external profiles — Mastodon, Bluesky, Semantic Scholar, etc.). The MDX body is rendered as the bio on every person's `/about/<id>` detail page (and as the lead block on `/about` for the first faculty entry). If the body is empty, the detail page shows a "Bio coming soon." placeholder.
+Optional: `order` (sort within group), `org` (affiliation; drives the per-organization grouping of the Partners section on `/about`), `office`, `email`, `links.{website,scholar,orcid,dblp,researchgate,github,cv}` (each an optional URL), and `links.other` (an array of `{label, url}` for arbitrary external profiles — Mastodon, Bluesky, Semantic Scholar, etc.). The MDX body is rendered as the bio on every person's `/about/<id>` detail page (and as the lead block on `/about` for the first faculty entry). If the body is empty, the detail page shows a "Bio coming soon." placeholder.
 
 ### Areas of research data (`src/data/areas.ts`)
 
