@@ -117,7 +117,7 @@ Astro's ClientRouter swaps the body and merges `<html>` attrs from the new page.
 
 ### Cite modal
 
-Shared `CiteModal.tsx` (focus trap, ESC, body scroll lock, full-screen on mobile). Triggered by `CiteButton.tsx`, which has `size: 'sm' | 'md'` — bento tiles use the default `'sm'` (28px), publication detail uses `'md'` (36px) to match arXiv/PDF/GitHub buttons. BibTeX + APA generation lives in `src/lib/bibtex.ts` (single source of truth — don't inline citation strings in components).
+Shared `CiteModal.tsx` (focus trap, ESC, body scroll lock, full-screen on mobile). Triggered by `CiteButton.tsx`, which has `size: 'sm' | 'md'` — bento tiles use the default `'sm'` (28px), publication detail uses `'md'` (36px) to match arXiv/PDF/GitHub buttons. BibTeX + APA generation lives in `src/lib/bibtex.ts` (single source of truth — don't inline citation strings in components). The citation includes the DOI (`doi` field or a `links[]` "DOI" entry, resolved by `doiOf()` in `src/lib/pubs.ts`).
 
 ### Performance budgets (mobile, blocking gates)
 
@@ -133,7 +133,7 @@ If you add a new island or a heavy CSS dep, re-run Lighthouse mobile before clai
 
 Required: `title`, `authors[]`, `date` (ISO), `venue`, `tag` (`Oral|Spotlight|Paper|Preprint|Journal|Code|Talk`), `type` (`paper|preprint|code|talk`), `area` (`bandits|autobidding|dbms|optimization`), `summary` (≤320 chars).
 
-Optional: `featured` (bool), `featuredOrder` (int — lower leads the home carousel), `span` (`2|3|4|6` — base, may be expanded by bento packer), `tags[]`, `arxiv`, `github`, `pdf`, `links[]`, `cited_by`, `funding`.
+Optional: `featured` (bool), `featuredOrder` (int — lower leads the home carousel), `span` (`2|3|4|6` — base, may be expanded by bento packer), `tags[]`, `arxiv`, `doi`, `github`, `pdf`, `links[]`, `cited_by`, `funding`. The primary action button follows `doi` → `arxiv` → first `links[]` entry; a `doi` renders as **"Paper"** (via `paperUrl()` in `src/lib/pubs.ts`).
 
 A paper figure is **not** a frontmatter field. It's a React component at `src/components/publication/figures/<area>/<id>.tsx` exporting a default component, auto-registered by slug via `import.meta.glob("./figures/**/*.tsx")` in `src/components/publication/PaperFigure.tsx` (the file basename is the slug, so the `<area>` subdirectory is just organization). Drop the file in and it renders on the bento tile and detail page.
 
