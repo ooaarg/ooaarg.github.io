@@ -12,10 +12,8 @@ export function doiOf(data: Pub["data"]): string | undefined {
   return link?.url.replace(/^https?:\/\/(dx\.)?doi\.org\//i, "");
 }
 
-/** URL of the published/accepted version (DOI → publisher page), or null for
- *  arXiv-only / unpublished entries. Rendered as the primary "Paper" link —
- *  it takes the accent ahead of arXiv. Sourced from the `doi` field or a
- *  `links[]` "DOI" entry. */
+/** URL of the published version (DOI → publisher page), or null for arXiv-only
+ *  entries. Rendered as the accent "Paper" button, ahead of arXiv. */
 export function paperUrl(data: Pub["data"]): string | null {
   const doi = doiOf(data);
   return doi ? `https://doi.org/${doi}` : null;
