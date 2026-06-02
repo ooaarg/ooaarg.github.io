@@ -5,7 +5,7 @@ import FeaturedHero from '../components/home/FeaturedHero.tsx';
 import AreasOfResearch from '../components/home/AreasOfResearch.astro';
 import LatestPubs from '../components/home/LatestPubs.astro';
 import JoinStrip from '../components/home/JoinStrip.astro';
-import { featuredCarousel } from '../lib/pubs';
+import { featuredCarousel, paperUrl } from '../lib/pubs';
 
 import '../styles/home.css';
 
@@ -17,6 +17,7 @@ const slides = featuredCarousel(pubs).map((p) => ({
   venue: p.data.venue,
   tag: p.data.tag,
   summary: p.data.summary,
+  paper: paperUrl(p.data),
   arxiv: p.data.arxiv,
   github: p.data.github,
   pdf: p.data.pdf,

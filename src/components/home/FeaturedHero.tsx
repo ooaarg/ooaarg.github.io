@@ -7,6 +7,7 @@ export interface HeroSlide {
   venue: string;
   tag: string;
   summary: string;
+  paper?: string | null;
   arxiv?: string;
   github?: string;
   pdf?: string;
@@ -93,14 +94,19 @@ export default function FeaturedHero({ slides }: Props) {
       <div className="container hero-actions">
         <div key={`cta-${slide.id}`} className="hero-cta">
           <a className="btn btn-accent" href={`/publications/${slide.id}`}>
-            Read paper →
+            Read publication →
           </a>
+          {slide.paper && (
+            <a className="btn" href={slide.paper}>
+              Paper
+            </a>
+          )}
           {slide.github && (
             <a className="btn" href={slide.github}>
               View code
             </a>
           )}
-          {slide.arxiv && (
+          {!slide.paper && slide.arxiv && (
             <a className="btn btn-ghost" href={`https://arxiv.org/abs/${slide.arxiv}`}>
               arXiv
             </a>
