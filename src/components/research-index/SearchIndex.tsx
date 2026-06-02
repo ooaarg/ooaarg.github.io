@@ -66,8 +66,7 @@ export default function SearchIndex({ pubs }: Props) {
       return { ...prev, [key]: next };
     });
 
-  const clearKey = (key: FilterKey) =>
-    setFilters((prev) => ({ ...prev, [key]: new Set() }));
+  const clearKey = (key: FilterKey) => setFilters((prev) => ({ ...prev, [key]: new Set() }));
 
   // Derive facet items from data so it stays in sync with content collection.
   const venueItems = useMemo(() => {
@@ -77,9 +76,7 @@ export default function SearchIndex({ pubs }: Props) {
 
   const yearItems = useMemo(() => {
     const set = new Set(pubs.map((p) => p.year));
-    return [...set]
-      .sort((a, b) => b - a)
-      .map((y) => ({ id: String(y), label: String(y) }));
+    return [...set].sort((a, b) => b - a).map((y) => ({ id: String(y), label: String(y) }));
   }, [pubs]);
 
   const authorItems = useMemo(() => {
@@ -100,21 +97,11 @@ export default function SearchIndex({ pubs }: Props) {
       if (filters.area.size && !filters.area.has(p.area)) return false;
       if (filters.venue.size && !filters.venue.has(p.venue)) return false;
       if (filters.year.size && !filters.year.has(String(p.year))) return false;
-      if (filters.author.size && !p.authors.some((a) => filters.author.has(a)))
-        return false;
-      if (filters.tag.size && !p.tags.some((t) => filters.tag.has(t)))
-        return false;
+      if (filters.author.size && !p.authors.some((a) => filters.author.has(a))) return false;
+      if (filters.tag.size && !p.tags.some((t) => filters.tag.has(t))) return false;
       if (q.trim()) {
         const needle = q.toLowerCase();
-        const hay = [
-          p.title,
-          p.abstract,
-          p.authors.join(" "),
-          p.venue,
-          ...p.tags,
-        ]
-          .join(" ")
-          .toLowerCase();
+        const hay = [p.title, p.abstract, p.authors.join(" "), p.venue, ...p.tags].join(" ").toLowerCase();
         if (!hay.includes(needle)) return false;
       }
       return true;
@@ -123,14 +110,8 @@ export default function SearchIndex({ pubs }: Props) {
       const [dd, mm, yyyy] = d.split("-");
       return `${yyyy}${mm}${dd}`;
     };
-    if (sort === "date")
-      xs = [...xs].sort((a, b) =>
-        sortKey(b.date).localeCompare(sortKey(a.date)),
-      );
-    if (sort === "citations")
-      xs = [...xs].sort(
-        (a, b) => b.year - a.year || a.title.localeCompare(b.title),
-      );
+    if (sort === "date") xs = [...xs].sort((a, b) => sortKey(b.date).localeCompare(sortKey(a.date)));
+    if (sort === "citations") xs = [...xs].sort((a, b) => b.year - a.year || a.title.localeCompare(b.title));
     return xs;
   }, [q, filters, sort, pubs]);
 
@@ -155,10 +136,7 @@ export default function SearchIndex({ pubs }: Props) {
     return c;
   }, [pubs]);
 
-  const totalActive = (Object.keys(filters) as FilterKey[]).reduce(
-    (n, k) => n + filters[k].size,
-    0,
-  );
+  const totalActive = (Object.keys(filters) as FilterKey[]).reduce((n, k) => n + filters[k].size, 0);
 
   const clearAll = () =>
     setFilters({
@@ -262,12 +240,7 @@ export default function SearchIndex({ pubs }: Props) {
         searchable
       />
       {totalActive > 0 && (
-        <button
-          type="button"
-          className="btn btn-ghost btn-sm"
-          style={{ marginTop: 16 }}
-          onClick={clearAll}
-        >
+        <button type="button" className="btn btn-ghost btn-sm" style={{ marginTop: 16 }} onClick={clearAll}>
           Clear all filters ({totalActive})
         </button>
       )}
@@ -277,12 +250,7 @@ export default function SearchIndex({ pubs }: Props) {
   return (
     <>
       <div className="search-bar" style={{ marginTop: 8 }}>
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.6"
-        >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
           <circle cx="11" cy="11" r="7" />
           <path d="m20 20-3.5-3.5" />
         </svg>
@@ -318,8 +286,7 @@ export default function SearchIndex({ pubs }: Props) {
         <div>
           <div className="ri-summary">
             <span>
-              <strong style={{ color: "var(--fg)" }}>{filtered.length}</strong>{" "}
-              result
+              <strong style={{ color: "var(--fg)" }}>{filtered.length}</strong> result
               {filtered.length === 1 ? "" : "s"}
               {q && (
                 <>
@@ -356,28 +323,18 @@ export default function SearchIndex({ pubs }: Props) {
                 onClick={() => (window.location.href = `/publications/${p.id}`)}
                 tabIndex={0}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter")
-                    window.location.href = `/publications/${p.id}`;
+                  if (e.key === "Enter") window.location.href = `/publications/${p.id}`;
                 }}
                 aria-label={`Open publication: ${p.title}`}
               >
                 <div className="ri-meta-col">
-                  <span
-                    className="pill accent"
-                    style={{ textTransform: "capitalize" }}
-                  >
+                  <span className="pill accent" style={{ textTransform: "capitalize" }}>
                     {p.type}
                   </span>
-                  <span
-                    className="mono"
-                    style={{ fontSize: 12, color: "var(--fg-muted)" }}
-                  >
+                  <span className="mono" style={{ fontSize: 12, color: "var(--fg-muted)" }}>
                     {p.date.replace(/-/g, "/")}
                   </span>
-                  <span
-                    className="mono"
-                    style={{ fontSize: 12, color: "var(--fg-muted)" }}
-                  >
+                  <span className="mono" style={{ fontSize: 12, color: "var(--fg-muted)" }}>
                     {p.venue}
                   </span>
                 </div>
@@ -452,11 +409,7 @@ export default function SearchIndex({ pubs }: Props) {
           <div className="grabber" aria-hidden="true" />
           <header>
             <h3>Filters</h3>
-            <button
-              type="button"
-              className="btn btn-ghost btn-sm"
-              onClick={() => setSheetOpen(false)}
-            >
+            <button type="button" className="btn btn-ghost btn-sm" onClick={() => setSheetOpen(false)}>
               Done
             </button>
           </header>

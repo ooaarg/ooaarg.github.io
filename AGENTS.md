@@ -26,8 +26,12 @@ bun install                # deps
 bun dev                    # dev server on :4321
 bun run build              # static output to dist/
 bun run preview            # serve dist/ on :4321
-bun run astro check        # typecheck (Astro + React + TS)
+bun run typecheck          # astro check (Astro + React + TS + content schemas)
+bun run lint               # oxlint (JS/TS; lint:fix autofixes)
+bun run format             # oxfmt --write . (format:check verifies)
 ```
+
+Lint/format is the **oxc** toolchain (`oxlint` + `oxfmt`), configured in `.oxlintrc.json` / `.oxfmtrc.json` — not ESLint/Prettier. oxc only handles JS/TS/JSX/TSX and CSS; `.astro` files aren't linted or formatted by it. Prose (`*.md`, `*.mdx`) is excluded via `.prettierignore` (which oxfmt reads).
 
 Mobile Lighthouse smoke (Chromium must be on PATH):
 
@@ -37,7 +41,7 @@ CHROME_PATH=/usr/bin/chromium bunx lighthouse http://localhost:4321/ \
   --quiet --chrome-flags="--headless --no-sandbox --disable-gpu" --output=json --output-path=/tmp/lh.json
 ```
 
-There is no test runner; verification is `astro check` plus visual diff against the design source (see below) plus Lighthouse mobile.
+There is no test runner; verification is `bun run typecheck` (astro check), `bun run lint`, and `bun run format:check`, plus visual diff against the design source (see below) and Lighthouse mobile.
 
 ## Stack
 
@@ -131,7 +135,7 @@ Required: `title`, `authors[]`, `date` (ISO), `venue`, `tag` (`Oral|Spotlight|Pa
 
 Optional: `featured` (bool), `featuredOrder` (int — lower leads the home carousel), `span` (`2|3|4|6` — base, may be expanded by bento packer), `tags[]`, `arxiv`, `github`, `pdf`, `links[]`, `cited_by`, `funding`.
 
-A paper figure is **not** a frontmatter field. It's a co-located React component, `src/content/publications/<id>.tsx` exporting a default component, auto-registered by slug via `import.meta.glob` in `src/components/publication/PaperFigure.tsx`. Drop the file next to the `.mdx` and it renders on the bento tile and detail page.
+A paper figure is **not** a frontmatter field. It's a React component at `src/components/publication/figures/<area>/<id>.tsx` exporting a default component, auto-registered by slug via `import.meta.glob("./figures/**/*.tsx")` in `src/components/publication/PaperFigure.tsx` (the file basename is the slug, so the `<area>` subdirectory is just organization). Drop the file in and it renders on the bento tile and detail page.
 
 The MDX body is rendered as the article on `/publications/<id>`. Use `$inline$` and `$$display$$` for math (KaTeX). The `AREA_LABEL` map in `src/pages/publications/[id].astro` is the single source of truth for human-readable area names — keep it in sync with the Zod enum.
 

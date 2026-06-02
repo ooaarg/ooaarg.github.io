@@ -13,9 +13,7 @@ export async function getAuthorMap(): Promise<Map<string, string>> {
 
 /** Filter publications whose authors[] includes this person's display name. */
 export function getPersonPubs(person: Person, allPubs: Pub[]): Pub[] {
-  return allPubs
-    .filter((p) => p.data.authors.includes(person.data.name))
-    .sort(sortByDateDesc);
+  return allPubs.filter((p) => p.data.authors.includes(person.data.name)).sort(sortByDateDesc);
 }
 
 /** Group already-sorted pubs into [year, pubs] tuples, year-desc. */

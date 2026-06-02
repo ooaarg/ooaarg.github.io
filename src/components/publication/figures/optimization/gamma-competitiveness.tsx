@@ -78,19 +78,8 @@ export default function GammaCompetitivenessFigure() {
       style={{ width: "100%", height: "100%", display: "block" }}
     >
       <defs>
-        <pattern
-          id="gamma-grid-bg"
-          width="40"
-          height="30"
-          patternUnits="userSpaceOnUse"
-        >
-          <path
-            d="M 40 0 L 0 0 0 30"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="0.4"
-            opacity="0.12"
-          />
+        <pattern id="gamma-grid-bg" width="40" height="30" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 30" fill="none" stroke="currentColor" strokeWidth="0.4" opacity="0.12" />
         </pattern>
       </defs>
 

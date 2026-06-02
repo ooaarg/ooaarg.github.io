@@ -18,25 +18,13 @@ interface Props {
 }
 
 const MenuIcon = () => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.6"
-    aria-hidden="true"
-  >
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
     <path d="M4 7h16M4 12h16M4 17h16" />
   </svg>
 );
 
 const CloseIcon = () => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.6"
-    aria-hidden="true"
-  >
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
     <path d="M6 6l12 12M6 18L18 6" />
   </svg>
 );
@@ -61,9 +49,7 @@ export default function MobileNav({ active }: Props) {
     };
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
-    sheetRef.current
-      ?.querySelector<HTMLButtonElement>("button[data-close]")
-      ?.focus();
+    sheetRef.current?.querySelector<HTMLButtonElement>("button[data-close]")?.focus();
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
@@ -114,9 +100,7 @@ export default function MobileNav({ active }: Props) {
           </a>
         ))}
       </nav>
-      <p className="sheet-tagline">
-        Online Optimization &amp; Applications Research Group
-      </p>
+      <p className="sheet-tagline">Online Optimization &amp; Applications Research Group</p>
     </div>
   );
 

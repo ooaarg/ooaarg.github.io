@@ -43,10 +43,7 @@ function density(c: number, r: number): number {
     const v =
       p.amp *
       Math.exp(
-        -(
-          ((c - p.cx) * (c - p.cx)) / (2 * p.sx * p.sx) +
-          ((r - p.cy) * (r - p.cy)) / (2 * p.sy * p.sy)
-        ),
+        -(((c - p.cx) * (c - p.cx)) / (2 * p.sx * p.sx) + ((r - p.cy) * (r - p.cy)) / (2 * p.sy * p.sy)),
       );
     if (v > d) d = v;
   }
@@ -82,19 +79,8 @@ export default function FunctionalBanditFigure() {
       style={{ width: "100%", height: "100%", display: "block" }}
     >
       <defs>
-        <pattern
-          id="fmab-grid-bg"
-          width="40"
-          height="30"
-          patternUnits="userSpaceOnUse"
-        >
-          <path
-            d="M 40 0 L 0 0 0 30"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="0.4"
-            opacity="0.12"
-          />
+        <pattern id="fmab-grid-bg" width="40" height="30" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 30" fill="none" stroke="currentColor" strokeWidth="0.4" opacity="0.12" />
         </pattern>
       </defs>
 

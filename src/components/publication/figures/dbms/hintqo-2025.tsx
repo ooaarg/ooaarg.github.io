@@ -1,7 +1,6 @@
 /** card-2026 — heatmap hero figure for cardinality-estimate calibration. */
 export default function CardHeatmapFigure() {
-  const cells: Array<{ x: number; y: number; pct: number; opacity: number }> =
-    [];
+  const cells: Array<{ x: number; y: number; pct: number; opacity: number }> = [];
   for (let r = 0; r < 8; r++) {
     for (let c = 0; c < 14; c++) {
       const v = (Math.sin(r * 0.7) + Math.cos(c * 0.4)) * 0.5 + 0.5;

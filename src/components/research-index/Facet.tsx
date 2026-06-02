@@ -11,13 +11,7 @@ interface Props {
   onToggle: (id: string) => void;
 }
 
-export default function Facet({
-  title,
-  items,
-  selected,
-  counts,
-  onToggle,
-}: Props) {
+export default function Facet({ title, items, selected, counts, onToggle }: Props) {
   return (
     <div className="ri-group">
       <h5>{title}</h5>
@@ -25,11 +19,7 @@ export default function Facet({
         {items.map((it) => (
           <label key={it.id}>
             <span className="left">
-              <input
-                type="checkbox"
-                checked={selected.has(it.id)}
-                onChange={() => onToggle(it.id)}
-              />
+              <input type="checkbox" checked={selected.has(it.id)} onChange={() => onToggle(it.id)} />
               {it.label}
             </span>
             <span className="count">{counts[it.id] || 0}</span>

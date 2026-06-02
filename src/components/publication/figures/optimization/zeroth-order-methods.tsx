@@ -1,3 +1,5 @@
+import { distToSegment } from "../../../../lib/figure-geom";
+
 /** zeroth-order-methods — non-smooth V-shaped function plus heavy-tail
  *  outlier blobs.
  *
@@ -30,47 +32,16 @@ const V_SIGMA = 0.78;
 const V_AMP = 0.98;
 
 /** Heavy-tail outlier samples — gradient blobs sitting off the V. */
-const OUTLIERS: Array<{ cx: number; cy: number; sigma: number; amp: number }> =
-  [
-    { cx: 5.0, cy: 12.5, sigma: 1.25, amp: 0.72 },
-    { cx: 21.5, cy: 12.8, sigma: 1.2, amp: 0.68 },
-  ];
-
-function distToSegment(
-  px: number,
-  py: number,
-  ax: number,
-  ay: number,
-  bx: number,
-  by: number,
-): number {
-  const dx = bx - ax;
-  const dy = by - ay;
-  const len2 = dx * dx + dy * dy;
-  if (len2 === 0) return Math.hypot(px - ax, py - ay);
-  const t = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / len2));
-  return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
-}
+const OUTLIERS: Array<{ cx: number; cy: number; sigma: number; amp: number }> = [
+  { cx: 5.0, cy: 12.5, sigma: 1.25, amp: 0.72 },
+  { cx: 21.5, cy: 12.8, sigma: 1.2, amp: 0.68 },
+];
 
 function density(c: number, r: number): number {
   // V ridge — min distance to either segment, so the vertex is a real
   // kink rather than a rounded join.
-  const dL = distToSegment(
-    c,
-    r,
-    V_LEFT_A.x,
-    V_LEFT_A.y,
-    V_LEFT_B.x,
-    V_LEFT_B.y,
-  );
-  const dR = distToSegment(
-    c,
-    r,
-    V_RIGHT_A.x,
-    V_RIGHT_A.y,
-    V_RIGHT_B.x,
-    V_RIGHT_B.y,
-  );
+  const dL = distToSegment(c, r, V_LEFT_A.x, V_LEFT_A.y, V_LEFT_B.x, V_LEFT_B.y);
+  const dR = distToSegment(c, r, V_RIGHT_A.x, V_RIGHT_A.y, V_RIGHT_B.x, V_RIGHT_B.y);
   const dV = Math.min(dL, dR);
   let d = V_AMP * Math.exp(-(dV * dV) / (2 * V_SIGMA * V_SIGMA));
 
@@ -113,19 +84,8 @@ export default function ZerothOrderFigure() {
       style={{ width: "100%", height: "100%", display: "block" }}
     >
       <defs>
-        <pattern
-          id="zeroth-grid-bg"
-          width="40"
-          height="30"
-          patternUnits="userSpaceOnUse"
-        >
-          <path
-            d="M 40 0 L 0 0 0 30"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="0.4"
-            opacity="0.12"
-          />
+        <pattern id="zeroth-grid-bg" width="40" height="30" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 30" fill="none" stroke="currentColor" strokeWidth="0.4" opacity="0.12" />
         </pattern>
       </defs>
 

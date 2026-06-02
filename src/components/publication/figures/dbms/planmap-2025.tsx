@@ -44,19 +44,8 @@ export default function HintqoFigure() {
       style={{ width: "100%", height: "100%", display: "block" }}
     >
       <defs>
-        <pattern
-          id="hintqo-grid"
-          width="40"
-          height="30"
-          patternUnits="userSpaceOnUse"
-        >
-          <path
-            d="M 40 0 L 0 0 0 30"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="0.4"
-            opacity="0.15"
-          />
+        <pattern id="hintqo-grid" width="40" height="30" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 30" fill="none" stroke="currentColor" strokeWidth="0.4" opacity="0.15" />
         </pattern>
         <marker
           id="hintqo-arrow"
@@ -133,24 +122,10 @@ export default function HintqoFigure() {
 
       {/* Background plans / hints. */}
       {PLANS.map(([x, y], i) => (
-        <circle
-          key={`p-${i}`}
-          cx={x}
-          cy={y}
-          r={2.4}
-          fill="currentColor"
-          opacity={0.42}
-        />
+        <circle key={`p-${i}`} cx={x} cy={y} r={2.4} fill="currentColor" opacity={0.42} />
       ))}
       {HINTS.map(([x, y], i) => (
-        <circle
-          key={`h-${i}`}
-          cx={x}
-          cy={y}
-          r={2.4}
-          fill="currentColor"
-          opacity={0.42}
-        />
+        <circle key={`h-${i}`} cx={x} cy={y} r={2.4} fill="currentColor" opacity={0.42} />
       ))}
 
       {/* Mapping for the default-plan safety baseline (dashed, muted). Drawn
@@ -180,20 +155,8 @@ export default function HintqoFigure() {
       />
 
       {/* The target / safety plan + hint dots, drawn on top of the regions. */}
-      <circle
-        cx={P0[0]}
-        cy={P0[1]}
-        r={3.4}
-        fill="var(--accent)"
-        opacity={0.7}
-      />
-      <circle
-        cx={HP0[0]}
-        cy={HP0[1]}
-        r={3.4}
-        fill="var(--accent)"
-        opacity={0.7}
-      />
+      <circle cx={P0[0]} cy={P0[1]} r={3.4} fill="var(--accent)" opacity={0.7} />
+      <circle cx={HP0[0]} cy={HP0[1]} r={3.4} fill="var(--accent)" opacity={0.7} />
 
       <circle cx={P[0]} cy={P[1]} r={4.2} fill="var(--accent)" />
       <circle cx={HP[0]} cy={HP[1]} r={4.2} fill="var(--accent)" />

@@ -17,9 +17,9 @@ const year = data.date.getFullYear();
 const span = spanOverride ?? data.span ?? 2;
 const featured = data.featured;
 const detailHref = `/publications/${id}`;
-/* Figure presence is decoupled from `featured`: any paper with a sibling
- * .tsx figure file renders its figure on the bento tile. `featured` only
- * controls visual prominence (padding, typography). */
+/* Figure presence is decoupled from `featured`: any paper with a matching
+ * figure component (figures/<area>/<id>.tsx) renders it on the bento tile.
+ * `featured` only controls visual prominence (padding, typography). */
 const showFigure = hasPaperFigure(id);
 const authorMap = await getAuthorMap();
 const authorEntries = resolveAuthors(data.authors, authorMap);

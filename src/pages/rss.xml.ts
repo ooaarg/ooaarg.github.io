@@ -7,8 +7,7 @@ export async function GET(context: APIContext) {
   const all = (await getCollection("publications")).sort(sortByDateDesc);
   return rss({
     title: "OOAARG — Publications",
-    description:
-      "Papers, preprints, code, and talks from the OOAARG research group.",
+    description: "Papers, preprints, code, and talks from the OOAARG research group.",
     site: context.site ?? "https://ooaarg.github.io",
     items: all.map((p) => ({
       title: p.data.title,

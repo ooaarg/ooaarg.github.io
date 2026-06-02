@@ -11,24 +11,14 @@ const publications = defineCollection({
     authors: z.array(z.string()).min(1),
     date: z.coerce.date(),
     venue: z.string(),
-    tag: z.enum([
-      "Oral",
-      "Spotlight",
-      "Paper",
-      "Preprint",
-      "Journal",
-      "Code",
-      "Talk",
-    ]),
+    tag: z.enum(["Oral", "Spotlight", "Paper", "Preprint", "Journal", "Code", "Talk"]),
     type: z.enum(["paper", "preprint", "code", "talk"]),
     area: z.enum(["bandits", "autobidding", "dbms", "optimization"]),
     featured: z.boolean().default(false),
     /** Lower numbers lead the home featured carousel. Unset entries keep their
      *  natural (collection) order after all explicitly-ranked ones. */
     featuredOrder: z.number().int().optional(),
-    span: z
-      .union([z.literal(2), z.literal(3), z.literal(4), z.literal(6)])
-      .default(2),
+    span: z.union([z.literal(2), z.literal(3), z.literal(4), z.literal(6)]).default(2),
     tags: z.array(z.string()).default([]),
     arxiv: z.string().optional(),
     github: z.string().url().optional(),
@@ -100,9 +90,7 @@ const news = defineCollection({
       /** Alt text for the image. */
       imageAlt: z.string().default(""),
       summary: z.string().max(320),
-      span: z
-        .union([z.literal(2), z.literal(3), z.literal(4), z.literal(6)])
-        .default(3),
+      span: z.union([z.literal(2), z.literal(3), z.literal(4), z.literal(6)]).default(3),
       /** Optional outbound link (e.g. NeurIPS accepted-papers page). */
       href: z.string().url().optional(),
     }),

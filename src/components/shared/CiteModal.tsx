@@ -1,9 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  buildBibtex,
-  buildApa,
-  type CitablePublication,
-} from "../../lib/bibtex";
+import { buildBibtex, buildApa, type CitablePublication } from "../../lib/bibtex";
 
 interface Props {
   pub: CitablePublication & { dateISO: string };
@@ -80,12 +76,7 @@ export default function CiteModal({ pub, open, onClose }: Props) {
         </div>
         <pre className="cite-block">{text}</pre>
         <div className="modal-actions">
-          <button
-            ref={closeBtnRef}
-            type="button"
-            className="btn"
-            onClick={onClose}
-          >
+          <button ref={closeBtnRef} type="button" className="btn" onClick={onClose}>
             Close
           </button>
           <button type="button" className="btn btn-primary" onClick={copy}>

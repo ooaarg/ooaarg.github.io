@@ -9,36 +9,18 @@ interface Props {
   label?: string;
 }
 
-export default function CiteButton({
-  pub,
-  variant = "default",
-  size = "sm",
-  label = "Cite",
-}: Props) {
+export default function CiteButton({ pub, variant = "default", size = "sm", label = "Cite" }: Props) {
   const [open, setOpen] = useState(false);
-  const className = [
-    "btn",
-    size === "sm" ? "btn-sm" : "",
-    variant === "accent" ? "btn-accent" : "",
-  ]
+  const className = ["btn", size === "sm" ? "btn-sm" : "", variant === "accent" ? "btn-accent" : ""]
     .filter(Boolean)
     .join(" ");
 
   return (
     <>
-      <button
-        type="button"
-        className={className}
-        onClick={() => setOpen(true)}
-        aria-haspopup="dialog"
-      >
+      <button type="button" className={className} onClick={() => setOpen(true)} aria-haspopup="dialog">
         {label}
       </button>
-      <CiteModal
-        pub={{ ...pub, date: new Date(pub.dateISO) }}
-        open={open}
-        onClose={() => setOpen(false)}
-      />
+      <CiteModal pub={{ ...pub, date: new Date(pub.dateISO) }} open={open} onClose={() => setOpen(false)} />
     </>
   );
 }

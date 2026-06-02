@@ -15,11 +15,8 @@
   --accent-fg: #ffffff;
   --code-bg: #f4f4f3;
 
-  --font-serif:
-    "Source Serif 4 Variable", "Source Serif 4", "Source Serif Pro", Georgia,
-    serif;
-  --font-sans:
-    "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: "Source Serif 4 Variable", "Source Serif 4", "Source Serif Pro", Georgia, serif;
+  --font-sans: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   --max-w: 1280px;

@@ -25,9 +25,7 @@ export default function FacetDropdown({
   searchable,
 }: Props) {
   const [q, setQ] = useState("");
-  const filtered = q
-    ? items.filter((it) => it.label.toLowerCase().includes(q.toLowerCase()))
-    : items;
+  const filtered = q ? items.filter((it) => it.label.toLowerCase().includes(q.toLowerCase())) : items;
   const count = selected.size;
 
   return (
@@ -65,26 +63,16 @@ export default function FacetDropdown({
             {filtered.map((it) => (
               <label key={it.id}>
                 <span className="left">
-                  <input
-                    type="checkbox"
-                    checked={selected.has(it.id)}
-                    onChange={() => onToggle(it.id)}
-                  />
+                  <input type="checkbox" checked={selected.has(it.id)} onChange={() => onToggle(it.id)} />
                   {it.label}
                 </span>
                 <span className="count">{counts[it.id] || 0}</span>
               </label>
             ))}
-            {filtered.length === 0 && (
-              <p className="facet-dd-empty">No matches.</p>
-            )}
+            {filtered.length === 0 && <p className="facet-dd-empty">No matches.</p>}
           </div>
           {count > 0 && onClear && (
-            <button
-              type="button"
-              className="btn btn-ghost btn-sm facet-dd-clear"
-              onClick={onClear}
-            >
+            <button type="button" className="btn btn-ghost btn-sm facet-dd-clear" onClick={onClear}>
               Clear ({count})
             </button>
           )}

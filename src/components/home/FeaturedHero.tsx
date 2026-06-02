@@ -19,13 +19,7 @@ interface Props {
 const SWIPE_THRESHOLD = 40;
 
 const Chevron = ({ dir }: { dir: "left" | "right" }) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.6"
-    aria-hidden="true"
-  >
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
     {dir === "left" ? <path d="M15 6l-6 6 6 6" /> : <path d="M9 6l6 6-6 6" />}
   </svg>
 );
@@ -107,19 +101,12 @@ export default function FeaturedHero({ slides }: Props) {
             </a>
           )}
           {slide.arxiv && (
-            <a
-              className="btn btn-ghost"
-              href={`https://arxiv.org/abs/${slide.arxiv}`}
-            >
+            <a className="btn btn-ghost" href={`https://arxiv.org/abs/${slide.arxiv}`}>
               arXiv
             </a>
           )}
         </div>
-        <div
-          className="hero-controls"
-          role="group"
-          aria-label="Carousel controls"
-        >
+        <div className="hero-controls" role="group" aria-label="Carousel controls">
           <button
             type="button"
             className="btn btn-ghost btn-icon"
@@ -128,11 +115,7 @@ export default function FeaturedHero({ slides }: Props) {
           >
             <Chevron dir="left" />
           </button>
-          <div
-            className="hero-dots"
-            role="tablist"
-            aria-label="Featured papers"
-          >
+          <div className="hero-dots" role="tablist" aria-label="Featured papers">
             {slides.map((s, i) => (
               <button
                 key={s.id}

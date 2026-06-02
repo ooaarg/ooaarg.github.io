@@ -2,8 +2,7 @@ import type { CollectionEntry } from "astro:content";
 
 export type Pub = CollectionEntry<"publications">;
 
-export const sortByDateDesc = (a: Pub, b: Pub) =>
-  b.data.date.getTime() - a.data.date.getTime();
+export const sortByDateDesc = (a: Pub, b: Pub) => b.data.date.getTime() - a.data.date.getTime();
 
 export function latestN(pubs: Pub[], n: number): Pub[] {
   return [...pubs].sort(sortByDateDesc).slice(0, n);
@@ -16,10 +15,7 @@ export function latestN(pubs: Pub[], n: number): Pub[] {
 export function featuredCarousel(pubs: Pub[], cap = 5): Pub[] {
   const featured = pubs
     .filter((p) => p.data.featured)
-    .sort(
-      (a, b) =>
-        (a.data.featuredOrder ?? Infinity) - (b.data.featuredOrder ?? Infinity),
-    );
+    .sort((a, b) => (a.data.featuredOrder ?? Infinity) - (b.data.featuredOrder ?? Infinity));
   const published = pubs
     .filter((p) => p.data.type === "paper" && p.data.tag !== "Preprint")
     .sort(sortByDateDesc);
@@ -37,23 +33,16 @@ export function years(pubs: Pub[]): number[] {
  *  span-2 tile alone, or two span-2 tiles summing to 4), the last tile in the
  *  row absorbs the leftover columns so the bento has no trailing empty space. */
 export type TileSpan = 2 | 3 | 4 | 6;
-export function computeBentoSpans(
-  pubs: Pub[],
-): Array<{ pub: Pub; span: TileSpan }> {
-  return packBento(pubs, (p) => (p.data.span ?? 2) as TileSpan).map(
-    ({ item, span }) => ({
-      pub: item,
-      span,
-    }),
-  );
+export function computeBentoSpans(pubs: Pub[]): Array<{ pub: Pub; span: TileSpan }> {
+  return packBento(pubs, (p) => (p.data.span ?? 2) as TileSpan).map(({ item, span }) => ({
+    pub: item,
+    span,
+  }));
 }
 
 /** Generic version of {@link computeBentoSpans} — accepts any tile that can
  *  declare a base span. Used to mix publications + news on the blog page. */
-export function packBento<T>(
-  items: T[],
-  spanOf: (t: T) => TileSpan,
-): Array<{ item: T; span: TileSpan }> {
+export function packBento<T>(items: T[], spanOf: (t: T) => TileSpan): Array<{ item: T; span: TileSpan }> {
   const out: Array<{ item: T; span: TileSpan }> = [];
   let row: Array<{ item: T; span: TileSpan }> = [];
   let fill = 0;

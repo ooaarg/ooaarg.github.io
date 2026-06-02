@@ -1,0 +1,11 @@
+dist
+dist-standalone
+node_modules
+.astro
+.wrangler
+.claude
+bun.lock
+
+# Prose is hand-formatted, not run through the code formatter.
+*.md
+*.mdx

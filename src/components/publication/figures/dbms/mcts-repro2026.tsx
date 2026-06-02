@@ -1,3 +1,5 @@
+import { distToSegment } from "../../../../lib/figure-geom";
+
 /** mcts-repro2026 — binary MCTS search tree for join ordering, with the
  *  converged best path glowing.
  *
@@ -78,22 +80,6 @@ const EDGES: Array<{ from: number; to: number; amp: number }> = [
 
 const EDGE_SIGMA = 0.55;
 
-function distToSegment(
-  px: number,
-  py: number,
-  ax: number,
-  ay: number,
-  bx: number,
-  by: number,
-): number {
-  const dx = bx - ax;
-  const dy = by - ay;
-  const len2 = dx * dx + dy * dy;
-  if (len2 === 0) return Math.hypot(px - ax, py - ay);
-  const t = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / len2));
-  return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
-}
-
 function density(c: number, r: number): number {
   let d = 0;
 
@@ -144,19 +130,8 @@ export default function McstsFigure() {
       style={{ width: "100%", height: "100%", display: "block" }}
     >
       <defs>
-        <pattern
-          id="mcts-grid-bg"
-          width="40"
-          height="30"
-          patternUnits="userSpaceOnUse"
-        >
-          <path
-            d="M 40 0 L 0 0 0 30"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="0.4"
-            opacity="0.12"
-          />
+        <pattern id="mcts-grid-bg" width="40" height="30" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 30" fill="none" stroke="currentColor" strokeWidth="0.4" opacity="0.12" />
         </pattern>
       </defs>
 

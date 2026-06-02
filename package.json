@@ -1,17 +1,18 @@
 {
   "name": "website",
-  "type": "module",
   "version": "0.0.1",
-  "engines": {
-    "node": ">=22.12.0"
-  },
+  "type": "module",
   "scripts": {
     "dev": "astro dev",
     "prebuild": "rm -rf dist .astro node_modules/.astro/data-store.json",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "format": "prettier --write ."
+    "typecheck": "astro check",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check ."
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.4",
@@ -32,8 +33,12 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
-    "prettier": "^3.8.3",
+    "oxfmt": "^0.52.0",
+    "oxlint": "^1.67.0",
     "sharp": "^0.34.5",
     "typescript": "^6.0.3"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

@@ -9,8 +9,7 @@
   display: inline-flex;
   align-items: baseline;
   gap: 0;
-  font-family:
-    "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
   font-weight: 900;
   font-size: var(--ooaarg-size);
   line-height: 1;
@@ -28,8 +27,7 @@
      A small inline script (KineticLogo.astro) waits for the next animationiteration
      after the user un-hovers, so the stretch always finishes at scaleX(1) instead
      of freezing mid-cycle. */
-  animation: ooaargStretch var(--ooaarg-duration) cubic-bezier(0.4, 0, 0.2, 1)
-    infinite;
+  animation: ooaargStretch var(--ooaarg-duration) cubic-bezier(0.4, 0, 0.2, 1) infinite;
   animation-play-state: paused;
 }
 
