@@ -12,9 +12,6 @@ const byOrder = (a: typeof all[number], b: typeof all[number]) =>
 
 const lead = all.find((p) => p.data.group === 'faculty');
 
-// Staff = postdoc, phd, and any non-lead faculty. Sort by group hierarchy first
-// (postdoc → phd → other faculty), then by `order` within group. `STAFF_RANK`
-// doubles as the membership test, so partners/alumni never leak in here.
 const STAFF_RANK: Record<string, number> = { postdoc: 0, phd: 1, faculty: 2 };
 const staff = all
   .filter((p) => p.data.group in STAFF_RANK && p.id !== lead?.id)
@@ -25,9 +22,6 @@ const staff = all
 
 const partners = all.filter((p) => p.data.group === 'partner').sort(byOrder);
 
-// Group partners by organization. `partners` is already order-sorted, so each
-// group's first member carries its lowest `order`; sorting groups by that keeps
-// the org sequence data-driven (e.g. NVIDIA first via low order values).
 const partnersByOrg = [
   ...partners
     .reduce((acc, p) => {
@@ -50,7 +44,7 @@ const alumni = all.filter((p) => p.data.group === 'alumni').sort(byOrder);
     <div class="container">
       <h2 class="kicker">About</h2>
       <h1 class="about-title">Online Optimization And Applications Research Group</h1>
-      <p style="margin-top: 24px; color: var(--fg-muted); max-width: 52ch; font-size: 18px;">
+      <p style="margin-top: 24px; color: var(--fg-muted); max-width: 80ch; font-size: 18px;">
           A research group studying decisions under uncertainty. Theory, algorithms, and the messy real-world problems that motivate both.
       </p>
     </div>

@@ -2,7 +2,7 @@
 
 /* ---------- HERO ---------- */
 .hero {
-  padding: 88px 0 64px;
+  padding: 64px 0 28px;
 }
 
 .hero-meta {
@@ -80,23 +80,32 @@
   color: var(--fg-muted);
   max-width: 52ch;
   margin-top: 24px;
+  /* Trim long summaries to keep the slide height stable — the full text is on
+   * the paper's detail page (Read paper). */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
 }
 
 /* ---- Regret-plot hero (default) ---- */
 /* Layout adapts to child presence via :has(): when the slide includes a
- * figure column, the grid splits 1fr 1fr at fixed height; without one, the
- * text column spans the full container, left-aligned, with no figure frame.
- * Using :has() instead of a JS-toggled class avoids a race during
- * ClientRouter swaps where the React state and the rendered class can
- * desync mid-transition. */
+ * figure column, the grid splits 1fr 1fr; without one, the text column spans
+ * the full container, left-aligned, with no figure frame. Using :has()
+ * instead of a JS-toggled class avoids a race during ClientRouter swaps where
+ * the React state and the rendered class can desync mid-transition.
+ *
+ * No min-height: the figure (fixed 4/3 aspect) is the tallest element and the
+ * same height on every slide, so it anchors the row — the actions below stay
+ * put while paging, with no reserved dead space. The title wraps across the
+ * full column and the summary is clamped (see `.hero-sub`) so the text column
+ * stays shorter than the figure. */
 .hero-plot-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 64px;
   align-items: start;
-  /* Stable carousel height — sized to fit the tallest title we ship so
-   * paging between slides doesn't jump the layout. */
-  min-height: 560px;
 }
 
 .hero-plot-grid:has(.hero-slide-fig) {
@@ -113,7 +122,6 @@
 
 .hero-plot-grid h1 {
   font-size: clamp(32px, 3.4vw, 48px);
-  max-width: 18ch;
   text-wrap: balance;
   line-height: 1.05;
 }
@@ -194,9 +202,9 @@
 }
 
 .area-card-head h3 {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: 26px;
-  font-weight: 400;
+  font-weight: 550;
   letter-spacing: -0.01em;
   line-height: 1.15;
   margin: 0;
@@ -421,8 +429,7 @@
   animation: hero-slide-in 180ms ease both;
 }
 
-/* CTAs and controls share a tight vertical stack below the grid, both at
- * fixed Y because the grid has a fixed height. */
+/* CTAs and controls stack directly below the grid. */
 .hero-actions {
   display: flex;
   flex-direction: column;

@@ -53,7 +53,7 @@ export default function SearchIndex({ pubs }: Props) {
     author: new Set(),
     tag: new Set(),
   });
-  const [sort, setSort] = useState<"date" | "citations" | "relevance">("date");
+  const [sort, setSort] = useState<"newest" | "oldest">("newest");
   const [sheetOpen, setSheetOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -110,8 +110,11 @@ export default function SearchIndex({ pubs }: Props) {
       const [dd, mm, yyyy] = d.split("-");
       return `${yyyy}${mm}${dd}`;
     };
-    if (sort === "date") xs = [...xs].sort((a, b) => sortKey(b.date).localeCompare(sortKey(a.date)));
-    if (sort === "citations") xs = [...xs].sort((a, b) => b.year - a.year || a.title.localeCompare(b.title));
+    xs = [...xs].sort((a, b) =>
+      sort === "newest"
+        ? sortKey(b.date).localeCompare(sortKey(a.date))
+        : sortKey(a.date).localeCompare(sortKey(b.date)),
+    );
     return xs;
   }, [q, filters, sort, pubs]);
 
@@ -309,9 +312,8 @@ export default function SearchIndex({ pubs }: Props) {
                 onChange={(e) => setSort(e.target.value as typeof sort)}
                 aria-label="Sort order"
               >
-                <option value="date">Date (newest)</option>
-                <option value="citations">Citations</option>
-                <option value="relevance">Relevance</option>
+                <option value="newest">Date (newest)</option>
+                <option value="oldest">Date (oldest)</option>
               </select>
             </span>
           </div>

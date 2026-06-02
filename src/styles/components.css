@@ -305,7 +305,7 @@ a.pill:hover {
 }
 
 .cite-modal h3 {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   margin-bottom: 8px;
 }
 

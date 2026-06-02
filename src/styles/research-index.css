@@ -373,9 +373,9 @@
 }
 
 .ri-results h3 {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: 22px;
-  font-weight: 500;
+  font-weight: 550;
   line-height: 1.15;
   margin-bottom: 8px;
   overflow-wrap: anywhere;
@@ -459,7 +459,7 @@
 }
 
 .facet-sheet header h3 {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: 22px;
   margin: 0;
 }
