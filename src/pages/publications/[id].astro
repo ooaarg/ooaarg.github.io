@@ -5,6 +5,7 @@ import PubFigure from '../../components/publication/PubFigure.astro';
 import { hasPaperFigure } from '../../components/publication/PaperFigure.tsx';
 import CiteButton from '../../components/publications/CiteButton.tsx';
 import { getAuthorMap, resolveAuthors } from '../../lib/people';
+import { paperUrl, doiOf, extraLinks } from '../../lib/pubs';
 
 import 'katex/dist/katex.min.css';
 import '../../styles/publication.css';
@@ -40,9 +41,11 @@ const citable = {
   dateISO: data.date.toISOString(),
   venue: data.venue,
   arxiv: data.arxiv,
+  doi: doiOf(data),
 };
 
 const showFigure = hasPaperFigure(id);
+const paper = paperUrl(data);
 ---
 
 <Site
@@ -81,14 +84,17 @@ const showFigure = hasPaperFigure(id);
       </p>
 
       <div class="actions">
+        {paper && (
+          <a class="btn btn-primary" href={paper}>Paper</a>
+        )}
         {data.arxiv && (
-          <a class="btn btn-primary" href={`https://arxiv.org/abs/${data.arxiv}`}>
+          <a class={paper ? 'btn' : 'btn btn-primary'} href={`https://arxiv.org/abs/${data.arxiv}`}>
             arXiv:{data.arxiv}
           </a>
         )}
         {data.pdf && <a class="btn" href={data.pdf}>PDF</a>}
         {data.github && <a class="btn" href={data.github}>GitHub</a>}
-        {data.links.map((l) => (
+        {extraLinks(data).map((l) => (
           <a class="btn" href={l.url}>{l.label}</a>
         ))}
         <CiteButton client:visible pub={citable} variant="accent" size="md" label="Cite" />

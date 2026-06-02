@@ -30,6 +30,7 @@ featured: true
 span: 4
 tags: ["Second-order", "Regret", "Convex"]
 arxiv: "2605.01184"
+doi: "10.1145/3696410.3714657"
 github: "https://github.com/ooaarg/oon"
 pdf: "https://example.org/oon.pdf"
 links:
@@ -71,11 +72,14 @@ Standard Markdown formatting works: **bold**, _italic_, `code`,
 | `span`     |          | `2` \| `3` \| `4` \| `6` (default `2`)                                          | How many of 6 grid columns the tile takes. The grid auto-expands the last tile of any short row, so you mostly don't need to think about this. Featured tiles usually use `4`; ordinary ones `2` or `3`. |
 | `tags`     |          | string array                                                                    | Free-form keywords. Power the `/publications` search-page "Tag" facet and the sidebar pills.                                                                                                             |
 | `arxiv`    |          | string (e.g. `2605.01184`)                                                      | Renders an arXiv button + link.                                                                                                                                                                          |
+| `doi`      |          | string (e.g. `10.1145/3696410.3714657`)                                         | DOI of the published/accepted version. Resolves to the publisher page (ACM, IEEE, Springer, …) and renders as the **primary "Paper" button**, ahead of `arxiv`. Also included in the BibTeX/APA citation. Don't include `https://doi.org/`.        |
 | `github`   |          | URL                                                                             | GitHub button.                                                                                                                                                                                           |
 | `pdf`      |          | URL                                                                             | PDF button.                                                                                                                                                                                              |
-| `links`    |          | array of `{label, url}`                                                         | Arbitrary external links — IEEE, ACM, ResearchGate PDF, Springer, etc. Each renders as a button on the detail page. If the paper has no `arxiv`, the first entry also surfaces on the bento tile.        |
+| `links`    |          | array of `{label, url}`                                                         | Arbitrary external links — Springer, Zenodo, HuggingFace, dataset pages, etc. Each renders as a button on the detail page. A `{ label: "DOI", … }` entry is treated like the `doi` field: promoted to the primary **"Paper"** button (and picked up for the citation), not shown as a plain link. The first non-DOI entry surfaces on the bento tile only when there's no `doi`/`arxiv` (see primary-link order below).        |
 | `cited_by` |          | non-negative int                                                                | Shows the "Cited by (N)" sidebar block on the detail page.                                                                                                                                               |
 | `funding`  |          | string                                                                          | Free-form funding line shown in the detail-page aside. Hidden if absent.                                                                                                                                 |
+
+**Primary link.** The accented button (and the single link on the bento tile) follows this order: DOI (the `doi` field _or_ a `links[]` "DOI" entry) → `arxiv` → first remaining `links[]` entry. So a published paper leads with an accented **"Paper"** button and arXiv drops to a secondary button; an arXiv-only preprint leads with **"arXiv"**.
 
 ## 4. Body conventions
 

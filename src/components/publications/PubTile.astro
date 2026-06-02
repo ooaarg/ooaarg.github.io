@@ -3,6 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import PaperFigure, { hasPaperFigure } from '../publication/PaperFigure.tsx';
 import CiteButton from './CiteButton.tsx';
 import { getAuthorMap, resolveAuthors } from '../../lib/people';
+import { paperUrl, doiOf, extraLinks } from '../../lib/pubs';
 
 interface Props {
   pub: CollectionEntry<'publications'>;
@@ -21,6 +22,8 @@ const detailHref = `/publications/${id}`;
  * figure component (figures/<area>/<id>.tsx) renders it on the bento tile.
  * `featured` only controls visual prominence (padding, typography). */
 const showFigure = hasPaperFigure(id);
+const paper = paperUrl(data);
+const extra = extraLinks(data);
 const authorMap = await getAuthorMap();
 const authorEntries = resolveAuthors(data.authors, authorMap);
 const citable = {
@@ -30,6 +33,7 @@ const citable = {
   dateISO: data.date.toISOString(),
   venue: data.venue,
   arxiv: data.arxiv,
+  doi: doiOf(data),
 };
 ---
 
@@ -65,10 +69,12 @@ const citable = {
     </p>
   )}
   <div class="actions">
-    {data.arxiv ? (
+    {paper ? (
+      <a class="btn btn-sm" href={paper}>Paper</a>
+    ) : data.arxiv ? (
       <a class="btn btn-sm" href={`https://arxiv.org/abs/${data.arxiv}`}>arXiv</a>
-    ) : data.links.length > 0 ? (
-      <a class="btn btn-sm" href={data.links[0].url}>{data.links[0].label}</a>
+    ) : extra.length > 0 ? (
+      <a class="btn btn-sm" href={extra[0].url}>{extra[0].label}</a>
     ) : null}
     {data.github && (
       <a class="btn btn-sm" href={data.github}>GitHub</a>

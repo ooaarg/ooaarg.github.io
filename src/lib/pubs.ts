@@ -4,6 +4,29 @@ export type Pub = CollectionEntry<"publications">;
 
 export const sortByDateDesc = (a: Pub, b: Pub) => b.data.date.getTime() - a.data.date.getTime();
 
+/** Bare DOI for the entry — the `doi` field, or a `links[]` entry labelled
+ *  "DOI" with its doi.org URL stripped. Feeds the BibTeX/APA citation. */
+export function doiOf(data: Pub["data"]): string | undefined {
+  if (data.doi) return data.doi;
+  const link = data.links.find((l) => /^doi$/i.test(l.label));
+  return link?.url.replace(/^https?:\/\/(dx\.)?doi\.org\//i, "");
+}
+
+/** URL of the published/accepted version (DOI → publisher page), or null for
+ *  arXiv-only / unpublished entries. Rendered as the primary "Paper" link —
+ *  it takes the accent ahead of arXiv. Sourced from the `doi` field or a
+ *  `links[]` "DOI" entry. */
+export function paperUrl(data: Pub["data"]): string | null {
+  const doi = doiOf(data);
+  return doi ? `https://doi.org/${doi}` : null;
+}
+
+/** `links[]` minus any "DOI" entry, which is promoted to the primary "Paper"
+ *  button by {@link paperUrl} and so shouldn't render a second time. */
+export function extraLinks(data: Pub["data"]): Pub["data"]["links"] {
+  return data.links.filter((l) => !/^doi$/i.test(l.label));
+}
+
 export function latestN(pubs: Pub[], n: number): Pub[] {
   return [...pubs].sort(sortByDateDesc).slice(0, n);
 }

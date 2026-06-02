@@ -21,6 +21,10 @@ const publications = defineCollection({
     span: z.union([z.literal(2), z.literal(3), z.literal(4), z.literal(6)]).default(2),
     tags: z.array(z.string()).default([]),
     arxiv: z.string().optional(),
+    /** DOI of the published/accepted version, e.g. "10.1145/3696410.3714657".
+     *  Resolves to the publisher page (ACM, IEEE, Springer, …) and renders as
+     *  the primary "Paper" button, taking precedence over arXiv. */
+    doi: z.string().optional(),
     github: z.string().url().optional(),
     pdf: z.string().url().optional(),
     /** Arbitrary external links — IEEE, ACM, ResearchGate PDF, Springer,

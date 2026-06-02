@@ -8,6 +8,7 @@ export interface CitablePublication {
   date: Date;
   venue: string;
   arxiv?: string;
+  doi?: string;
 }
 
 const slugify = (s: string) => s.toLowerCase().replace(/[^a-z]/g, "");
@@ -21,21 +22,22 @@ export function buildBibtex(pub: CitablePublication): string {
       ?.replace(/[^A-Za-z]/g, "") ?? "anon";
   const stub = pub.id.split("-")[0];
   const key = `${slugify(lastName)}${year}${stub}`;
-  const url = pub.arxiv ? `https://arxiv.org/abs/${pub.arxiv}` : "";
 
-  const lines = [
-    `@inproceedings{${key},`,
-    `  title     = {${pub.title}},`,
-    `  author    = {${pub.authors.join(" and ")}},`,
-    `  booktitle = {${pub.venue}},`,
-    `  year      = {${year}}${url ? "," : ""}`,
+  const fields: Array<[string, string]> = [
+    ["title", pub.title],
+    ["author", pub.authors.join(" and ")],
+    ["booktitle", pub.venue],
+    ["year", String(year)],
   ];
-  if (url) lines.push(`  url       = {${url}}`);
-  lines.push(`}`);
-  return lines.join("\n");
+  if (pub.doi) fields.push(["doi", pub.doi]);
+  if (pub.arxiv) fields.push(["url", `https://arxiv.org/abs/${pub.arxiv}`]);
+
+  const body = fields.map(([k, v]) => `  ${k.padEnd(9)} = {${v}}`).join(",\n");
+  return `@inproceedings{${key},\n${body}\n}`;
 }
 
 export function buildApa(pub: CitablePublication): string {
   const year = pub.date.getFullYear();
-  return `${pub.authors.join(", ")} (${year}). ${pub.title}. In ${pub.venue}.`;
+  const base = `${pub.authors.join(", ")} (${year}). ${pub.title}. In ${pub.venue}.`;
+  return pub.doi ? `${base} https://doi.org/${pub.doi}` : base;
 }
