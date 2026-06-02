@@ -23,8 +23,11 @@ const { person } = Astro.props;
 const { data } = person;
 const { Content } = await render(person);
 
+// Partners are external collaborators, not OOAARG members, so their detail
+// page skips the group's publication list.
+const showPubs = data.group !== 'partner';
 const allPubs = await getCollection('publications');
-const personPubs = getPersonPubs(person, allPubs);
+const personPubs = showPubs ? getPersonPubs(person, allPubs) : [];
 const yearGroups = groupPubsByYear(personPubs);
 const authorMap = await getAuthorMap();
 
@@ -49,7 +52,7 @@ const fmt = (d: Date) =>
 <Site
   active="about"
   title={`${data.name} · OOAARG`}
-  description={`${data.role} — ${data.topic}`}
+  description={`${data.role}: ${data.topic}`}
 >
   <section class="person-detail">
     <div class="container">
@@ -89,6 +92,7 @@ const fmt = (d: Date) =>
         </div>
       </section>
 
+      {showPubs && (
       <section class="person-section">
         <h2 class="kicker">Publications</h2>
         {yearGroups.length === 0 ? (
@@ -130,6 +134,7 @@ const fmt = (d: Date) =>
           </div>
         )}
       </section>
+      )}
     </div>
   </section>
 </Site>
