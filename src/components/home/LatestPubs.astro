@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import { latestN } from '../../lib/pubs';
+import { latestN, paperUrl } from '../../lib/pubs';
 import { getAuthorMap, resolveAuthors } from '../../lib/people';
 
 const all = await getCollection('publications');
@@ -42,7 +42,11 @@ const fmt = (d: Date) =>
               </p>
             </div>
             <div class="pub-actions">
-              {p.data.arxiv && (
+              {paperUrl(p.data) ? (
+                <a class="btn btn-sm" href={paperUrl(p.data)}>
+                  Paper
+                </a>
+              ) : p.data.arxiv && (
                 <a class="btn btn-sm" href={`https://arxiv.org/abs/${p.data.arxiv}`}>
                   arXiv
                 </a>
