@@ -1,8 +1,8 @@
 # OOAARG website
 
-Source for [ooaarg.github.io](https://ooaarg.github.io) — the public site for the Online Optimization And Applications Research Group. Astro 6 + React islands + MDX content collections, deployed as a static site to GitHub Pages.
+Source for [ooaarg.github.io](https://ooaarg.github.io) — the public site for the Online Optimization And Applications Research Group.
 
-This README covers setup and content editing. Step-by-step guides for each content type live in [`docs/`](./docs). For architecture and dev guidance see [`AGENTS.md`](./AGENTS.md).
+This README covers setup and content editing. Step-by-step guides for each content type live in [`docs/`](./docs).
 
 ## Setup
 
@@ -10,8 +10,6 @@ This README covers setup and content editing. Step-by-step guides for each conte
 bun install
 bun dev      # http://localhost:4321
 ```
-
-We use [Bun](https://bun.sh) — not npm or yarn. The lockfile is `bun.lock`.
 
 ---
 
@@ -22,14 +20,6 @@ Each content type has its own guide:
 - [Adding a publication](./docs/adding-a-publication.md) — papers, preprints, code, and talks (`src/content/publications/`).
 - [Adding a news post](./docs/adding-a-news-post.md) — blog/news tiles (`src/content/news/`).
 - [Adding a person](./docs/adding-a-person.md) — people on `/about` (`src/content/people/`).
-
----
-
-## Other content
-
-- **Areas-of-research cards** on the home page: `src/data/areas.ts`. Plain TypeScript, edit directly. Each area `id` must match a publication `area` value so the cards can link to `/publications?area=<id>`.
-- **Footer links and contact info**: `src/components/Footer.astro`.
-- **Site description / meta**: `src/components/SeoHead.astro` and per-page `description` props.
 
 ---
 
