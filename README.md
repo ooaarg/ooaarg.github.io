@@ -45,7 +45,6 @@ summary: "A second-order online learner that matches the regret of the best Newt
 # Optional
 featured: true
 span: 4
-figure: "regret"
 tags: ["Second-order", "Regret", "Convex"]
 arxiv: "2605.01184"
 github: "https://github.com/ooaarg/oon"
@@ -85,9 +84,8 @@ Standard Markdown formatting works: **bold**, _italic_, `code`,
 | `type`     |    ✓     | `paper` \| `preprint` \| `code` \| `talk`                                       | The Publications search-page facet bucket.                                                                                                                                                               |
 | `area`     |    ✓     | `bandits` \| `autobidding` \| `dbms` \| `optimization`                          | Research area. To add a new value, edit the `area` enum in `src/content.config.ts` and the `AREA_LABEL` map in `src/pages/publications/[id].astro`.                                                      |
 | `summary`  |    ✓     | string ≤ 320 chars                                                              | Shown on tiles and in the RSS feed. One sentence works best.                                                                                                                                             |
-| `featured` |          | boolean (default `false`)                                                       | Featured tiles get a figure and bigger typography in the bento.                                                                                                                                          |
+| `featured` |          | boolean (default `false`)                                                       | Bigger typography and prominence in the bento. (The figure, if any, comes from a co-located `.tsx` file — see below — not from `featured`.)                                                              |
 | `span`     |          | `2` \| `3` \| `4` \| `6` (default `2`)                                          | How many of 6 grid columns the tile takes. The grid auto-expands the last tile of any short row, so you mostly don't need to think about this. Featured tiles usually use `4`; ordinary ones `2` or `3`. |
-| `figure`   |          | `regret` \| `grid` \| `none` (default `none`)                                   | Only renders on featured tiles. Use `regret` for a log-curve figure, `grid` for a heatmap.                                                                                                               |
 | `tags`     |          | string array                                                                    | Free-form keywords. Power the `/publications` search-page "Tag" facet and the sidebar pills.                                                                                                             |
 | `arxiv`    |          | string (e.g. `2605.01184`)                                                      | Renders an arXiv button + link.                                                                                                                                                                          |
 | `github`   |          | URL                                                                             | GitHub button.                                                                                                                                                                                           |
@@ -106,6 +104,10 @@ The body is rendered into the publication detail page (`/publications/<slug>`). 
 - Link to arXiv / GitHub / data in prose, not just in the action buttons.
 
 A minimal non-featured entry can be just frontmatter — the body is optional.
+
+### Adding a figure (optional)
+
+A paper figure is a co-located React component: `src/content/publications/<slug>.tsx` exporting a default component (usually an inline SVG). It's auto-registered by slug — drop the file next to the `.mdx` and it renders on the bento tile and detail page, no wiring needed. See `src/components/publication/PaperFigure.tsx` for the loader and the existing `*.tsx` files for examples.
 
 ### 5. Preview locally
 
@@ -198,10 +200,9 @@ rm -rf .astro node_modules/.astro && bun dev
 
 ## Other content
 
-- **Subgroup tabs** on the home page (Bandits / DBMS, with KPIs and keywords): `src/data/subgroups.ts`. Plain TypeScript, edit directly. The `id` here should match a publication `area` value if you want the cross-links to feel coherent.
+- **Areas-of-research cards** on the home page: `src/data/areas.ts`. Plain TypeScript, edit directly. Each area `id` must match a publication `area` value so the cards can link to `/publications?area=<id>`.
 - **Footer links and contact info**: `src/components/Footer.astro`.
-- **Site description / OG meta**: `src/components/SeoHead.astro` and per-page `description` props.
-- **OG social card**: `public/og-image.png`. Regenerate with `bun run build:og` after editing the SVG inside `scripts/build-og.mjs`.
+- **Site description / meta**: `src/components/SeoHead.astro` and per-page `description` props.
 
 ---
 
@@ -217,12 +218,10 @@ rm -rf .astro node_modules/.astro && bun dev
 
 ## Commands
 
-| Command                    | What it does                                                                                                                   |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `bun install`              | Install dependencies.                                                                                                          |
-| `bun dev`                  | Dev server with hot reload at `http://localhost:4321`.                                                                         |
-| `bun run astro check`      | Type-check Astro components, React islands, and content schemas.                                                               |
-| `bun run build`            | Static build into `dist/`.                                                                                                     |
-| `bun run preview`          | Serve `dist/` locally.                                                                                                         |
-| `bun run build:og`         | Regenerate `public/og-image.png` from the inline SVG.                                                                          |
-| `bun run build:standalone` | Build `dist/` then bundle `dist/index.html` into a single self-contained `dist/OOAARG-standalone.html` (CSS/JS/fonts inlined). |
+| Command               | What it does                                                     |
+| --------------------- | ---------------------------------------------------------------- |
+| `bun install`         | Install dependencies.                                            |
+| `bun dev`             | Dev server with hot reload at `http://localhost:4321`.           |
+| `bun run astro check` | Type-check Astro components, React islands, and content schemas. |
+| `bun run build`       | Static build into `dist/`.                                       |
+| `bun run preview`     | Serve `dist/` locally.                                           |
