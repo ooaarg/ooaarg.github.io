@@ -35,7 +35,7 @@ const detailHref = `/blog/${id}`;
   <p style="color: var(--fg-muted); font-size: 14px;">{data.summary}</p>
   <div class="actions">
     {data.href && (
-      <a class="btn btn-sm" href={data.href} target="_blank" rel="noopener">Read more →</a>
+      <a class="btn btn-sm" href={data.href} target="_blank" rel="noopener">Conference</a>
     )}
     <a class="btn btn-sm btn-ghost" href={detailHref}>Read →</a>
   </div>
@@ -45,10 +45,19 @@ const detailHref = `/blog/${id}`;
   .news-figure {
     background: var(--bg-sunken);
   }
+  .news-tile .figure {
+    height: 300px;
+  }
   .news-figure img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center 60%;
     display: block;
+  }
+  @media (max-width: 640px) {
+    .news-tile .figure {
+      height: 220px;
+    }
   }
 </style>

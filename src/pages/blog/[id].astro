@@ -44,7 +44,7 @@ const fmt = (d: Date) =>
       {data.href && (
         <div class="actions">
           <a class="btn btn-primary" href={data.href} target="_blank" rel="noopener">
-            Visit link →
+            Conference link
           </a>
         </div>
       )}
@@ -76,8 +76,13 @@ const fmt = (d: Date) =>
 </Site>
 
 <style>
+
+  .pub-detail h1 {
+    max-width: 940px;
+  }
   .news-hero-figure {
     margin: 56px 0 0;
+    max-width: 720px;
     border-radius: var(--radius);
     overflow: hidden;
     border: 1px solid var(--border);
