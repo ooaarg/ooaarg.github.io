@@ -373,12 +373,14 @@
   .hero-plot-grid {
     display: flex;
     flex-direction: column;
-    height: auto;
-    min-height: 0;
-    gap: 24px;
+    --hero-reserve: 435px;
+    min-height: var(--hero-reserve);
+    gap: 20px;
   }
   .hero-slide-fig {
     order: -1;
+    width: min(100%, 200px);
+    margin-inline: auto;
     max-height: none;
   }
   .hero {
