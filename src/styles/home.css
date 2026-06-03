@@ -407,6 +407,7 @@
   /* The reserve already pins the controls; drop the hero's bottom padding so they
      sit just above the divider of the next section instead of floating mid-air. */
   padding-bottom: 0;
+  touch-action: pan-y;
 }
 
 /* The section immediately after the hero tightens its top padding so the "Areas of

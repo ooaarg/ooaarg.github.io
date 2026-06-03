@@ -68,6 +68,8 @@ export default function FeaturedHero({ slides }: Props) {
     <section
       className="hero hero-plot"
       onKeyDown={onKeyDown}
+      onPointerDown={onPointerDown}
+      onPointerUp={onPointerUp}
       aria-roledescription="carousel"
       aria-label="Featured papers"
     >
@@ -84,8 +86,6 @@ export default function FeaturedHero({ slides }: Props) {
             key={`fig-${slide.id}`}
             className="regret-plot fig-placeholder hero-slide hero-slide-fig"
             style={{ aspectRatio: "4 / 3" }}
-            onPointerDown={onPointerDown}
-            onPointerUp={onPointerUp}
           >
             <PaperFigure id={slide.id} />
           </div>
