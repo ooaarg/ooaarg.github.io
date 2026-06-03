@@ -9,8 +9,8 @@
   display: inline-flex;
   align-items: baseline;
   gap: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
-  font-weight: 900;
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: var(--ooaarg-size);
   line-height: 1;
   letter-spacing: -0.04em;
