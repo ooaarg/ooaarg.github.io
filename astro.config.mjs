@@ -9,6 +9,7 @@ import rehypeKatex from "rehype-katex";
 export default defineConfig({
   site: "https://ooaarg.github.io",
   integrations: [react(), mdx(), sitemap()],
+  build: { inlineStylesheets: "always" },
   markdown: {
     remarkPlugins: [remarkMath],
     rehypePlugins: [rehypeKatex],

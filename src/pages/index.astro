@@ -16,7 +16,7 @@ const slides = featuredCarousel(pubs).map((p) => ({
   title: p.data.title,
   venue: p.data.venue,
   tag: p.data.tag,
-  summary: p.data.summary,
+  summary: p.data.heroSummary ?? p.data.summary,
   paper: paperUrl(p.data),
   arxiv: p.data.arxiv,
   github: p.data.github,
@@ -31,7 +31,7 @@ const slides = featuredCarousel(pubs).map((p) => ({
 >
   <FeaturedHero client:load transition:animate="none" slides={slides} />
 
-  <section class="section">
+  <section class="section section-after-hero">
     <div class="container">
       <div class="section-head">
         <div>

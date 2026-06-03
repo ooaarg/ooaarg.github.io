@@ -80,32 +80,24 @@
   color: var(--fg-muted);
   max-width: 52ch;
   margin-top: 24px;
-  /* Trim long summaries to keep the slide height stable — the full text is on
-   * the paper's detail page (Read paper). */
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
   overflow: hidden;
 }
 
 /* ---- Regret-plot hero (default) ---- */
-/* Layout adapts to child presence via :has(): when the slide includes a
- * figure column, the grid splits 1fr 1fr; without one, the text column spans
- * the full container, left-aligned, with no figure frame. Using :has()
- * instead of a JS-toggled class avoids a race during ClientRouter swaps where
- * the React state and the rendered class can desync mid-transition.
- *
- * No min-height: the figure (fixed 4/3 aspect) is the tallest element and the
- * same height on every slide, so it anchors the row — the actions below stay
- * put while paging, with no reserved dead space. The title wraps across the
- * full column and the summary is clamped (see `.hero-sub`) so the text column
- * stays shorter than the figure. */
 .hero-plot-grid {
+  /* Reserve a consistent height so the CTA buttons + carousel controls keep the
+     same Y position on every slide — figure or not, short title or long. Content
+     is top-aligned (align-items: start); the reserve just sets the floor. */
+  --hero-reserve: clamp(300px, 38vw, 420px);
   display: grid;
   grid-template-columns: 1fr;
   gap: 64px;
   align-items: start;
+  min-height: var(--hero-reserve);
 }
 
 .hero-plot-grid:has(.hero-slide-fig) {
@@ -134,6 +126,9 @@
 
 .hero-slide-fig {
   align-self: start;
+  /* Never let the figure push the row past the reserved height (keeps the
+     buttons pinned even on figure slides); the SVG scales to fit. */
+  max-height: var(--hero-reserve);
 }
 
 .hero-plot-grid em {
@@ -374,14 +369,7 @@
   .area-card {
     padding: 24px;
   }
-  /* Visual sits above text on phones. flex-direction is `column` (not
-   * column-reverse) so text-only slides don't pin to the bottom of the
-   * min-height container; on figure slides, `order: -1` on the figure
-   * still places it above the text. min-height is dropped entirely on
-   * mobile — content drives height. The 64px desktop gap is too loose for
-   * a single-column phone layout — tighten to match the hero's top
-   * padding so the figure-to-text breathing room reads as one consistent
-   * scale of vertical rhythm. */
+
   .hero-plot-grid {
     display: flex;
     flex-direction: column;
@@ -391,6 +379,7 @@
   }
   .hero-slide-fig {
     order: -1;
+    max-height: none;
   }
   .hero {
     padding: 24px 0 32px;
@@ -413,6 +402,15 @@
 /* ---------- Featured-papers carousel ---------- */
 .hero-plot {
   position: relative;
+  /* The reserve already pins the controls; drop the hero's bottom padding so they
+     sit just above the divider of the next section instead of floating mid-air. */
+  padding-bottom: 0;
+}
+
+/* The section immediately after the hero tightens its top padding so the "Areas of
+   research" divider line anchors right under the carousel controls. */
+.section-after-hero {
+  padding-top: 24px;
 }
 
 @keyframes hero-slide-in {
@@ -446,26 +444,34 @@
 
 .hero-dots {
   display: inline-flex;
-  gap: 8px;
+  gap: 0;
   align-items: center;
 }
 
 .hero-dot {
+  width: 24px;
+  height: 24px;
+  display: inline-grid;
+  place-items: center;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.hero-dot::before {
+  content: "";
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: var(--border);
-  border: 0;
-  padding: 0;
-  cursor: pointer;
   transition:
     background 120ms ease,
     transform 120ms ease;
 }
-.hero-dot:hover {
+.hero-dot:hover::before {
   background: var(--fg-muted);
 }
-.hero-dot[aria-selected="true"] {
+.hero-dot[aria-selected="true"]::before {
   background: var(--accent);
   transform: scale(1.25);
 }
@@ -480,7 +486,7 @@
   .hero-slide {
     animation: none;
   }
-  .hero-dot {
+  .hero-dot::before {
     transition: none;
   }
 }

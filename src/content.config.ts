@@ -38,6 +38,10 @@ const publications = defineCollection({
       )
       .default([]),
     summary: z.string().max(320),
+    /** Optional plain-language description shown only in the home featured
+     *  carousel. Broader and more reader-friendly than `summary` (which stays
+     *  terse for bento tiles and the index). Falls back to `summary` if unset. */
+    heroSummary: z.string().max(500).optional(),
     cited_by: z.number().int().nonnegative().optional(),
     funding: z.string().optional(),
   }),
