@@ -10,4 +10,4 @@ order: 9
 email: "eksolodneva@gmail.com"
 ---
 
-A PhD candidate at Lomonosov Moscow State University (MSU). Based at Avito as a researcher working on monetization and recommendations. Over the years, I've also done autobidding, reranking, and DL-based CTR. By now my focus is deep models for tabular data and recommendations. Always happy to talk research — feel free to reach out!
+A PhD candidate at Lomonosov Moscow State University and a researcher at Avito. Both there and in my PhD, I work on monetization, recommendations, and ranking. Over the years I have also worked on autobidding, reranking, and DL-based CTR. Broadly, I'm interested in deep models for tabular data and recommender systems. Always glad to talk research — just reach out!
