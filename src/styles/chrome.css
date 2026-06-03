@@ -113,7 +113,7 @@
 .mobile-nav-sheet > nav {
   display: flex;
   flex-direction: column;
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-weight: 500;
   font-size: clamp(28px, 7vw, 40px);
   line-height: 1.2;
