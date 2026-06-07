@@ -27,7 +27,9 @@ const fmt = (d: Date) =>
             <span class="pub-tag pill">{p.data.tag}</span>
             <span class="pub-date mono">{fmt(p.data.date)}</span>
             <div class="pub-body">
-              <h3 class="pub-title">{p.data.title}</h3>
+              <h3 class="pub-title">
+                <a class="pub-title-link" href={`/publications/${p.id}`}>{p.data.title}</a>
+              </h3>
               <p class="pub-meta">
                 {resolveAuthors(p.data.authors, authorMap).map((a, i, arr) => (
                   <>

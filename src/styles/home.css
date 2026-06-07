@@ -321,6 +321,16 @@
   line-height: 1.3;
 }
 
+.pub-title-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.pub-title-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .pub-meta {
   font-size: 13px;
   color: var(--fg-muted);
