@@ -3,6 +3,7 @@ import { useState } from "react";
 interface FacetItem {
   id: string;
   label: string;
+  member?: boolean;
 }
 
 interface Props {
@@ -61,7 +62,7 @@ export default function FacetDropdown({
           )}
           <div className="facet-dd-list">
             {filtered.map((it) => (
-              <label key={it.id}>
+              <label key={it.id} className={it.member ? "is-member" : undefined}>
                 <span className="left">
                   <input type="checkbox" checked={selected.has(it.id)} onChange={() => onToggle(it.id)} />
                   {it.label}

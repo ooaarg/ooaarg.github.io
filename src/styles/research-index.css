@@ -247,6 +247,12 @@
   color: var(--accent);
 }
 
+/* OOAARG members lead the author list and read in the accent color. */
+.facet-dd-list > label.is-member .left {
+  color: var(--accent);
+  font-weight: 600;
+}
+
 .facet-dd-list .left {
   display: flex;
   align-items: center;

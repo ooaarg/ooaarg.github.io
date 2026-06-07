@@ -81,8 +81,19 @@ export default function SearchIndex({ pubs }: Props) {
 
   const authorItems = useMemo(() => {
     const set = new Set<string>();
-    pubs.forEach((p) => p.authors.forEach((a) => set.add(a)));
-    return [...set].sort().map((a) => ({ id: a, label: a }));
+    const members = new Set<string>();
+    pubs.forEach((p) => {
+      p.authors.forEach((a) => set.add(a));
+      p.authorLinks.forEach((a) => a.id && members.add(a.name));
+    });
+    // OOAARG members (those with an /about page) lead the list, then everyone
+    // else, each group alphabetical.
+    return [...set]
+      .map((a) => ({ id: a, label: a, member: members.has(a) }))
+      .sort((x, y) => {
+        if (x.member !== y.member) return x.member ? -1 : 1;
+        return x.label.localeCompare(y.label);
+      });
   }, [pubs]);
 
   const tagItems = useMemo(() => {
