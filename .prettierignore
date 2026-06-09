@@ -5,6 +5,7 @@ node_modules
 .wrangler
 .claude
 bun.lock
+public/googlebd747a071839361f.html
 
 # Prose is hand-formatted, not run through the code formatter.
 *.md
