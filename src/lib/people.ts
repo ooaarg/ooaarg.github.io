@@ -3,12 +3,19 @@ import { sortByDateDesc, type Pub } from "./pubs";
 
 export type Person = CollectionEntry<"people">;
 
+const STAFF_GROUPS = new Set<Person["data"]["group"]>(["faculty", "postdoc", "phd"]);
+
 /** name → person id, for resolving publication author strings to /about/<id>. */
 export async function getAuthorMap(): Promise<Map<string, string>> {
   const people = await getCollection("people");
   const map = new Map<string, string>();
   for (const p of people) map.set(p.data.name, p.id);
   return map;
+}
+
+export async function getStaffAuthorNames(): Promise<Set<string>> {
+  const people = await getCollection("people");
+  return new Set(people.filter((p) => STAFF_GROUPS.has(p.data.group)).map((p) => p.data.name));
 }
 
 /** Filter publications whose authors[] includes this person's display name. */

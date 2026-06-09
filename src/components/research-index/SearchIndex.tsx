@@ -9,7 +9,7 @@ export interface IndexedPub {
   id: string;
   title: string;
   authors: string[];
-  authorLinks: Array<{ name: string; id?: string }>;
+  authorLinks: Array<{ name: string; id?: string; staff?: boolean }>;
   date: string; // DD-MM-YYYY
   year: number;
   venue: string;
@@ -81,15 +81,15 @@ export default function SearchIndex({ pubs }: Props) {
 
   const authorItems = useMemo(() => {
     const set = new Set<string>();
-    const members = new Set<string>();
+    const staff = new Set<string>();
     pubs.forEach((p) => {
       p.authors.forEach((a) => set.add(a));
-      p.authorLinks.forEach((a) => a.id && members.add(a.name));
+      p.authorLinks.forEach((a) => a.staff && staff.add(a.name));
     });
-    // OOAARG members (those with an /about page) lead the list, then everyone
+    // OOAARG staff lead the list, then everyone
     // else, each group alphabetical.
     return [...set]
-      .map((a) => ({ id: a, label: a, member: members.has(a) }))
+      .map((a) => ({ id: a, label: a, member: staff.has(a) }))
       .sort((x, y) => {
         if (x.member !== y.member) return x.member ? -1 : 1;
         return x.label.localeCompare(y.label);

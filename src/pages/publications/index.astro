@@ -3,10 +3,11 @@ import { getCollection } from 'astro:content';
 import Site from '../../layouts/Site.astro';
 import SearchIndex from '../../components/research-index/SearchIndex.tsx';
 import type { IndexedPub } from '../../components/research-index/SearchIndex.tsx';
-import { getAuthorMap, resolveAuthors } from '../../lib/people';
+import { getAuthorMap, getStaffAuthorNames, resolveAuthors } from '../../lib/people';
 
 const all = await getCollection('publications');
 const authorMap = await getAuthorMap();
+const staffAuthorNames = await getStaffAuthorNames();
 
 const fmt = (d: Date) =>
   `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`;
@@ -15,7 +16,10 @@ const pubs: IndexedPub[] = all.map((p) => ({
   id: p.id,
   title: p.data.title,
   authors: p.data.authors,
-  authorLinks: resolveAuthors(p.data.authors, authorMap),
+  authorLinks: resolveAuthors(p.data.authors, authorMap).map((author) => ({
+    ...author,
+    staff: staffAuthorNames.has(author.name),
+  })),
   date: fmt(p.data.date),
   year: p.data.date.getFullYear(),
   venue: p.data.venue,
