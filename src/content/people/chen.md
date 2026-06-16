@@ -4,7 +4,7 @@ initials: "JC"
 role: "Research Assistant Professor · Ph.D."
 topic: "Graph algorithms, Data structures, AI."
 group: "partner"
-org: "The Chinese University of Hong Kong"
+org: "The Chinese University of Hong Kong, Shenzhen"
 links:
   scholar: "https://scholar.google.com/citations?user=UQfmkJUAAAAJ"
   other:
