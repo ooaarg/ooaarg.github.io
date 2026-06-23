@@ -29,22 +29,24 @@ const classes = ['ooaarg-mark', hero ? 'hero' : '', className].filter(Boolean).j
   const state = new WeakMap<HTMLElement, MarkState>();
 
   function onEnter(e: Event) {
-    const mark = (e.target as HTMLElement).closest<HTMLElement>('.ooaarg-mark');
+    if (!(e.target instanceof Element)) return;
+    const mark = e.target.closest<HTMLElement>('.ooaarg-mark');
     if (!mark) return;
     state.set(mark, { leaving: false });
     mark.classList.add('is-bouncing');
   }
 
   function onLeave(e: Event) {
-    const mark = (e.target as HTMLElement).closest<HTMLElement>('.ooaarg-mark');
+    if (!(e.target instanceof Element)) return;
+    const mark = e.target.closest<HTMLElement>('.ooaarg-mark');
     if (!mark || !mark.classList.contains('is-bouncing')) return;
     state.set(mark, { leaving: true });
   }
 
   function onIteration(e: AnimationEvent) {
     if (e.animationName !== 'ooaargStretch') return;
-    const stretch = e.target as HTMLElement;
-    const mark = stretch.closest<HTMLElement>('.ooaarg-mark');
+    if (!(e.target instanceof Element)) return;
+    const mark = e.target.closest<HTMLElement>('.ooaarg-mark');
     if (!mark) return;
     const s = state.get(mark);
     if (s?.leaving) {

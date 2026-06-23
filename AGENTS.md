@@ -26,7 +26,7 @@ bun install                # deps
 bun dev                    # dev server on :4321
 bun run build              # static output to dist/
 bun run preview            # serve dist/ on :4321
-bun run typecheck          # astro check (Astro + React + TS + content schemas)
+bun run typecheck          # astro check (Astro + Preact + TS + content schemas)
 bun run lint               # oxlint (JS/TS; lint:fix autofixes)
 bun run format             # oxfmt --write . (format:check verifies)
 ```
@@ -46,7 +46,7 @@ There is no test runner; verification is `bun run typecheck` (astro check), `bun
 ## Stack
 
 - **Astro 7** (was scaffolded as 5, ran on 6.2.x; upgraded to 7.0.0). File-based routing, static output (`output: 'static'`).
-- **React 19** for client islands only. Default to `.astro` and use React only when state is genuinely required (search, modals, mobile-nav sheet).
+- **Preact** (via `@astrojs/preact` with `compat: true`) for client islands only. **Preact event gotcha:** in DOM event handlers use `e.currentTarget.value`, not `e.target.value` — Preact types `e.target` as a bare `EventTarget` (no `.value`, possibly null), so `e.target.value` fails typecheck.
 - **`<ClientRouter />`** in the Site layout enables View Transitions API. Same-origin nav is a DOM swap, not a reload — see "Cross-navigation gotchas" below.
 - **MDX content collections** (`src/content/{publications,people,news}/*.{md,mdx}`) with **Zod schemas** in `src/content.config.ts`. Filenames become collection ids (`oon-2026.mdx` → `/publications/oon-2026`; `neurips-2026-accepted.mdx` → `/blog/neurips-2026-accepted`). The `news` schema uses Astro's `image()` helper, so news images are co-located in `src/content/news/` (not `public/`) and processed at build time via `<Image />`.
 - **KaTeX** via `remark-math` + `rehype-katex`. Astro 7's default Markdown/MDX processor is Sätteri (Rust), which does **not** run remark/rehype plugins — so `astro.config.mjs` explicitly opts back into the unified pipeline with `processor: unified({ remarkPlugins, rehypePlugins })` from `@astrojs/markdown-remark`. Don't drop that `processor` line or math stops rendering. KaTeX CSS is imported only on `pages/publications/[id].astro` so other routes don't pay for ~70KB of CSS.
@@ -70,13 +70,13 @@ If `/tmp/ooaarg-design/` is gone (fresh machine, reboot), ask the user before gu
 - `data-theme="dark"` or `data-theme="light"` on `<html>`. CSS tokens live in `src/styles/tokens.css` keyed off this attribute.
 - Initial theme is set by an **inline `<script is:inline>`** in `src/layouts/Site.astro` _before paint_ to avoid a dark↔light flash. It also installs `astro:before-swap` and `astro:after-swap` listeners.
 - **Why before-swap matters:** Astro's ClientRouter copies `<html>` attributes from the new page on swap, which would wipe `data-theme`. The `astro:before-swap` handler re-stamps the user's stored theme onto the _incoming_ document so it never flickers.
-- The toggle is a **plain `<button>` in `ThemeToggle.astro`** with a single document-delegated click handler. Do **not** convert it back to a React island — re-mounting on view transitions caused phantom toggles.
+- The toggle is a **plain `<button>` in `ThemeToggle.astro`** with a single document-delegated click handler. Do **not** convert it back to an island — re-mounting on view transitions caused phantom toggles. The handler guards `e.target instanceof Element` before `.closest()` — a delegated document click can fire with `e.target === document` (pointer entering from outside the viewport), which has no `.closest`.
 
 ### Kinetic logo (`src/components/KineticLogo.astro` + `src/styles/kinetic-logo.css`)
 
 - The wordmark is **paused at rest**, runs on hover/focus, and **completes its current cycle on mouseleave** instead of freezing mid-stretch. This is class-driven (`.is-bouncing`) plus a document-delegated `animationiteration` listener (the script lives in `KineticLogo.astro`; the `__ooaargBound` flag makes it idempotent across the multiple instances and view transitions).
 - `prefers-reduced-motion` removes the animation entirely.
-- Used in three places: header, footer (Astro), and inline JSX inside `MobileNav.tsx` (the React island can't import `.astro` components).
+- Used in three places: header, footer (Astro), and inline JSX inside `MobileNav.tsx` (the Preact island can't import `.astro` components). The delegated hover/focus handlers here guard `e.target instanceof Element` before `.closest()` for the same reason as the theme toggle.
 
 ### Bento grid packing (`src/lib/pubs.ts` → `computeBentoSpans` / `packBento`)
 
@@ -101,7 +101,7 @@ Lighthouse a11y is at 100. To keep it there:
 
 ### Cross-navigation gotchas
 
-Astro's ClientRouter swaps the body and merges `<html>` attrs from the new page. Anything that lives outside React island lifecycle and depends on persistent state (theme, scroll restoration, animation flags) must either:
+Astro's ClientRouter swaps the body and merges `<html>` attrs from the new page. Anything that lives outside island lifecycle and depends on persistent state (theme, scroll restoration, animation flags) must either:
 
 1. Re-assert state on `astro:before-swap` (preferred — runs before paint), or
 2. Delegate from `document` (handlers survive swaps), or
@@ -121,8 +121,8 @@ Shared `CiteModal.tsx` (focus trap, ESC, body scroll lock, full-screen on mobile
 
 ### Performance budgets (mobile, blocking gates)
 
-- Lighthouse mobile: Performance ≥90, Accessibility/BP/SEO ≥95 (currently 93–98 / 100 / 100 / 100).
-- JS gzip per route: ≤100KB hard, ≤50KB stretch. The biggest single bundle is the React runtime at ~58KB gz; per-route extras stay under 3KB.
+- Lighthouse mobile: Performance ≥90, Accessibility/BP/SEO ≥95 (currently 96–99 / 98–100 / 100 / 100).
+- JS gzip per route: ≤100KB hard, ≤50KB stretch. Since the Preact swap, total JS is ~28KB gz (was ~75KB on React); the biggest single chunk is the ClientRouter script at ~4.6KB, the Preact runtime ~4.4KB; per-route extras stay under 3KB.
 - LCP ≤2.5s on simulated Slow 4G (currently ~2.4s on home). CLS = 0.
 
 If you add a new island or a heavy CSS dep, re-run Lighthouse mobile before claiming the change is done.
@@ -135,7 +135,7 @@ Required: `title`, `authors[]`, `date` (ISO), `venue`, `tag` (`Oral|Spotlight|Pa
 
 Optional: `featured` (bool), `featuredOrder` (int — lower leads the home carousel), `span` (`2|3|4|6` — base, may be expanded by bento packer), `tags[]`, `arxiv`, `doi`, `github`, `pdf`, `links[]`, `cited_by`, `funding`. The primary action button follows `doi` → `arxiv` → first `links[]` entry; a `doi` renders as **"Paper"** (via `paperUrl()` in `src/lib/pubs.ts`).
 
-A paper figure is **not** a frontmatter field. It's a React component at `src/components/publication/figures/<area>/<id>.tsx` exporting a default component, auto-registered by slug via `import.meta.glob("./figures/**/*.tsx")` in `src/components/publication/PaperFigure.tsx` (the file basename is the slug, so the `<area>` subdirectory is just organization). Drop the file in and it renders on the bento tile and detail page.
+A paper figure is **not** a frontmatter field. It's a `.tsx` island (Preact via compat — authored with React imports) at `src/components/publication/figures/<area>/<id>.tsx` exporting a default component, auto-registered by slug via `import.meta.glob("./figures/**/*.tsx")` in `src/components/publication/PaperFigure.tsx` (the file basename is the slug, so the `<area>` subdirectory is just organization). Drop the file in and it renders on the bento tile and detail page.
 
 The MDX body is rendered as the article on `/publications/<id>`. Use `$inline$` and `$$display$$` for math (KaTeX). The `AREA_LABEL` map in `src/pages/publications/[id].astro` is the single source of truth for human-readable area names — keep it in sync with the Zod enum.
 

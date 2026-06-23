@@ -57,7 +57,7 @@ export default function FacetDropdown({
               className="facet-dd-search"
               placeholder={`Filter ${title.toLowerCase()}…`}
               value={q}
-              onChange={(e) => setQ(e.target.value)}
+              onChange={(e) => setQ(e.currentTarget.value)}
             />
           )}
           <div className="facet-dd-list">
