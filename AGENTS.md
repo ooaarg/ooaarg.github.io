@@ -45,11 +45,11 @@ There is no test runner; verification is `bun run typecheck` (astro check), `bun
 
 ## Stack
 
-- **Astro 6** (was scaffolded as 5; the latest installed is 6.2.x). File-based routing, static output (`output: 'static'`).
+- **Astro 7** (was scaffolded as 5, ran on 6.2.x; upgraded to 7.0.0). File-based routing, static output (`output: 'static'`).
 - **React 19** for client islands only. Default to `.astro` and use React only when state is genuinely required (search, modals, mobile-nav sheet).
 - **`<ClientRouter />`** in the Site layout enables View Transitions API. Same-origin nav is a DOM swap, not a reload — see "Cross-navigation gotchas" below.
 - **MDX content collections** (`src/content/{publications,people,news}/*.{md,mdx}`) with **Zod schemas** in `src/content.config.ts`. Filenames become collection ids (`oon-2026.mdx` → `/publications/oon-2026`; `neurips-2026-accepted.mdx` → `/blog/neurips-2026-accepted`). The `news` schema uses Astro's `image()` helper, so news images are co-located in `src/content/news/` (not `public/`) and processed at build time via `<Image />`.
-- **KaTeX** via `remark-math` + `rehype-katex` in `astro.config.mjs`. KaTeX CSS is imported only on `pages/publications/[id].astro` so other routes don't pay for ~70KB of CSS.
+- **KaTeX** via `remark-math` + `rehype-katex`. Astro 7's default Markdown/MDX processor is Sätteri (Rust), which does **not** run remark/rehype plugins — so `astro.config.mjs` explicitly opts back into the unified pipeline with `processor: unified({ remarkPlugins, rehypePlugins })` from `@astrojs/markdown-remark`. Don't drop that `processor` line or math stops rendering. KaTeX CSS is imported only on `pages/publications/[id].astro` so other routes don't pay for ~70KB of CSS.
 - **Self-hosted variable fonts** via `@fontsource-variable/{inter,source-serif-4}` and `@fontsource/jetbrains-mono` — never load from Google Fonts.
 
 ## Design source
