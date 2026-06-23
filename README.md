@@ -37,7 +37,7 @@ Each content type has its own guide:
 | ---------------------- | ---------------------------------------------------------------- |
 | `bun install`          | Install dependencies.                                            |
 | `bun dev`              | Dev server with hot reload at `http://localhost:4321`.           |
-| `bun run typecheck`    | Type-check Astro components, React islands, and content schemas (`astro check`). |
+| `bun run typecheck`    | Type-check Astro components, Preact islands, and content schemas (`astro check`). |
 | `bun run lint`         | Lint JS/TS with [oxlint](https://oxc.rs/docs/guide/usage/linter). `lint:fix` autofixes. |
 | `bun run format`       | Format JS/TS/CSS with [oxfmt](https://oxc.rs/docs/guide/usage/formatter). `format:check` verifies without writing. |
 | `bun run build`        | Static build into `dist/`.                                       |

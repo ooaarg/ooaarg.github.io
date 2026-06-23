@@ -273,7 +273,7 @@ export default function SearchIndex({ pubs }: Props) {
           id="ri-search"
           placeholder="Search titles, abstracts, authors, tags…"
           value={q}
-          onChange={(e) => setQ(e.target.value)}
+          onChange={(e) => setQ(e.currentTarget.value)}
           aria-label="Search publications"
         />
         <kbd>⌘K</kbd>
@@ -320,7 +320,7 @@ export default function SearchIndex({ pubs }: Props) {
                   fontSize: 13,
                 }}
                 value={sort}
-                onChange={(e) => setSort(e.target.value as typeof sort)}
+                onChange={(e) => setSort(e.currentTarget.value as typeof sort)}
                 aria-label="Sort order"
               >
                 <option value="newest">Date (newest)</option>

@@ -34,7 +34,8 @@
     document.addEventListener(
       'click',
       (e) => {
-        const target = e.target as HTMLElement;
+        const target = e.target;
+        if (!(target instanceof Element)) return;
         const btn = target.closest('#theme-toggle');
         if (!btn) return;
         // Stop the click from bubbling into anything else (e.g. ClientRouter prefetch).

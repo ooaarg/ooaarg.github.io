@@ -1,6 +1,6 @@
 // @ts-check
 import { defineConfig } from "astro/config";
-import react from "@astrojs/react";
+import preact from "@astrojs/preact";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import { unified } from "@astrojs/markdown-remark";
@@ -9,7 +9,7 @@ import rehypeKatex from "rehype-katex";
 
 export default defineConfig({
   site: "https://ooaarg.github.io",
-  integrations: [react(), mdx(), sitemap()],
+  integrations: [preact({ compat: true }), mdx(), sitemap()],
   build: { inlineStylesheets: "always" },
   markdown: {
     processor: unified({
