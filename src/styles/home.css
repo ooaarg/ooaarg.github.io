@@ -17,25 +17,6 @@
   color: var(--fg-muted);
 }
 
-.hero-title {
-  font-size: clamp(44px, 6.5vw, 96px);
-  line-height: 0.98;
-  letter-spacing: -0.03em;
-  font-weight: 400;
-  max-width: 22ch;
-}
-
-.hero-title em {
-  font-style: italic;
-  font-family: var(--font-serif);
-  color: var(--accent);
-}
-
-.hero-accent {
-  color: var(--accent);
-  font-style: italic;
-}
-
 .hero-foot {
   margin-top: 64px;
   display: grid;
