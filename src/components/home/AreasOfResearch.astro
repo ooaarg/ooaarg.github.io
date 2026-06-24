@@ -13,16 +13,16 @@ const MONTH = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'O
 const fmtLatest = (d: Date | null) => (d ? `${MONTH[d.getMonth()]} ${d.getFullYear()}` : null);
 ---
 
-<div class="areas-grid" role="list">
+<ul class="areas-grid">
   {AREAS.map((area) => {
     const s = stats[area.id];
     const active = s.count > 0;
     const latest = fmtLatest(s.latest);
     return (
+      <li>
       <a
         class={`area-card${active ? '' : ' is-nascent'}`}
         href={active ? `/publications?area=${area.id}` : '/publications'}
-        role="listitem"
         aria-label={`${area.name} — ${s.count} ${s.count === 1 ? 'paper' : 'papers'}`}
       >
         <div class="area-card-head">
@@ -53,6 +53,7 @@ const fmtLatest = (d: Date | null) => (d ? `${MONTH[d.getMonth()]} ${d.getFullYe
           )}
         </div>
       </a>
+      </li>
     );
   })}
-</div>
+</ul>
