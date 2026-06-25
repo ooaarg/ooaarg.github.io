@@ -1,4 +1,4 @@
-/* Reusable components: buttons, pills, tabs, inputs, cards, algo-box, math, cite-modal */
+/* Reusable components: buttons, pills, tabs, inputs, cards, cite-modal */
 
 /* ---------- Buttons ---------- */
 .btn {
@@ -73,6 +73,13 @@
 .btn svg {
   width: 14px;
   height: 14px;
+}
+
+.btn[href^="http"]::before,
+.btn[href^="//"]::before {
+  content: "↗" / "";
+  font-size: 0.95em;
+  line-height: 1;
 }
 
 /* On touch devices, beef up tap targets */
