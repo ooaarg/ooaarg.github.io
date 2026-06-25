@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Facet from "./Facet";
 import FacetDropdown from "./FacetDropdown";
-import PaperFigure, { hasPaperFigure } from "../publication/PaperFigure";
-import "../../styles/research-index.css";
-import "../../styles/publications.css";
+import PaperFigure, { hasPaperFigure } from "../detail/PaperFigure";
+import "../../../styles/publications-search.css";
+import "../../../styles/publications-cards.css";
 
 export interface IndexedPub {
   id: string;
@@ -68,7 +68,6 @@ export default function SearchIndex({ pubs }: Props) {
 
   const clearKey = (key: FilterKey) => setFilters((prev) => ({ ...prev, [key]: new Set() }));
 
-  // Derive facet items from data so it stays in sync with content collection.
   const venueItems = useMemo(() => {
     const set = new Set(pubs.map((p) => p.venue));
     return [...set].sort().map((v) => ({ id: v, label: v }));
@@ -162,7 +161,6 @@ export default function SearchIndex({ pubs }: Props) {
       tag: new Set(),
     });
 
-  // Seed filters from URL query params (e.g. /publications?tag=Regret&area=bandits)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const seed: Partial<Record<FilterKey, Set<string>>> = {};
@@ -175,7 +173,6 @@ export default function SearchIndex({ pubs }: Props) {
     if (Object.keys(seed).length) setFilters((prev) => ({ ...prev, ...seed }));
   }, []);
 
-  // ⌘/Ctrl-K focus
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
@@ -187,7 +184,6 @@ export default function SearchIndex({ pubs }: Props) {
     return () => window.removeEventListener("keydown", h);
   }, []);
 
-  // Sheet ESC + scroll lock
   useEffect(() => {
     if (!sheetOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -279,7 +275,6 @@ export default function SearchIndex({ pubs }: Props) {
         <kbd>⌘K</kbd>
       </div>
 
-      {/* Mobile filters trigger */}
       <div style={{ marginTop: 12 }}>
         <button
           ref={triggerRef}
@@ -409,7 +404,6 @@ export default function SearchIndex({ pubs }: Props) {
         </div>
       </div>
 
-      {/* Bottom sheet for facets on mobile */}
       <div
         className="facet-sheet"
         hidden={!sheetOpen}

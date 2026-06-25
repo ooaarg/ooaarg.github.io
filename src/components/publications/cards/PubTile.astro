@@ -1,9 +1,9 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import PaperFigure, { hasPaperFigure } from '../publication/PaperFigure.tsx';
-import CiteButton from './CiteButton.tsx';
-import { getAuthorMap, resolveAuthors } from '../../lib/people';
-import { paperUrl, doiOf, extraLinks } from '../../lib/pubs';
+import PaperFigure, { hasPaperFigure } from '../detail/PaperFigure.tsx';
+import CiteButton from '../shared/CiteButton.tsx';
+import { getAuthorMap, resolveAuthors } from '../../../lib/people';
+import { paperUrl, doiOf, extraLinks } from '../../../lib/pubs';
 
 interface Props {
   pub: CollectionEntry<'publications'>;

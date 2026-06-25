@@ -33,20 +33,14 @@ function norm(c: number, r: number) {
 /** Implicit density field for the bat. Returns a value > 0 inside the
  *  silhouette (larger = deeper inside, falls to 0 at the edge). */
 function batDensity(x: number, y: number): number {
-  // Body — narrow vertical lens through the centre.
   const body = 1 - Math.hypot(x / 0.14, y / 0.42);
 
-  // Wings — two wide horizontal ellipses on each side, slightly raised so
-  // they sweep up from the body.
   const wingL = 1 - Math.hypot((x + 0.5) / 0.52, (y - 0.05) / 0.3);
   const wingR = 1 - Math.hypot((x - 0.5) / 0.52, (y - 0.05) / 0.3);
 
-  // Shoulder bridges — fill the gap between body and wings so the
-  // silhouette reads as one connected shape, not three blobs.
   const brL = 1 - Math.hypot((x + 0.28) / 0.32, (y + 0.0) / 0.22);
   const brR = 1 - Math.hypot((x - 0.28) / 0.32, (y + 0.0) / 0.22);
 
-  // Ears — two small pointy ellipses on top of the head.
   const earL = 1 - Math.hypot((x + 0.1) / 0.05, (y - 0.55) / 0.15);
   const earR = 1 - Math.hypot((x - 0.1) / 0.05, (y - 0.55) / 0.15);
 

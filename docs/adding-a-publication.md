@@ -94,7 +94,7 @@ A minimal non-featured entry can be just frontmatter — the body is optional.
 
 ## Adding a figure (optional)
 
-A paper figure is a React component at `src/components/publication/figures/<area>/<slug>.tsx` exporting a default component (usually an inline SVG). The filename must match the publication slug — the loader (`src/components/publication/PaperFigure.tsx`) globs `figures/**` and maps each file to its slug by basename, so the `<area>` subdirectory is just organization. Drop the file in and it renders on the bento tile and detail page, no wiring needed. See the existing figures for examples.
+A paper figure is a React component at `src/components/publications/detail/figures/<area>/<slug>.tsx` exporting a default component (usually an inline SVG). The filename must match the publication slug — the loader (`src/components/publications/detail/PaperFigure.tsx`) globs `figures/**` and maps each file to its slug by basename, so the `<area>` subdirectory is just organization. Drop the file in and it renders on the bento tile and detail page, no wiring needed. See the existing figures for examples.
 
 ## 5. Preview locally
 

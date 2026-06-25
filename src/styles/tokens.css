@@ -1,5 +1,3 @@
-/* OOAARG — design tokens. Verbatim from prototype styles.css. */
-
 :root {
   /* Light theme defaults; overridden by [data-theme="dark"] */
   --bg: #fafaf9;

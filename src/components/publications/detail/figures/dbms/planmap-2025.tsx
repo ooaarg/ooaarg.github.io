@@ -1,12 +1,8 @@
 const VB = { w: 400, h: 300 };
 
-// Two regions side-by-side. Radius and centres tuned so the regions read
-// as distinct sets with a comfortable gap between them.
 const N = { cx: 110, cy: 152, r: 78 };
 const K_ = { cx: 290, cy: 152, r: 78 };
 
-// Background plans / hints — hand-placed inside each region for visual
-// rhythm. Each entry is [x, y].
 const PLANS = [
   [70, 110],
   [90, 96],
@@ -73,7 +69,6 @@ export default function HintqoFigure() {
 
       <rect width={VB.w} height={VB.h} fill="url(#hintqo-grid)" />
 
-      {/* The two regions: faint accent wash + dashed accent stroke. */}
       <circle
         cx={N.cx}
         cy={N.cy}
@@ -97,7 +92,6 @@ export default function HintqoFigure() {
         opacity={0.85}
       />
 
-      {/* Region labels — mono caps in the upper-outer corner of each region. */}
       <text
         x={N.cx - N.r + 4}
         y={N.cy - N.r - 6}
@@ -120,7 +114,6 @@ export default function HintqoFigure() {
         K
       </text>
 
-      {/* Background plans / hints. */}
       {PLANS.map(([x, y], i) => (
         <circle key={`p-${i}`} cx={x} cy={y} r={2.4} fill="currentColor" opacity={0.42} />
       ))}
@@ -128,8 +121,6 @@ export default function HintqoFigure() {
         <circle key={`h-${i}`} cx={x} cy={y} r={2.4} fill="currentColor" opacity={0.42} />
       ))}
 
-      {/* Mapping for the default-plan safety baseline (dashed, muted). Drawn
-       * before the primary arrow so the primary sits on top visually. */}
       <line
         x1={P0[0] + 6}
         y1={P0[1] + 4}
@@ -142,8 +133,6 @@ export default function HintqoFigure() {
         markerEnd="url(#hintqo-arrow-muted)"
       />
 
-      {/* Primary mapping h: p ↦ h(p) (solid accent). Endpoints are nudged off
-       * the dot centres so the arrowhead lands cleanly. */}
       <line
         x1={P[0] + 6}
         y1={P[1]}
@@ -154,14 +143,12 @@ export default function HintqoFigure() {
         markerEnd="url(#hintqo-arrow)"
       />
 
-      {/* The target / safety plan + hint dots, drawn on top of the regions. */}
       <circle cx={P0[0]} cy={P0[1]} r={3.4} fill="var(--accent)" opacity={0.7} />
       <circle cx={HP0[0]} cy={HP0[1]} r={3.4} fill="var(--accent)" opacity={0.7} />
 
       <circle cx={P[0]} cy={P[1]} r={4.2} fill="var(--accent)" />
       <circle cx={HP[0]} cy={HP[1]} r={4.2} fill="var(--accent)" />
 
-      {/* Point labels. */}
       <text
         x={P[0] - 6}
         y={P[1] - 8}
@@ -203,7 +190,6 @@ export default function HintqoFigure() {
         h(p₀)
       </text>
 
-      {/* Bottom caption — title for the whole construction. */}
       <text
         x={VB.w / 2}
         y={VB.h - 14}

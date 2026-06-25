@@ -1,5 +1,3 @@
-/* People page */
-
 .people-hero {
   padding: 64px 0 32px;
 }
@@ -24,7 +22,6 @@
   margin-top: 32px;
 }
 
-/* Partners grouped by organization */
 .partner-orgs {
   display: flex;
   flex-direction: column;
@@ -172,7 +169,6 @@
   }
 }
 
-/* Clickable person card on /about */
 .person-card-link {
   display: block;
   color: inherit;
@@ -191,7 +187,6 @@
   outline: 1px solid color-mix(in oklab, var(--accent) 50%, transparent);
 }
 
-/* Per-person detail page (/about/<id>) */
 .person-detail {
   padding: 56px 0 96px;
 }

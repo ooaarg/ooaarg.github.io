@@ -1,14 +1,13 @@
 ---
 import { getCollection, render } from 'astro:content';
-import Site from '../../layouts/Site.astro';
-import PubFigure from '../../components/publication/PubFigure.astro';
-import { hasPaperFigure } from '../../components/publication/PaperFigure.tsx';
-import CiteButton from '../../components/publications/CiteButton.tsx';
+import DetailLayout from '../../layouts/DetailLayout.astro';
+import PubFigure from '../../components/publications/detail/PubFigure.astro';
+import { hasPaperFigure } from '../../components/publications/detail/PaperFigure.tsx';
+import CiteButton from '../../components/publications/shared/CiteButton.tsx';
 import { getAuthorMap, resolveAuthors } from '../../lib/people';
 import { paperUrl, doiOf, extraLinks } from '../../lib/pubs';
 
 import 'katex/dist/katex.min.css';
-import '../../styles/publication.css';
 
 export async function getStaticPaths() {
   const pubs = await getCollection('publications');
@@ -48,95 +47,86 @@ const showFigure = hasPaperFigure(id);
 const paper = paperUrl(data);
 ---
 
-<Site
+<DetailLayout
   active="pubs"
   title={`${data.title} · OOAARG`}
   description={data.summary}
+  heading={data.title}
 >
-  <section class="pub-detail">
-    <div class="container">
-      <div class="breadcrumb">
-        <a href="/publications">Publications</a> <span>/</span> {data.venue} <span>/</span>{' '}
-        {data.authors[0].split(/\s+/).pop()} et al.
-      </div>
+  <Fragment slot="breadcrumb">
+    <a href="/publications">Publications</a> <span>/</span> {data.venue}{' '}<span>/</span>{' '}
+    {data.authors[0].split(/\s+/).pop()} et al.
+  </Fragment>
 
-      <div class="badge-row">
-        <span class="pill accent">{data.tag}</span>
-        <span class="pill">{data.venue}</span>
-        <span class="pill">{AREA_LABEL[data.area]}</span>
-      </div>
+  <Fragment slot="badges">
+    <span class="pill accent">{data.tag}</span>
+    <span class="pill">{data.venue}</span>
+    <span class="pill">{AREA_LABEL[data.area]}</span>
+  </Fragment>
 
-      <h1 style="margin-top: 24px; view-transition-name: hero-title;">{data.title}</h1>
-
-      <p class="authors">
-        {authorEntries.map((a, i) => (
-          <>
-            {a.id ? (
-              <a class="author-link" href={`/about/${a.id}`}><strong>{a.name}</strong></a>
-            ) : (
-              <strong>{a.name}</strong>
-            )}
-            {i < authorEntries.length - 1 ? ', ' : ''}
-          </>
-        ))}
-      </p>
-
-      <div class="actions">
-        {paper && (
-          <a class="btn btn-primary" href={paper} target="_blank" rel="noopener">Paper</a>
+  <p class="authors" slot="byline">
+    {authorEntries.map((a, i) => (
+      <>
+        {a.id ? (
+          <a class="author-link" href={`/about/${a.id}`}><strong>{a.name}</strong></a>
+        ) : (
+          <strong>{a.name}</strong>
         )}
-        {data.arxiv && (
-          <a
-            class={paper ? 'btn' : 'btn btn-primary'}
-            href={`https://arxiv.org/abs/${data.arxiv}`}
-            target="_blank"
-            rel="noopener"
-          >
-            arXiv:{data.arxiv}
-          </a>
-        )}
-        {data.pdf && <a class="btn" href={data.pdf} target="_blank" rel="noopener">PDF</a>}
-        {data.github && <a class="btn" href={data.github} target="_blank" rel="noopener">GitHub</a>}
-        {extraLinks(data).map((l) => (
-          <a class="btn" href={l.url} target="_blank" rel="noopener">{l.label}</a>
-        ))}
-        <CiteButton client:visible pub={citable} variant="accent" size="md" label="Cite" />
-      </div>
+        {i < authorEntries.length - 1 ? ', ' : ''}
+      </>
+    ))}
+  </p>
 
-      {showFigure && <PubFigure pubId={id} />}
+  <Fragment slot="actions">
+    {paper && (
+      <a class="btn btn-primary" href={paper} target="_blank" rel="noopener">Paper</a>
+    )}
+    {data.arxiv && (
+      <a
+        class={paper ? 'btn' : 'btn btn-primary'}
+        href={`https://arxiv.org/abs/${data.arxiv}`}
+        target="_blank"
+        rel="noopener"
+      >
+        arXiv:{data.arxiv}
+      </a>
+    )}
+    {data.pdf && <a class="btn" href={data.pdf} target="_blank" rel="noopener">PDF</a>}
+    {data.github && <a class="btn" href={data.github} target="_blank" rel="noopener">GitHub</a>}
+    {extraLinks(data).map((l) => (
+      <a class="btn" href={l.url} target="_blank" rel="noopener">{l.label}</a>
+    ))}
+    <CiteButton client:visible pub={citable} variant="accent" size="md" label="Cite" />
+  </Fragment>
 
-      <div class="pub-content">
-        <article>
-          <Content />
-        </article>
+  {showFigure && <PubFigure pubId={id} slot="figure" />}
 
-        <aside class="pub-aside">
-          <div class="group">
-            <h3 class="aside-label">Published</h3>
-            <p class="mono" style="color: var(--fg);">{fmt(data.date)}</p>
-          </div>
-          <div class="group">
-            <h3 class="aside-label">Venue</h3>
-            <p>{data.venue}</p>
-          </div>
-          {data.tags.length > 0 && (
-            <div class="group">
-              <h3 class="aside-label">Keywords</h3>
-              <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px;">
-                {data.tags.map((t) => (
-                  <a class="pill" href={`/publications?tag=${encodeURIComponent(t)}`}>{t}</a>
-                ))}
-              </div>
-            </div>
-          )}
-          {data.funding && (
-            <div class="group">
-              <h3 class="aside-label">Funding</h3>
-              <p>{data.funding}</p>
-            </div>
-          )}
-        </aside>
-      </div>
+  <Content />
+
+  <Fragment slot="aside">
+    <div class="group">
+      <h3 class="aside-label">Published</h3>
+      <p class="mono" style="color: var(--fg);">{fmt(data.date)}</p>
     </div>
-  </section>
-</Site>
+    <div class="group">
+      <h3 class="aside-label">Venue</h3>
+      <p>{data.venue}</p>
+    </div>
+    {data.tags.length > 0 && (
+      <div class="group">
+        <h3 class="aside-label">Keywords</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px;">
+          {data.tags.map((t) => (
+            <a class="pill" href={`/publications?tag=${encodeURIComponent(t)}`}>{t}</a>
+          ))}
+        </div>
+      </div>
+    )}
+    {data.funding && (
+      <div class="group">
+        <h3 class="aside-label">Funding</h3>
+        <p>{data.funding}</p>
+      </div>
+    )}
+  </Fragment>
+</DetailLayout>

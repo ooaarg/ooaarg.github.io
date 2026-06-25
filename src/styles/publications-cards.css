@@ -1,5 +1,3 @@
-/* Publications page — bento grid */
-
 .pubs-hero {
   padding: 96px 0 32px;
 }
@@ -30,7 +28,6 @@
   flex: 1;
 }
 
-/* Bento grid */
 .bento {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -114,7 +111,6 @@
   flex-wrap: wrap;
 }
 
-/* Figures */
 .fig-regret {
   background: linear-gradient(
     135deg,
@@ -127,7 +123,6 @@
   background: var(--bg-sunken);
 }
 
-/* Year filter via data-year attribute on the bento root */
 .bento[data-year-filter] .bento-tile {
   display: none;
 }

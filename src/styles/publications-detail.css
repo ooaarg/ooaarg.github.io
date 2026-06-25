@@ -1,5 +1,3 @@
-/* Publication detail page */
-
 .pub-detail {
   padding: 64px 0;
 }
@@ -21,6 +19,10 @@
   letter-spacing: -0.02em;
   max-width: 24ch;
   overflow-wrap: anywhere;
+}
+
+.pub-detail.is-news h1 {
+  max-width: 940px;
 }
 
 .pub-detail .authors {

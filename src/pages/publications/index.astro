@@ -1,8 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import Site from '../../layouts/Site.astro';
-import SearchIndex from '../../components/research-index/SearchIndex.tsx';
-import type { IndexedPub } from '../../components/research-index/SearchIndex.tsx';
+import SearchIndex from '../../components/publications/search/SearchIndex.tsx';
+import type { IndexedPub } from '../../components/publications/search/SearchIndex.tsx';
 import { getAuthorMap, getStaffAuthorNames, resolveAuthors } from '../../lib/people';
 
 const all = await getCollection('publications');

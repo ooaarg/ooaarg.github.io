@@ -1,0 +1,52 @@
+---
+import Site from './Site.astro';
+
+import '../styles/publications-detail.css';
+
+interface Props {
+  active: 'pubs' | 'blog';
+  title: string;
+  description: string;
+  heading: string;
+}
+
+const { active, title, description, heading } = Astro.props;
+const hasActions = Astro.slots.has('actions');
+const hasFigure = Astro.slots.has('figure');
+---
+
+<Site active={active} title={title} description={description}>
+  <section class={`pub-detail${active === 'blog' ? ' is-news' : ''}`}>
+    <div class="container">
+      <div class="breadcrumb">
+        <slot name="breadcrumb" />
+      </div>
+
+      <div class="badge-row">
+        <slot name="badges" />
+      </div>
+
+      <h1 style="margin-top: 24px; view-transition-name: hero-title;">{heading}</h1>
+
+      <slot name="byline" />
+
+      {hasActions && (
+        <div class="actions">
+          <slot name="actions" />
+        </div>
+      )}
+
+      {hasFigure && <slot name="figure" />}
+
+      <div class="pub-content">
+        <article>
+          <slot />
+        </article>
+
+        <aside class="pub-aside">
+          <slot name="aside" />
+        </aside>
+      </div>
+    </div>
+  </section>
+</Site>
