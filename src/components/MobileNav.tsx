@@ -44,6 +44,7 @@ export default function MobileNav({ active }: Props) {
 
   useEffect(() => {
     if (!open) return;
+    const trigger = triggerRef.current;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setOpen(false);
     };
@@ -53,7 +54,7 @@ export default function MobileNav({ active }: Props) {
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
-      triggerRef.current?.focus();
+      trigger?.focus();
     };
   }, [open]);
 

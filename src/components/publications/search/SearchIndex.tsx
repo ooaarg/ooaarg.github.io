@@ -186,6 +186,7 @@ export default function SearchIndex({ pubs }: Props) {
 
   useEffect(() => {
     if (!sheetOpen) return;
+    const trigger = triggerRef.current;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setSheetOpen(false);
     };
@@ -194,7 +195,7 @@ export default function SearchIndex({ pubs }: Props) {
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
-      triggerRef.current?.focus();
+      trigger?.focus();
     };
   }, [sheetOpen]);
 
