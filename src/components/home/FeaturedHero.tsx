@@ -94,7 +94,7 @@ export default function FeaturedHero({ slides }: Props) {
       <div className="container hero-actions">
         <div key={`cta-${slide.id}`} className="hero-cta">
           <a className="btn btn-accent" href={`/publications/${slide.id}`}>
-            Read publication →
+            Read more →
           </a>
           {slide.paper && (
             <a className="btn" href={slide.paper}>
