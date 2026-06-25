@@ -97,17 +97,22 @@ export default function FeaturedHero({ slides }: Props) {
             Read more →
           </a>
           {slide.paper && (
-            <a className="btn" href={slide.paper}>
+            <a className="btn" href={slide.paper} target="_blank" rel="noopener">
               Paper
             </a>
           )}
           {slide.github && (
-            <a className="btn" href={slide.github}>
+            <a className="btn" href={slide.github} target="_blank" rel="noopener">
               View code
             </a>
           )}
           {!slide.paper && slide.arxiv && (
-            <a className="btn btn-ghost" href={`https://arxiv.org/abs/${slide.arxiv}`}>
+            <a
+              className="btn btn-ghost"
+              href={`https://arxiv.org/abs/${slide.arxiv}`}
+              target="_blank"
+              rel="noopener"
+            >
               arXiv
             </a>
           )}

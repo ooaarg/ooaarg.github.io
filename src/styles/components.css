@@ -75,9 +75,13 @@
   height: 14px;
 }
 
+/* External-link indicator: a ↗ before the label on any button whose href points
+   off-site (auto-applies via the href prefix). These also open in a new tab
+   (target=_blank in markup); the alt text surfaces that to screen readers, which
+   announce e.g. "opens in new tab, Paper". */
 .btn[href^="http"]::before,
 .btn[href^="//"]::before {
-  content: "↗" / "";
+  content: "↗" / " opens in new tab, ";
   font-size: 0.95em;
   line-height: 1;
 }
