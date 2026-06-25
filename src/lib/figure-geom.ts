@@ -1,5 +1,5 @@
 // Shared geometry helpers for the publication figure components
-// (`src/components/publication/figures/`).
+// (`src/components/publications/detail/figures/`).
 
 /** Shortest distance from point (px, py) to the segment (ax, ay)–(bx, by). */
 export function distToSegment(

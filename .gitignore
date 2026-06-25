@@ -2,6 +2,9 @@
 dist/
 dist-standalone/
 
+# cloudflare wrangler
+.wrangler/
+
 # generated types
 .astro/
 

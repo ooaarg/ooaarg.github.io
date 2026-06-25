@@ -14,7 +14,6 @@ export default function YearFilter({ years, total }: Props) {
     grid.dataset.yearFilter = String(active);
   }, [active]);
 
-  // Live count of visible tiles after filter applies (CSS-driven; we read from DOM).
   const [visibleCount, setVisibleCount] = useState(total);
   useEffect(() => {
     const grid = document.querySelector<HTMLElement>(".bento");

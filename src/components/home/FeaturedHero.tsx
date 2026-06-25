@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from "react";
-import PaperFigure, { hasPaperFigure } from "../publication/PaperFigure";
+import PaperFigure, { hasPaperFigure } from "../publications/detail/PaperFigure";
 
 export interface HeroSlide {
   id: string;

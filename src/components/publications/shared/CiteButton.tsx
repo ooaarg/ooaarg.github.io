@@ -1,6 +1,6 @@
 import { useState } from "react";
-import CiteModal from "../shared/CiteModal";
-import type { CitablePublication } from "../../lib/bibtex";
+import CiteModal from "../../shared/CiteModal";
+import type { CitablePublication } from "../../../lib/bibtex";
 
 interface Props {
   pub: Omit<CitablePublication, "date"> & { dateISO: string };

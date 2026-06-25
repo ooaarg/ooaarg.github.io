@@ -135,7 +135,7 @@ Required: `title`, `authors[]`, `date` (ISO), `venue`, `tag` (`Oral|Spotlight|Pa
 
 Optional: `featured` (bool), `featuredOrder` (int — lower leads the home carousel), `span` (`2|3|4|6` — base, may be expanded by bento packer), `tags[]`, `arxiv`, `doi`, `github`, `pdf`, `links[]`, `cited_by`, `funding`. The primary action button follows `doi` → `arxiv` → first `links[]` entry; a `doi` renders as **"Paper"** (via `paperUrl()` in `src/lib/pubs.ts`).
 
-A paper figure is **not** a frontmatter field. It's a `.tsx` island (Preact via compat — authored with React imports) at `src/components/publication/figures/<area>/<id>.tsx` exporting a default component, auto-registered by slug via `import.meta.glob("./figures/**/*.tsx")` in `src/components/publication/PaperFigure.tsx` (the file basename is the slug, so the `<area>` subdirectory is just organization). Drop the file in and it renders on the bento tile and detail page.
+A paper figure is **not** a frontmatter field. It's a `.tsx` island (Preact via compat — authored with React imports) at `src/components/publications/detail/figures/<area>/<id>.tsx` exporting a default component, auto-registered by slug via `import.meta.glob("./figures/**/*.tsx")` in `src/components/publications/detail/PaperFigure.tsx` (the file basename is the slug, so the `<area>` subdirectory is just organization). Drop the file in and it renders on the bento tile and detail page.
 
 The MDX body is rendered as the article on `/publications/<id>`. Use `$inline$` and `$$display$$` for math (KaTeX). The `AREA_LABEL` map in `src/pages/publications/[id].astro` is the single source of truth for human-readable area names — keep it in sync with the Zod enum.
 
@@ -145,7 +145,7 @@ Required: `title`, `date` (ISO), `summary` (≤320 chars).
 
 Optional: `image` (path relative to the entry, e.g. `'./neurips-2026.svg'` — co-located, processed by Astro's `image()` schema helper; tile and detail page both fall back to a text-only layout when absent), `imageAlt`, `span` (`2|3|4|6`, default `3`), `href` (outbound URL — renders a "Read more →" / "Visit link →" button).
 
-Filename → URL slug: `src/content/news/neurips-2026-accepted.mdx` → `/blog/neurips-2026-accepted`. The MDX body is rendered as the article on the detail page; the `summary` is what shows on the bento tile and as the lede on the detail page. News appears on `/blog` (mixed with publications, sorted by date) but **not** on `/publications` — that page only queries the `publications` collection. The `NewsTile.astro` component reuses the `.bento-tile` styles from `publications.css` plus a small co-located `.news-figure` rule for the image; KaTeX CSS is **not** imported on `pages/blog/[id].astro` (add it there if you want math in news bodies).
+Filename → URL slug: `src/content/news/neurips-2026-accepted.mdx` → `/blog/neurips-2026-accepted`. The MDX body is rendered as the article on the detail page; the `summary` is what shows on the bento tile and as the lede on the detail page. News appears on `/blog` (mixed with publications, sorted by date) but **not** on `/publications` — that page only queries the `publications` collection. The `NewsTile.astro` component reuses the `.bento-tile` styles from `publications-cards.css` plus a small co-located `.news-figure` rule for the image; KaTeX CSS is **not** imported on `pages/blog/[id].astro` (add it there if you want math in news bodies).
 
 ### People frontmatter (`src/content/people/<id>.md`)
 

@@ -1,12 +1,12 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
 import Site from '../../layouts/Site.astro';
-import PubTile from '../../components/publications/PubTile.astro';
-import NewsTile from '../../components/publications/NewsTile.astro';
-import YearFilter from '../../components/publications/YearFilter.tsx';
+import PubTile from '../../components/publications/cards/PubTile.astro';
+import NewsTile from '../../components/publications/cards/NewsTile.astro';
+import YearFilter from '../../components/publications/list/YearFilter.tsx';
 import { packBento, type TileSpan } from '../../lib/pubs';
 
-import '../../styles/publications.css';
+import '../../styles/publications-cards.css';
 
 type BlogItem =
   | { kind: 'pub'; entry: CollectionEntry<'publications'> }
