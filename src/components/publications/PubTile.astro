@@ -70,14 +70,14 @@ const citable = {
   )}
   <div class="actions">
     {paper ? (
-      <a class="btn btn-sm" href={paper}>Paper</a>
+      <a class="btn btn-sm" href={paper} target="_blank" rel="noopener">Paper</a>
     ) : data.arxiv ? (
-      <a class="btn btn-sm" href={`https://arxiv.org/abs/${data.arxiv}`}>arXiv</a>
+      <a class="btn btn-sm" href={`https://arxiv.org/abs/${data.arxiv}`} target="_blank" rel="noopener">arXiv</a>
     ) : extra.length > 0 ? (
-      <a class="btn btn-sm" href={extra[0].url}>{extra[0].label}</a>
+      <a class="btn btn-sm" href={extra[0].url} target="_blank" rel="noopener">{extra[0].label}</a>
     ) : null}
     {data.github && (
-      <a class="btn btn-sm" href={data.github}>GitHub</a>
+      <a class="btn btn-sm" href={data.github} target="_blank" rel="noopener">GitHub</a>
     )}
     <CiteButton client:visible pub={citable} />
     <a class="btn btn-sm btn-ghost" href={detailHref}>Read →</a>

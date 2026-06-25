@@ -83,17 +83,22 @@ const paper = paperUrl(data);
 
       <div class="actions">
         {paper && (
-          <a class="btn btn-primary" href={paper}>Paper</a>
+          <a class="btn btn-primary" href={paper} target="_blank" rel="noopener">Paper</a>
         )}
         {data.arxiv && (
-          <a class={paper ? 'btn' : 'btn btn-primary'} href={`https://arxiv.org/abs/${data.arxiv}`}>
+          <a
+            class={paper ? 'btn' : 'btn btn-primary'}
+            href={`https://arxiv.org/abs/${data.arxiv}`}
+            target="_blank"
+            rel="noopener"
+          >
             arXiv:{data.arxiv}
           </a>
         )}
-        {data.pdf && <a class="btn" href={data.pdf}>PDF</a>}
-        {data.github && <a class="btn" href={data.github}>GitHub</a>}
+        {data.pdf && <a class="btn" href={data.pdf} target="_blank" rel="noopener">PDF</a>}
+        {data.github && <a class="btn" href={data.github} target="_blank" rel="noopener">GitHub</a>}
         {extraLinks(data).map((l) => (
-          <a class="btn" href={l.url}>{l.label}</a>
+          <a class="btn" href={l.url} target="_blank" rel="noopener">{l.label}</a>
         ))}
         <CiteButton client:visible pub={citable} variant="accent" size="md" label="Cite" />
       </div>

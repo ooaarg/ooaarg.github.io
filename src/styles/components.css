@@ -1,4 +1,4 @@
-/* Reusable components: buttons, pills, tabs, inputs, cards, algo-box, math, cite-modal */
+/* Reusable components: buttons, pills, tabs, inputs, cards, cite-modal */
 
 /* ---------- Buttons ---------- */
 .btn {
@@ -73,6 +73,17 @@
 .btn svg {
   width: 14px;
   height: 14px;
+}
+
+/* External-link indicator: a ↗ before the label on any button whose href points
+   off-site (auto-applies via the href prefix). These also open in a new tab
+   (target=_blank in markup); the alt text surfaces that to screen readers, which
+   announce e.g. "opens in new tab, Paper". */
+.btn[href^="http"]::before,
+.btn[href^="//"]::before {
+  content: "↗" / " opens in new tab, ";
+  font-size: 0.95em;
+  line-height: 1;
 }
 
 /* On touch devices, beef up tap targets */

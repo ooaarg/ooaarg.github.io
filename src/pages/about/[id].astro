@@ -76,7 +76,12 @@ const fmt = (d: Date) =>
           {linkRow.length > 0 && (
             <div class="person-links">
               {linkRow.map((l, i) => (
-                <a class={i === 0 ? 'btn' : 'btn btn-ghost'} href={l.href}>
+                <a
+                  class={i === 0 ? 'btn' : 'btn btn-ghost'}
+                  href={l.href}
+                  target={l.href.startsWith('http') ? '_blank' : undefined}
+                  rel={l.href.startsWith('http') ? 'noopener' : undefined}
+                >
                   {l.label}
                 </a>
               ))}
