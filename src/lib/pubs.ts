@@ -29,20 +29,10 @@ export function latestN(pubs: Pub[], n: number): Pub[] {
   return [...pubs].sort(sortByDateDesc).slice(0, n);
 }
 
-/** Slides for the home hero carousel: featured-flagged entries first (ranked by
- *  `featuredOrder`, then natural collection order), then top-up with the latest
- *  published papers (excluding preprints, code, and talks), de-duplicated,
- *  capped. */
+/** Latest published papers for the home hero carousel, newest first and capped. */
 export function featuredCarousel(pubs: Pub[], cap = 5): Pub[] {
-  const featured = pubs
-    .filter((p) => p.data.featured)
-    .sort((a, b) => (a.data.featuredOrder ?? Infinity) - (b.data.featuredOrder ?? Infinity));
-  const published = pubs
-    .filter((p) => p.data.type === "paper" && p.data.tag !== "Preprint")
-    .sort(sortByDateDesc);
-  const seen = new Set(featured.map((p) => p.id));
-  const filler = published.filter((p) => !seen.has(p.id));
-  return [...featured, ...filler].slice(0, cap);
+  const published = pubs.filter((p) => p.data.type === "paper" && p.data.tag !== "Preprint");
+  return latestN(published, cap);
 }
 
 export function years(pubs: Pub[]): number[] {

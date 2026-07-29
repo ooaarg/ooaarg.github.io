@@ -86,7 +86,7 @@ Limitation: if `YearFilter` hides tiles, gaps may reappear (recomputation is bui
 
 ### Featured carousel (`src/lib/pubs.ts` → `featuredCarousel`)
 
-The home `FeaturedHero` is fed by `featuredCarousel(pubs)`, which puts entries flagged `featured: true` first, then tops up with the latest published `paper`s (excluding preprints / code / talks), de-duplicated and capped at 5. The hero is a client island (`client:load`) — the rest of the home page is static.
+The home `FeaturedHero` is fed by `featuredCarousel(pubs)`, which keeps published papers (`type: paper`, excluding `tag: Preprint`), sorts them by `date` descending, and takes the newest 5 entries. Preprints, code, and talks are excluded. The legacy `featured` / `featuredOrder` fields remain accepted for content compatibility but do not affect carousel selection or order. The hero is a client island (`client:load`) — the rest of the home page is static.
 
 ### Heading order convention
 
@@ -133,7 +133,7 @@ If you add a new island or a heavy CSS dep, re-run Lighthouse mobile before clai
 
 Required: `title`, `authors[]`, `date` (ISO), `venue`, `tag` (`Oral|Spotlight|Paper|Preprint|Journal|Code|Talk`), `type` (`paper|preprint|code|talk`), `area` (`bandits|autobidding|dbms|optimization`), `summary` (≤320 chars).
 
-Optional: `featured` (bool), `featuredOrder` (int — lower leads the home carousel), `span` (`2|3|4|6` — base, may be expanded by bento packer), `tags[]`, `arxiv`, `doi`, `github`, `pdf`, `links[]`, `cited_by`, `funding`. The primary action button follows `doi` → `arxiv` → first `links[]` entry; a `doi` renders as **"Paper"** (via `paperUrl()` in `src/lib/pubs.ts`).
+Optional: `featured` and `featuredOrder` (legacy metadata; ignored by the home carousel), `span` (`2|3|4|6` — base, may be expanded by bento packer), `tags[]`, `arxiv`, `doi`, `github`, `pdf`, `links[]`, `cited_by`, `funding`. The primary action button follows `doi` → `arxiv` → first `links[]` entry; a `doi` renders as **"Paper"** (via `paperUrl()` in `src/lib/pubs.ts`).
 
 A paper figure is **not** a frontmatter field. It's a `.tsx` island (Preact via compat — authored with React imports) at `src/components/publications/detail/figures/<area>/<id>.tsx` exporting a default component, auto-registered by slug via `import.meta.glob("./figures/**/*.tsx")` in `src/components/publications/detail/PaperFigure.tsx` (the file basename is the slug, so the `<area>` subdirectory is just organization). Drop the file in and it renders on the bento tile and detail page.
 

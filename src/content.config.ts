@@ -14,9 +14,10 @@ const publications = defineCollection({
     tag: z.enum(["Oral", "Spotlight", "Paper", "Preprint", "Journal", "Code", "Talk"]),
     type: z.enum(["paper", "preprint", "code", "talk"]),
     area: z.enum(["bandits", "autobidding", "dbms", "optimization"]),
+    /** Legacy metadata retained for existing entries. The home carousel is
+     *  selected from published papers exclusively by publication date. */
     featured: z.boolean().default(false),
-    /** Lower numbers lead the home featured carousel. Unset entries keep their
-     *  natural (collection) order after all explicitly-ranked ones. */
+    /** Legacy metadata retained for existing entries; no longer affects order. */
     featuredOrder: z.number().int().optional(),
     span: z.union([z.literal(2), z.literal(3), z.literal(4), z.literal(6)]).default(2),
     tags: z.array(z.string()).default([]),
