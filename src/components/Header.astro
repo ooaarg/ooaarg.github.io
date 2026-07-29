@@ -17,9 +17,7 @@ const isActive = (route: string) => {
 
 <header class="site-header">
   <div class="container nav">
-    <span class="brand">
-      <KineticLogo size="28px" transitionName="brand-title" />
-    </span>
+    <KineticLogo size="28px" className="brand" transitionName="brand-title" />
     <div class="nav-spacer"></div>
     <nav class="nav-links" aria-label="Primary">
       <a href="/" class={isActive('/') ? 'active' : ''}>Home</a>
