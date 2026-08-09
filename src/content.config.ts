@@ -13,7 +13,7 @@ const publications = defineCollection({
     venue: z.string(),
     tag: z.enum(["Oral", "Spotlight", "Paper", "Preprint", "Journal", "Code", "Talk"]),
     type: z.enum(["paper", "preprint", "code", "talk"]),
-    area: z.enum(["bandits", "autobidding", "dbms", "optimization"]),
+    area: z.enum(["bandits", "autobidding", "dbms", "optimization", "misc"]),
     /** Legacy metadata retained for existing entries. The home carousel is
      *  selected from published papers exclusively by publication date. */
     featured: z.boolean().default(false),

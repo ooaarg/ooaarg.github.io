@@ -1,11 +1,13 @@
 import type { CollectionEntry } from "astro:content";
 
-export type AreaId = "bandits" | "autobidding" | "dbms" | "optimization";
+export type AreaId = "bandits" | "autobidding" | "dbms" | "optimization" | "misc";
 
 export interface Area {
   id: AreaId;
   name: string;
   blurb: string;
+  /** When false, the area is excluded from the home page grid (e.g. "misc"). */
+  showOnHome?: boolean;
 }
 
 export const AREAS: Area[] = [
@@ -33,6 +35,13 @@ export const AREAS: Area[] = [
     blurb:
       "Convex and non-convex optimization theory, lower bounds, and parameter-free methods. The structural foundations under everything else we build.",
   },
+  {
+    id: "misc",
+    name: "Miscellaneous",
+    blurb:
+      "Out-of-domain applications that do not fit the core research areas.",
+    showOnHome: false,
+  },
 ];
 
 export interface AreaStats {
@@ -51,12 +60,14 @@ export function computeAreaStats(
     autobidding: { count: 0, topTags: [], latest: null },
     dbms: { count: 0, topTags: [], latest: null },
     optimization: { count: 0, topTags: [], latest: null },
+    misc: { count: 0, topTags: [], latest: null },
   };
   const tagFreq: Record<AreaId, Map<string, number>> = {
     bandits: new Map(),
     autobidding: new Map(),
     dbms: new Map(),
     optimization: new Map(),
+    misc: new Map(),
   };
 
   for (const pub of pubs) {

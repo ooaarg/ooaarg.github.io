@@ -14,7 +14,7 @@ const fmtLatest = (d: Date | null) => (d ? `${MONTH[d.getMonth()]} ${d.getFullYe
 ---
 
 <ul class="areas-grid">
-  {AREAS.map((area) => {
+  {AREAS.filter((area) => area.showOnHome !== false).map((area) => {
     const s = stats[area.id];
     const active = s.count > 0;
     const latest = fmtLatest(s.latest);

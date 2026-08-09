@@ -14,7 +14,7 @@ export interface IndexedPub {
   year: number;
   venue: string;
   type: "paper" | "preprint" | "code" | "talk";
-  area: "bandits" | "autobidding" | "dbms" | "optimization";
+  area: "bandits" | "autobidding" | "dbms" | "optimization" | "misc";
   tags: string[];
   abstract: string;
 }
@@ -34,6 +34,7 @@ const FACETS = {
     },
     { id: "dbms", label: "DBMS" },
     { id: "optimization", label: "Optimization" },
+    { id: "misc", label: "Miscellaneous" },
   ],
 };
 
