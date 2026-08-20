@@ -12,17 +12,19 @@ export function doiOf(data: Pub["data"]): string | undefined {
   return link?.url.replace(/^https?:\/\/(dx\.)?doi\.org\//i, "");
 }
 
-/** URL of the published version (DOI → publisher page), or null for arXiv-only
- *  entries. Rendered as the accent "Paper" button, ahead of arXiv. */
+/** URL of the published version (DOI → publisher page, or an explicit
+ *  `links[]` entry labelled "Paper"), or null for arXiv-only entries. Rendered
+ *  as the accent "Paper" button, ahead of arXiv. */
 export function paperUrl(data: Pub["data"]): string | null {
   const doi = doiOf(data);
-  return doi ? `https://doi.org/${doi}` : null;
+  if (doi) return `https://doi.org/${doi}`;
+  return data.links.find((l) => /^paper$/i.test(l.label))?.url ?? null;
 }
 
-/** `links[]` minus any "DOI" entry, which is promoted to the primary "Paper"
- *  button by {@link paperUrl} and so shouldn't render a second time. */
+/** `links[]` minus entries promoted to the primary "Paper" button by
+ *  {@link paperUrl}, so they don't render a second time. */
 export function extraLinks(data: Pub["data"]): Pub["data"]["links"] {
-  return data.links.filter((l) => !/^doi$/i.test(l.label));
+  return data.links.filter((l) => !/^(doi|paper)$/i.test(l.label));
 }
 
 export function latestN(pubs: Pub[], n: number): Pub[] {
