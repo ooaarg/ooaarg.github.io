@@ -1,6 +1,6 @@
 # Agent guidance
 
-This is the OOAARG website repository. Read [README.md](./README.md) for setup, routes, content guides, and deployment configuration.
+This is the OOAARG website repository. [README.md](./README.md#start-here) links to the development and content guides.
 
 ## Working approach
 
@@ -12,7 +12,7 @@ This is the OOAARG website repository. Read [README.md](./README.md) for setup, 
 
 ## Toolchain and verification
 
-Use **Bun**, never npm, yarn, or pnpm. `package.json` pins the Bun version; CI reads that value via `bun-version-file`. Keep `bun.lock` as the lockfile. Node 24 LTS is the CI runtime. Commands are listed in the README.
+Use **Bun**, never npm, yarn, or pnpm. `package.json` pins the Bun version; CI reads that value via `bun-version-file`. Keep `bun.lock` as the lockfile. Node 24 LTS is the CI runtime. Commands are listed in the [development guide](./docs/development.md#commands).
 
 For code or content changes, run `bun run typecheck`, `bun test`, `bun run lint`, `bun run format:check`, and `bun run build`. Report pre-existing failures separately. Documentation-only changes need link/path checks and `git diff --check`, not a browser or performance run.
 
@@ -53,13 +53,14 @@ Navigation uses ordinary links and full browser page loads. `base.css` opts into
 - `/blog` mixes news and publications. `/publications` and `/rss.xml` contain publications only.
 - `featuredCarousel()` in `src/lib/pubs.ts` selects the newest five entries with `type: paper` and `tag` other than `Preprint`. `heroSummary` falls back to `summary`. `featured` controls blog-tile emphasis; `featuredOrder` is accepted but unused.
 - `packBento()` expands the last tile of short rows to fill six columns. `YearFilter` hides tiles with the `hidden` attribute and counts visible tiles in the same pass. Filtering may leave gaps because packing happens at build time.
-- The search page passes publications sorted newest-first. `SearchIndex` preserves this order while filtering and reverses results for oldest-first; its `date` field is a display label.
+- The search page passes publications sorted newest-first. `SearchIndex` preserves this order while filtering and reverses results for oldest-first; its `date` field is a display label. `src/lib/publication-search.ts` reads/writes query text, all six facets, and sorting. Restore from the URL after hydration and on `popstate`; only user actions write history. Text edits replace the current entry, while filter/sort changes push entries. Preserve unrelated query parameters and fragments.
 - `paperUrl()`, `doiOf()`, and `extraLinks()` in `src/lib/pubs.ts` own publication link handling. A DOI or explicit `Paper` link takes precedence over arXiv; promoted links are omitted from the extra-link list.
 - `src/lib/bibtex.ts` builds both citation formats using publication type/tag, with full slugs in citation keys and escaped plain text. `CiteButton` converts the serialized date before passing it to `CiteModal`. Keep citation generation shared. The APA-style fallback uses the available metadata without guessing surname structure or missing volume/page data.
+- `/publications/[id].bib.ts` generates static downloads using the same BibTeX builder. Publication pages forward scholarly `citation_*` metadata through the layouts' `head` slots. Emit journal/conference metadata using `citationKind()`; code/talk entries must not be labelled as scholarly articles. Use supplied metadata, never invent missing abstracts, identifiers, or volume/page data.
 
 ### Content and assets
 
-Use `src/content.config.ts` and the [content guides](./README.md#content-and-contributions) for field definitions instead of duplicating schemas here.
+Use `src/content.config.ts` and the [content guides](./README.md#start-here) for field definitions instead of duplicating schemas here.
 
 - IDs come from filenames. Publication author strings must exactly match a person's `name` to resolve profile links.
 - Research area values are repeated in the content schema, `src/data/areas.ts`, `AREA_LABEL` in `src/pages/publications/[id].astro`, and `FACETS.area` in `SearchIndex.tsx`. Update all four when adding an area. `misc` is searchable but excluded from the home grid via `showOnHome: false`.
@@ -72,4 +73,4 @@ Use semantic heading order: page title `h1`, sections `h2`, and card/list titles
 
 The main breakpoints are 900px and 640px. Check the navigation sheet, facet sheet, citations, and tile layouts at phone width. Keep the `!important` display rules on `.mobile-only` and `.desktop-only`; they override later button styles.
 
-Citation and mobile navigation use native `<dialog>` elements opened with `showModal()` for focus containment. Preserve Escape, close controls, initial focus, return focus, and restoration of the previous body scroll state. Check keyboard behavior directly when working on dialogs.
+Citation, mobile navigation, and mobile search filters use native `<dialog>` elements opened with `showModal()` for focus containment. Preserve Escape, close controls, initial focus, return focus, and restoration of the previous body scroll state. Check keyboard behavior directly when working on dialogs. Filter groups use `h3` under the search/dialog `h2`, with explicit labels on their search inputs; result counts are announced politely.

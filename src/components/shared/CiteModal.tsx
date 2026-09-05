@@ -83,6 +83,9 @@ export default function CiteModal({ pub, open, onClose }: Props) {
           {copyStatus}
         </p>
         <div className="modal-actions">
+          <a className="btn" href={`/publications/${pub.id}.bib`} download={`${pub.id}.bib`}>
+            Download .bib
+          </a>
           <button ref={closeBtnRef} type="button" className="btn" onClick={() => dialogRef.current?.close()}>
             Close
           </button>

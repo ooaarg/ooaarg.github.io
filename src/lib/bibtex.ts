@@ -13,7 +13,7 @@ export interface CitablePublication {
   doi?: string;
 }
 
-function citationKind(pub: CitablePublication) {
+export function citationKind(pub: Pick<CitablePublication, "type" | "tag">) {
   if (pub.type !== "paper" || pub.tag === "Preprint") return "misc";
   return pub.tag === "Journal" ? "article" : "inproceedings";
 }

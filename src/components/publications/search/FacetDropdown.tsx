@@ -31,7 +31,7 @@ export default function FacetDropdown({
 
   return (
     <div className="ri-group">
-      <h5>{title}</h5>
+      <h3 className="ri-group-label">{title}</h3>
       <details className="facet-dd">
         <summary>
           <span className="facet-dd-label">
@@ -56,6 +56,7 @@ export default function FacetDropdown({
               type="text"
               className="facet-dd-search"
               placeholder={`Filter ${title.toLowerCase()}…`}
+              aria-label={`Filter ${title.toLowerCase()}`}
               value={q}
               onInput={(e) => setQ(e.currentTarget.value)}
             />

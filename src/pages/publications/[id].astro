@@ -5,6 +5,7 @@ import PaperFigure, { hasPaperFigure } from '../../components/publications/detai
 import CiteButton from '../../components/publications/shared/CiteButton.tsx';
 import { getAuthorMap, resolveAuthors } from '../../lib/people';
 import { paperUrl, doiOf, extraLinks } from '../../lib/pubs';
+import { citationKind } from '../../lib/bibtex';
 
 import 'katex/dist/katex.min.css';
 
@@ -47,6 +48,8 @@ const citable = {
 
 const showFigure = hasPaperFigure(id);
 const paper = paperUrl(data);
+const kind = citationKind(data);
+const bibtexPath = `/publications/${id}.bib`;
 ---
 
 <DetailLayout
@@ -55,6 +58,20 @@ const paper = paperUrl(data);
   description={data.summary}
   heading={data.title}
 >
+  <Fragment slot="head">
+    {data.type !== 'code' && data.type !== 'talk' && (
+      <>
+        <meta name="citation_title" content={data.title} />
+        {data.authors.map((author) => <meta name="citation_author" content={author} />)}
+        <meta name="citation_publication_date" content={data.date.toISOString().slice(0, 10).replaceAll('-', '/')} />
+        {kind === 'article' && <meta name="citation_journal_title" content={data.venue} />}
+        {kind === 'inproceedings' && <meta name="citation_conference_title" content={data.venue} />}
+        {citable.doi && <meta name="citation_doi" content={citable.doi} />}
+      </>
+    )}
+    <link rel="alternate" type="application/x-bibtex" href={bibtexPath} title="BibTeX citation" />
+  </Fragment>
+
   <Fragment slot="breadcrumb">
     <a href="/publications">Publications</a> <span>/</span> {data.venue}{' '}<span>/</span>{' '}
     {data.authors[0].split(/\s+/).pop()} et al.
@@ -99,6 +116,7 @@ const paper = paperUrl(data);
       <a class="btn" href={l.url} target="_blank" rel="noopener">{l.label}</a>
     ))}
     <CiteButton client:visible pub={citable} variant="accent" size="md" label="Cite" />
+    <a class="btn" href={bibtexPath} download={`${id}.bib`}>Download .bib</a>
   </Fragment>
 
   {showFigure && (
@@ -111,16 +129,16 @@ const paper = paperUrl(data);
 
   <Fragment slot="aside">
     <div class="group">
-      <h3 class="aside-label">Published</h3>
+      <h2 class="aside-label">Published</h2>
       <p class="mono" style="color: var(--fg);">{fmt(data.date)}</p>
     </div>
     <div class="group">
-      <h3 class="aside-label">Venue</h3>
+      <h2 class="aside-label">Venue</h2>
       <p>{data.venue}</p>
     </div>
     {data.tags.length > 0 && (
       <div class="group">
-        <h3 class="aside-label">Keywords</h3>
+        <h2 class="aside-label">Keywords</h2>
         <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px;">
           {data.tags.map((t) => (
             <a class="pill" href={`/publications?tag=${encodeURIComponent(t)}`}>{t}</a>
@@ -130,7 +148,7 @@ const paper = paperUrl(data);
     )}
     {data.funding && (
       <div class="group">
-        <h3 class="aside-label">Funding</h3>
+        <h2 class="aside-label">Funding</h2>
         <p>{data.funding}</p>
       </div>
     )}

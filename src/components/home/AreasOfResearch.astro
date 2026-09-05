@@ -23,7 +23,6 @@ const fmtLatest = (d: Date | null) => (d ? `${MONTH[d.getMonth()]} ${d.getFullYe
       <a
         class={`area-card${active ? '' : ' is-nascent'}`}
         href={active ? `/publications?area=${area.id}` : '/publications'}
-        aria-label={`${area.name} — ${s.count} ${s.count === 1 ? 'paper' : 'papers'}`}
       >
         <div class="area-card-head">
           <h3>{area.name}</h3>

@@ -1,4 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "preact/hooks";
+import {
+  FILTER_KEYS,
+  readSearch,
+  searchUrl,
+  type FilterKey,
+  type SearchState,
+} from "../../../lib/publication-search";
 import Facet from "./Facet";
 import FacetDropdown from "./FacetDropdown";
 import PaperFigure, { hasPaperFigure } from "../detail/PaperFigure";
@@ -43,32 +50,29 @@ interface Props {
   pubs: IndexedPub[];
 }
 
-type FilterKey = "type" | "area" | "venue" | "year" | "author" | "tag";
-
 export default function SearchIndex({ pubs }: Props) {
-  const [q, setQ] = useState("");
-  const [filters, setFilters] = useState<Record<FilterKey, Set<string>>>({
-    type: new Set(),
-    area: new Set(),
-    venue: new Set(),
-    year: new Set(),
-    author: new Set(),
-    tag: new Set(),
-  });
-  const [sort, setSort] = useState<"newest" | "oldest">("newest");
+  const [search, setSearch] = useState(() => readSearch());
+  const { q, filters, sort } = search;
   const [sheetOpen, setSheetOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const sheetRef = useRef<HTMLDialogElement>(null);
+  const doneRef = useRef<HTMLButtonElement>(null);
 
-  const toggle = (key: FilterKey, val: string) =>
-    setFilters((prev) => {
-      const next = new Set(prev[key]);
-      if (next.has(val)) next.delete(val);
-      else next.add(val);
-      return { ...prev, [key]: next };
-    });
+  const updateSearch = (next: SearchState, method: "pushState" | "replaceState" = "pushState") => {
+    const url = searchUrl(new URL(window.location.href), next);
+    if (url.href !== window.location.href) window.history[method](window.history.state, "", url);
+    setSearch(next);
+  };
 
-  const clearKey = (key: FilterKey) => setFilters((prev) => ({ ...prev, [key]: new Set() }));
+  const toggle = (key: FilterKey, val: string) => {
+    const next = new Set(filters[key]);
+    if (next.has(val)) next.delete(val);
+    else next.add(val);
+    updateSearch({ ...search, filters: { ...filters, [key]: next } });
+  };
+
+  const clearKey = (key: FilterKey) => updateSearch({ ...search, filters: { ...filters, [key]: new Set() } });
 
   const venueItems = useMemo(() => {
     const set = new Set(pubs.map((p) => p.venue));
@@ -142,30 +146,17 @@ export default function SearchIndex({ pubs }: Props) {
     return c;
   }, [pubs]);
 
-  const totalActive = (Object.keys(filters) as FilterKey[]).reduce((n, k) => n + filters[k].size, 0);
+  const totalActive = FILTER_KEYS.reduce((n, k) => n + filters[k].size, 0);
 
-  const clearAll = () =>
-    setFilters({
-      type: new Set(),
-      area: new Set(),
-      venue: new Set(),
-      year: new Set(),
-      author: new Set(),
-      tag: new Set(),
-    });
+  const clearAll = () => updateSearch({ ...search, filters: readSearch().filters });
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const seed: Partial<Record<FilterKey, Set<string>>> = {};
-    const tags = params.getAll("tag");
-    if (tags.length) seed.tag = new Set(tags);
-    const areas = params.getAll("area");
-    if (areas.length) seed.area = new Set(areas);
-    const types = params.getAll("type");
-    if (types.length) seed.type = new Set(types);
-    // The static HTML has no query string; apply URL filters after hydration.
-    // eslint-disable-next-line react/set-state-in-effect
-    if (Object.keys(seed).length) setFilters((prev) => ({ ...prev, ...seed }));
+  useLayoutEffect(() => {
+    // Static HTML has no query string. Restore after hydration and on Back/Forward;
+    // URL writes happen only in user event handlers, never during initialization.
+    const restore = () => setSearch(readSearch(new URLSearchParams(window.location.search)));
+    restore();
+    window.addEventListener("popstate", restore);
+    return () => window.removeEventListener("popstate", restore);
   }, []);
 
   useEffect(() => {
@@ -179,17 +170,17 @@ export default function SearchIndex({ pubs }: Props) {
     return () => window.removeEventListener("keydown", h);
   }, []);
 
-  useEffect(() => {
-    if (!sheetOpen) return;
+  useLayoutEffect(() => {
+    const sheet = sheetRef.current;
+    if (!sheetOpen || !sheet) return;
     const trigger = triggerRef.current;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSheetOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
+    const previousOverflow = document.body.style.overflow;
+    sheet.showModal();
     document.body.style.overflow = "hidden";
+    doneRef.current?.focus();
     return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
+      sheet.close();
+      document.body.style.overflow = previousOverflow;
       trigger?.focus();
     };
   }, [sheetOpen]);
@@ -265,7 +256,7 @@ export default function SearchIndex({ pubs }: Props) {
           id="ri-search"
           placeholder="Search titles, abstracts, authors, tags…"
           value={q}
-          onInput={(e) => setQ(e.currentTarget.value)}
+          onInput={(e) => updateSearch({ ...search, q: e.currentTarget.value }, "replaceState")}
           aria-label="Search publications"
         />
         <kbd>⌘K</kbd>
@@ -278,6 +269,8 @@ export default function SearchIndex({ pubs }: Props) {
           className="btn filters-trigger"
           onClick={() => setSheetOpen(true)}
           aria-haspopup="dialog"
+          aria-expanded={sheetOpen}
+          aria-controls="publication-filters"
         >
           Filters{totalActive > 0 ? ` (${totalActive})` : ""}
         </button>
@@ -290,7 +283,7 @@ export default function SearchIndex({ pubs }: Props) {
 
         <div>
           <div className="ri-summary">
-            <span>
+            <span role="status" aria-live="polite" aria-atomic="true">
               <strong style={{ color: "var(--fg)" }}>{filtered.length}</strong> result
               {filtered.length === 1 ? "" : "s"}
               {q && (
@@ -311,7 +304,7 @@ export default function SearchIndex({ pubs }: Props) {
                   fontSize: 13,
                 }}
                 value={sort}
-                onChange={(e) => setSort(e.currentTarget.value as typeof sort)}
+                onChange={(e) => updateSearch({ ...search, sort: e.currentTarget.value as typeof sort })}
                 aria-label="Sort order"
               >
                 <option value="newest">Date (newest)</option>
@@ -392,25 +385,32 @@ export default function SearchIndex({ pubs }: Props) {
         </div>
       </div>
 
-      <div
+      <dialog
+        ref={sheetRef}
+        id="publication-filters"
         className="facet-sheet"
-        hidden={!sheetOpen}
-        onClick={() => setSheetOpen(false)}
-        role="dialog"
-        aria-modal="true"
+        onClose={() => setSheetOpen(false)}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) e.currentTarget.close();
+        }}
         aria-label="Filters"
       >
-        <div className="panel" onClick={(e) => e.stopPropagation()}>
+        <div className="panel">
           <div className="grabber" aria-hidden="true" />
           <header>
-            <h3>Filters</h3>
-            <button type="button" className="btn btn-ghost btn-sm" onClick={() => setSheetOpen(false)}>
+            <h2>Filters</h2>
+            <button
+              ref={doneRef}
+              type="button"
+              className="btn btn-ghost btn-sm"
+              onClick={() => sheetRef.current?.close()}
+            >
               Done
             </button>
           </header>
           {facetGroups}
         </div>
-      </div>
+      </dialog>
     </>
   );
 }

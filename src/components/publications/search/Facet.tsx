@@ -14,7 +14,7 @@ interface Props {
 export default function Facet({ title, items, selected, counts, onToggle }: Props) {
   return (
     <div className="ri-group">
-      <h5>{title}</h5>
+      <h3 className="ri-group-label">{title}</h3>
       <div className="facet">
         {items.map((it) => (
           <label key={it.id}>

@@ -21,9 +21,11 @@
   padding-top: 0;
 }
 
-.ri-group h5 {
+.ri-group-label {
   font-family: var(--font-mono);
   font-size: 11px;
+  font-weight: 700;
+  line-height: normal;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin: 0 0 12px;
@@ -444,15 +446,25 @@
 .facet-sheet {
   position: fixed;
   inset: 0;
-  z-index: 100;
-  background: color-mix(in oklab, #000 50%, transparent);
-  display: flex;
-  align-items: flex-end;
-  backdrop-filter: blur(2px);
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: var(--fg);
+  background: transparent;
 }
 
-.facet-sheet[hidden] {
-  display: none;
+.facet-sheet[open] {
+  display: flex;
+  align-items: flex-end;
+}
+
+.facet-sheet::backdrop {
+  background: color-mix(in oklab, #000 50%, transparent);
+  backdrop-filter: blur(2px);
 }
 
 .facet-sheet .panel {
@@ -485,9 +497,10 @@
   flex-shrink: 0;
 }
 
-.facet-sheet header h3 {
+.facet-sheet header h2 {
   font-family: var(--font-sans);
   font-size: 22px;
+  line-height: 1.2;
   margin: 0;
 }
 
