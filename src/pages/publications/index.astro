@@ -4,13 +4,14 @@ import Site from '../../layouts/Site.astro';
 import SearchIndex from '../../components/publications/search/SearchIndex.tsx';
 import type { IndexedPub } from '../../components/publications/search/SearchIndex.tsx';
 import { getAuthorMap, getStaffAuthorNames, resolveAuthors } from '../../lib/people';
+import { sortByDateDesc } from '../../lib/pubs';
 
-const all = await getCollection('publications');
+const all = (await getCollection('publications')).sort(sortByDateDesc);
 const authorMap = await getAuthorMap();
 const staffAuthorNames = await getStaffAuthorNames();
 
 const fmt = (d: Date) =>
-  `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`;
+  `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
 
 const pubs: IndexedPub[] = all.map((p) => ({
   id: p.id,

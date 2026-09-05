@@ -34,13 +34,8 @@ export default function MobileNav({ active }: Props) {
   // The sheet is portalled to <body>. Without portalling, the parent
   // .site-header creates a containing block (via backdrop-filter) and
   // position:fixed inset:0 sizes to the header instead of the viewport.
-  const [mounted, setMounted] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -118,7 +113,7 @@ export default function MobileNav({ active }: Props) {
       >
         <MenuIcon />
       </button>
-      {mounted ? createPortal(sheet, document.body) : null}
+      {open ? createPortal(sheet, document.body) : null}
     </>
   );
 }

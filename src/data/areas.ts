@@ -38,8 +38,7 @@ export const AREAS: Area[] = [
   {
     id: "misc",
     name: "Miscellaneous",
-    blurb:
-      "Out-of-domain applications that do not fit the core research areas.",
+    blurb: "Out-of-domain applications that do not fit the core research areas.",
     showOnHome: false,
   },
 ];

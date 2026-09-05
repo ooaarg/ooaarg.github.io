@@ -123,15 +123,8 @@
   background: var(--bg-sunken);
 }
 
-.bento[data-year-filter] .bento-tile {
+.bento-tile[hidden] {
   display: none;
-}
-.bento[data-year-filter="all"] .bento-tile,
-.bento[data-year-filter="2026"] .bento-tile[data-year="2026"],
-.bento[data-year-filter="2025"] .bento-tile[data-year="2025"],
-.bento[data-year-filter="2024"] .bento-tile[data-year="2024"],
-.bento[data-year-filter="2023"] .bento-tile[data-year="2023"] {
-  display: flex;
 }
 
 @media (max-width: 900px) {

@@ -78,11 +78,13 @@ If `/tmp/ooaarg-design/` is gone (fresh machine, reboot), ask the user before gu
 - `prefers-reduced-motion` removes the animation entirely.
 - Used in three places: header, footer (Astro), and inline JSX inside `MobileNav.tsx` (the Preact island can't import `.astro` components). The delegated hover/focus handlers here guard `e.target instanceof Element` before `.closest()` for the same reason as the theme toggle.
 
-### Bento grid packing (`src/lib/pubs.ts` → `computeBentoSpans` / `packBento`)
+### Bento grid packing (`src/lib/pubs.ts` → `packBento`)
 
-Tiles declare a base `span` (2/3/4/6) in their frontmatter. The `/blog` page (`src/pages/blog/index.astro`) merges the `publications` and `news` collections into a single date-sorted list, then calls the generic `packBento<T>()` to walk it, group tiles into rows of 6 columns, and **expand the last tile of any short row** so the bento has no trailing empty space. The legacy `computeBentoSpans()` is now a thin wrapper around `packBento` that's kept for any future publications-only callers. Spans pass through `PubTile` / `NewsTile`'s optional `span` prop, overriding the frontmatter value at render time. Rows always sum to exactly 6.
+Tiles declare a base `span` (2/3/4/6) in their frontmatter. The `/blog` page (`src/pages/blog/index.astro`) merges the `publications` and `news` collections into a single date-sorted list, then calls `packBento<T>()` to walk it, group tiles into rows of 6 columns, and **expand the last tile of any short row** so the bento has no trailing empty space. Spans pass through `PubTile` / `NewsTile`'s optional `span` prop, overriding the frontmatter value at render time. Rows always sum to exactly 6.
 
-Limitation: if `YearFilter` hides tiles, gaps may reappear (recomputation is build-time, not runtime). Acceptable trade-off for the snappiness budget.
+`YearFilter` sets each tile's `hidden` attribute by comparing its `data-year` to the selected year, and counts visible tiles in the same pass. No year-specific CSS is needed. Limitation: if `YearFilter` hides tiles, gaps may reappear (recomputation is build-time, not runtime). Acceptable trade-off for the snappiness budget.
+
+The publications search page sorts its corpus newest-first at build time. `SearchIndex` preserves that order when filtering and reverses results for oldest-first; its `date` field is a display label, not a client-side sorting key.
 
 ### Featured carousel (`src/lib/pubs.ts` → `featuredCarousel`)
 

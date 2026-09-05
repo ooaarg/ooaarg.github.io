@@ -1,4 +1,5 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
 import { glob } from "astro/loaders";
 
 const publications = defineCollection({
@@ -14,8 +15,7 @@ const publications = defineCollection({
     tag: z.enum(["Oral", "Spotlight", "Paper", "Preprint", "Journal", "Code", "Talk"]),
     type: z.enum(["paper", "preprint", "code", "talk"]),
     area: z.enum(["bandits", "autobidding", "dbms", "optimization", "misc"]),
-    /** Legacy metadata retained for existing entries. The home carousel is
-     *  selected from published papers exclusively by publication date. */
+    /** Emphasizes the blog tile; the home carousel is selected by date. */
     featured: z.boolean().default(false),
     /** Legacy metadata retained for existing entries; no longer affects order. */
     featuredOrder: z.number().int().optional(),
@@ -26,15 +26,15 @@ const publications = defineCollection({
      *  Resolves to the publisher page (ACM, IEEE, Springer, …) and renders as
      *  the primary "Paper" button, taking precedence over arXiv. */
     doi: z.string().optional(),
-    github: z.string().url().optional(),
-    pdf: z.string().url().optional(),
+    github: z.url().optional(),
+    pdf: z.url().optional(),
     /** Arbitrary external links — IEEE, ACM, ResearchGate PDF, Springer,
      *  publisher pages, etc. Each renders as a button on the detail page. */
     links: z
       .array(
         z.object({
           label: z.string(),
-          url: z.string().url(),
+          url: z.url(),
         }),
       )
       .default([]),
@@ -61,23 +61,23 @@ const people = defineCollection({
     org: z.string().optional(),
     order: z.number().int().default(100),
     office: z.string().optional(),
-    email: z.string().email().optional(),
+    email: z.email().optional(),
     links: z
       .object({
-        scholar: z.string().url().optional(),
-        dblp: z.string().url().optional(),
-        github: z.string().url().optional(),
-        cv: z.string().url().optional(),
-        orcid: z.string().url().optional(),
-        researchgate: z.string().url().optional(),
+        scholar: z.url().optional(),
+        dblp: z.url().optional(),
+        github: z.url().optional(),
+        cv: z.url().optional(),
+        orcid: z.url().optional(),
+        researchgate: z.url().optional(),
         /** Personal homepage / lab page. */
-        website: z.string().url().optional(),
+        website: z.url().optional(),
         /** Anything else — Mastodon, Bluesky, Semantic Scholar, etc. */
         other: z
           .array(
             z.object({
               label: z.string(),
-              url: z.string().url(),
+              url: z.url(),
             }),
           )
           .default([]),
@@ -101,7 +101,7 @@ const news = defineCollection({
       summary: z.string().max(320),
       span: z.union([z.literal(2), z.literal(3), z.literal(4), z.literal(6)]).default(3),
       /** Optional outbound link (e.g. NeurIPS accepted-papers page). */
-      href: z.string().url().optional(),
+      href: z.url().optional(),
     }),
 });
 

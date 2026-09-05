@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from "react";
+import type { TargetedKeyboardEvent, TargetedPointerEvent } from "preact";
 import PaperFigure, { hasPaperFigure } from "../publications/detail/PaperFigure";
 
 export interface HeroSlide {
@@ -10,7 +11,6 @@ export interface HeroSlide {
   paper?: string | null;
   arxiv?: string;
   github?: string;
-  pdf?: string;
 }
 
 interface Props {
@@ -40,7 +40,7 @@ export default function FeaturedHero({ slides }: Props) {
     [n],
   );
 
-  const onKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+  const onKeyDown = (e: TargetedKeyboardEvent<HTMLElement>) => {
     if (e.key === "ArrowRight") {
       e.preventDefault();
       go(index + 1);
@@ -50,10 +50,10 @@ export default function FeaturedHero({ slides }: Props) {
     }
   };
 
-  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+  const onPointerDown = (e: TargetedPointerEvent<HTMLElement>) => {
     dragStart.current = e.clientX;
   };
-  const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+  const onPointerUp = (e: TargetedPointerEvent<HTMLElement>) => {
     if (dragStart.current == null) return;
     const dx = e.clientX - dragStart.current;
     dragStart.current = null;

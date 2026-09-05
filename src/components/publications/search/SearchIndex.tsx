@@ -10,7 +10,7 @@ export interface IndexedPub {
   title: string;
   authors: string[];
   authorLinks: Array<{ name: string; id?: string; staff?: boolean }>;
-  date: string; // DD-MM-YYYY
+  date: string; // Display label: DD/MM/YYYY
   year: number;
   venue: string;
   type: "paper" | "preprint" | "code" | "talk";
@@ -39,6 +39,7 @@ const FACETS = {
 };
 
 interface Props {
+  /** Sorted by publication date, newest first, at build time. */
   pubs: IndexedPub[];
 }
 
@@ -103,30 +104,21 @@ export default function SearchIndex({ pubs }: Props) {
   }, [pubs]);
 
   const filtered = useMemo(() => {
-    let xs = pubs.filter((p) => {
+    const needle = q.trim().toLowerCase();
+    const xs = pubs.filter((p) => {
       if (filters.type.size && !filters.type.has(p.type)) return false;
       if (filters.area.size && !filters.area.has(p.area)) return false;
       if (filters.venue.size && !filters.venue.has(p.venue)) return false;
       if (filters.year.size && !filters.year.has(String(p.year))) return false;
       if (filters.author.size && !p.authors.some((a) => filters.author.has(a))) return false;
       if (filters.tag.size && !p.tags.some((t) => filters.tag.has(t))) return false;
-      if (q.trim()) {
-        const needle = q.toLowerCase();
+      if (needle) {
         const hay = [p.title, p.abstract, p.authors.join(" "), p.venue, ...p.tags].join(" ").toLowerCase();
         if (!hay.includes(needle)) return false;
       }
       return true;
     });
-    const sortKey = (d: string) => {
-      const [dd, mm, yyyy] = d.split("-");
-      return `${yyyy}${mm}${dd}`;
-    };
-    xs = [...xs].sort((a, b) =>
-      sort === "newest"
-        ? sortKey(b.date).localeCompare(sortKey(a.date))
-        : sortKey(a.date).localeCompare(sortKey(b.date)),
-    );
-    return xs;
+    return sort === "oldest" ? xs.reverse() : xs;
   }, [q, filters, sort, pubs]);
 
   // Counts per facet — based on the full corpus, not filtered, so the user can see what's available.
@@ -171,6 +163,8 @@ export default function SearchIndex({ pubs }: Props) {
     if (areas.length) seed.area = new Set(areas);
     const types = params.getAll("type");
     if (types.length) seed.type = new Set(types);
+    // The static HTML has no query string; apply URL filters after hydration.
+    // eslint-disable-next-line react/set-state-in-effect
     if (Object.keys(seed).length) setFilters((prev) => ({ ...prev, ...seed }));
   }, []);
 
@@ -342,7 +336,7 @@ export default function SearchIndex({ pubs }: Props) {
                     {p.type}
                   </span>
                   <span className="mono" style={{ fontSize: 12, color: "var(--fg-muted)" }}>
-                    {p.date.replace(/-/g, "/")}
+                    {p.date}
                   </span>
                   <span className="mono" style={{ fontSize: 12, color: "var(--fg-muted)" }}>
                     {p.venue}

@@ -1,8 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import DetailLayout from '../../layouts/DetailLayout.astro';
-import PubFigure from '../../components/publications/detail/PubFigure.astro';
-import { hasPaperFigure } from '../../components/publications/detail/PaperFigure.tsx';
+import PaperFigure, { hasPaperFigure } from '../../components/publications/detail/PaperFigure.tsx';
 import CiteButton from '../../components/publications/shared/CiteButton.tsx';
 import { getAuthorMap, resolveAuthors } from '../../lib/people';
 import { paperUrl, doiOf, extraLinks } from '../../lib/pubs';
@@ -100,7 +99,11 @@ const paper = paperUrl(data);
     <CiteButton client:visible pub={citable} variant="accent" size="md" label="Cite" />
   </Fragment>
 
-  {showFigure && <PubFigure pubId={id} slot="figure" />}
+  {showFigure && (
+    <div class="pub-figure" slot="figure">
+      <PaperFigure id={id} />
+    </div>
+  )}
 
   <Content />
 

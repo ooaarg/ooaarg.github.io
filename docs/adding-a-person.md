@@ -8,6 +8,8 @@ src/content/people/aydin.md   →   /about/aydin
 
 People appear on `/about`, grouped: the first `faculty` entry is the lead block, `postdoc`/`phd`/other faculty fill the staff grid, `alumni` get their own grid, and `partner` entries are grouped by `org`. The `authors[]` strings in publications are matched to people by **display name** — if a person's `name` exactly matches an author string, their name links to `/about/<slug>` across the site.
 
+Partner detail pages show their bio and links but omit the publication list. With multiple faculty entries, check which entry becomes the lead; the current page does not sort faculty before choosing it.
+
 ## 1. Create the file
 
 ```md
@@ -43,7 +45,7 @@ the detail page shows "Bio coming soon."
 | `initials` |    ✓     | string (1–3 chars)                                          | Shown in the avatar gradient placeholder when no photo exists.                                          |
 | `role`     |    ✓     | string                                                      | E.g. `Ph.D. Student`, `Senior Researcher · Ph.D.`.                                                      |
 | `topic`    |    ✓     | string                                                      | Free-form research interests, shown under the name.                                                    |
-| `group`    |    ✓     | `faculty` \| `postdoc` \| `phd` \| `alumni` \| `partner`    | Drives placement on `/about`. The first `faculty` entry (by `order`) becomes the lead block.            |
+| `group`    |    ✓     | `faculty` \| `postdoc` \| `phd` \| `alumni` \| `partner`    | Drives placement on `/about`. The first `faculty` entry returned by the collection becomes the lead block; `order` does not choose the lead.            |
 | `org`      |          | string                                                      | Affiliation for `partner` entries — drives the per-organization grouping of the Partners section.       |
 | `order`    |          | int (default `100`)                                         | Sort order within the group (and, for partners, the org sequence). Lower comes first.                  |
 | `office`   |          | string                                                      | Shown on the detail page.                                                                              |

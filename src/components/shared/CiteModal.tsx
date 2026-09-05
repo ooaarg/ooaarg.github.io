@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { buildBibtex, buildApa, type CitablePublication } from "../../lib/bibtex";
 
 interface Props {
-  pub: CitablePublication & { dateISO: string };
+  pub: CitablePublication;
   open: boolean;
   onClose: () => void;
 }
@@ -10,12 +10,9 @@ interface Props {
 export default function CiteModal({ pub, open, onClose }: Props) {
   const [tab, setTab] = useState<"bibtex" | "apa">("bibtex");
   const [copied, setCopied] = useState(false);
-  const dialogRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
 
-  // Reconstruct Date from ISO string (we receive it serialized from Astro).
-  const citable: CitablePublication = { ...pub, date: new Date(pub.dateISO) };
-  const text = tab === "bibtex" ? buildBibtex(citable) : buildApa(citable);
+  const text = tab === "bibtex" ? buildBibtex(pub) : buildApa(pub);
 
   useEffect(() => {
     if (!open) return;
@@ -43,7 +40,6 @@ export default function CiteModal({ pub, open, onClose }: Props) {
 
   return (
     <div
-      ref={dialogRef}
       className="cite-modal"
       hidden={!open}
       onClick={onClose}

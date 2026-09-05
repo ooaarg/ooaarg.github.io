@@ -37,44 +37,25 @@ export function featuredCarousel(pubs: Pub[], cap = 5): Pub[] {
   return latestN(published, cap);
 }
 
-export function years(pubs: Pub[]): number[] {
-  const set = new Set(pubs.map((p) => p.data.date.getFullYear()));
-  return [...set].sort((a, b) => b - a);
-}
+export type TileSpan = 2 | 3 | 4 | 6;
 
 /** Pack tiles into rows of 6 columns. If a row would be left short (e.g. one
  *  span-2 tile alone, or two span-2 tiles summing to 4), the last tile in the
  *  row absorbs the leftover columns so the bento has no trailing empty space. */
-export type TileSpan = 2 | 3 | 4 | 6;
-export function computeBentoSpans(pubs: Pub[]): Array<{ pub: Pub; span: TileSpan }> {
-  return packBento(pubs, (p) => (p.data.span ?? 2) as TileSpan).map(({ item, span }) => ({
-    pub: item,
-    span,
-  }));
-}
-
-/** Generic version of {@link computeBentoSpans} — accepts any tile that can
- *  declare a base span. Used to mix publications + news on the blog page. */
 export function packBento<T>(items: T[], spanOf: (t: T) => TileSpan): Array<{ item: T; span: TileSpan }> {
   const out: Array<{ item: T; span: TileSpan }> = [];
-  let row: Array<{ item: T; span: TileSpan }> = [];
   let fill = 0;
   const flush = () => {
-    if (row.length > 0) {
-      const total = row.reduce((s, r) => s + r.span, 0);
-      if (total < 6) {
-        const last = row[row.length - 1];
-        last.span = (last.span + (6 - total)) as TileSpan;
-      }
-      out.push(...row);
+    if (fill > 0) {
+      const last = out[out.length - 1];
+      last.span = (last.span + 6 - fill) as TileSpan;
     }
-    row = [];
     fill = 0;
   };
   for (const item of items) {
     const s = spanOf(item);
     if (fill + s > 6) flush();
-    row.push({ item, span: s });
+    out.push({ item, span: s });
     fill += s;
     if (fill >= 6) flush();
   }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface Props {
   years: number[];
@@ -8,27 +8,17 @@ interface Props {
 export default function YearFilter({ years, total }: Props) {
   const [active, setActive] = useState<"all" | number>("all");
 
-  useEffect(() => {
-    const grid = document.querySelector<HTMLElement>(".bento");
-    if (!grid) return;
-    grid.dataset.yearFilter = String(active);
-  }, [active]);
-
   const [visibleCount, setVisibleCount] = useState(total);
-  useEffect(() => {
-    const grid = document.querySelector<HTMLElement>(".bento");
-    if (!grid) return;
-    const tiles = grid.querySelectorAll<HTMLElement>(".bento-tile");
-    if (active === "all") {
-      setVisibleCount(tiles.length);
-    } else {
-      let n = 0;
-      tiles.forEach((t) => {
-        if (t.dataset.year === String(active)) n++;
-      });
-      setVisibleCount(n);
-    }
-  }, [active, total]);
+  const selectYear = (year: "all" | number) => {
+    setActive(year);
+    const tiles = document.querySelectorAll<HTMLElement>(".bento .bento-tile");
+    let count = 0;
+    tiles.forEach((tile) => {
+      tile.hidden = year !== "all" && tile.dataset.year !== String(year);
+      if (!tile.hidden) count++;
+    });
+    setVisibleCount(count);
+  };
 
   const options: Array<"all" | number> = ["all", ...years];
 
@@ -40,7 +30,7 @@ export default function YearFilter({ years, total }: Props) {
             key={String(y)}
             type="button"
             className={`btn btn-sm${active === y ? " btn-primary" : ""}`}
-            onClick={() => setActive(y)}
+            onClick={() => selectYear(y)}
             aria-pressed={active === y}
           >
             {y === "all" ? "All" : y}

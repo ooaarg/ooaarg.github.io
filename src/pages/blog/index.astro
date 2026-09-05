@@ -4,7 +4,7 @@ import Site from '../../layouts/Site.astro';
 import PubTile from '../../components/publications/cards/PubTile.astro';
 import NewsTile from '../../components/publications/cards/NewsTile.astro';
 import YearFilter from '../../components/publications/list/YearFilter.tsx';
-import { packBento, type TileSpan } from '../../lib/pubs';
+import { packBento } from '../../lib/pubs';
 
 import '../../styles/publications-cards.css';
 
@@ -24,7 +24,7 @@ const allYears = [...new Set(items.map((i) => i.entry.data.date.getFullYear()))]
   (a, b) => b - a,
 );
 
-const tiles = packBento<BlogItem>(items, (i) => (i.entry.data.span ?? 2) as TileSpan);
+const tiles = packBento(items, (i) => i.entry.data.span);
 ---
 
 <Site
@@ -49,7 +49,7 @@ const tiles = packBento<BlogItem>(items, (i) => (i.entry.data.span ?? 2) as Tile
       <a class="btn btn-sm" href="/publications">Search index →</a>
     </div>
 
-    <div class="bento" data-year-filter="all">
+    <div class="bento">
       {tiles.map(({ item, span }) =>
         item.kind === 'pub' ? (
           <PubTile pub={item.entry} span={span} />
