@@ -1,5 +1,4 @@
 ---
-import { ClientRouter } from 'astro:transitions';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import SeoHead from '../components/SeoHead.astro';
@@ -43,21 +42,16 @@ const { title, description, active } = Astro.props;
         function applyTheme() {
           try {
             var stored = localStorage.getItem('ooaarg-theme');
-            document.documentElement.setAttribute('data-theme', stored || 'dark');
+            document.documentElement.setAttribute('data-theme', stored === 'light' ? 'light' : 'dark');
           } catch (_) {
             document.documentElement.setAttribute('data-theme', 'dark');
           }
         }
         applyTheme();
-        // Astro's ClientRouter overwrites <html> attributes from the new page on swap;
-        // re-assert the theme right before the new DOM paints.
-        document.addEventListener('astro:before-swap', function (e) {
-          // The 'newDocument' is the doc Astro is about to swap in.
-          var stored;
-          try { stored = localStorage.getItem('ooaarg-theme'); } catch (_) {}
-          e.newDocument.documentElement.setAttribute('data-theme', stored || 'dark');
+        // A cached document may predate a theme change on another page.
+        window.addEventListener('pageshow', function (event) {
+          if (event.persisted) applyTheme();
         });
-        document.addEventListener('astro:after-swap', applyTheme);
         // Stale hash-route mitigation: rewrite #/foo → /foo (legacy prototype links)
         if (location.hash && location.hash.startsWith('#/')) {
           var newPath = location.hash.slice(1);
@@ -66,7 +60,6 @@ const { title, description, active } = Astro.props;
       })();
     </script>
 
-    <ClientRouter />
   </head>
   <body>
     <Header active={active} />

@@ -206,16 +206,25 @@ a.pill:hover {
 .cite-modal {
   position: fixed;
   inset: 0;
-  background: color-mix(in oklab, #000 70%, transparent);
-  display: grid;
-  place-items: center;
-  z-index: 100;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  color: var(--fg);
+  background: transparent;
   padding: 24px;
-  backdrop-filter: blur(4px);
 }
 
-.cite-modal[hidden] {
-  display: none;
+.cite-modal[open] {
+  display: grid;
+  place-items: center;
+}
+
+.cite-modal::backdrop {
+  background: color-mix(in oklab, #000 70%, transparent);
+  backdrop-filter: blur(4px);
 }
 
 .cite-modal .panel {
@@ -224,13 +233,18 @@ a.pill:hover {
   border-radius: var(--radius-lg);
   width: 100%;
   max-width: 720px;
+  max-height: 100%;
+  overflow-y: auto;
   padding: 32px;
   display: flex;
   flex-direction: column;
 }
 
-.cite-modal h3 {
+.cite-modal h2 {
   font-family: var(--font-sans);
+  font-size: clamp(20px, 1.6vw, 24px);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
   margin-bottom: 8px;
 }
 
@@ -278,6 +292,15 @@ a.pill:hover {
   margin: 0;
 }
 
+.cite-status {
+  margin: 8px 0 0;
+  font-size: 13px;
+}
+
+.cite-status:empty {
+  display: none;
+}
+
 .cite-modal .modal-actions {
   margin-top: 16px;
   display: flex;
@@ -288,9 +311,7 @@ a.pill:hover {
 @media (max-width: 640px) {
   .cite-modal {
     padding: 0;
-    align-items: stretch;
     background: var(--bg);
-    backdrop-filter: none;
   }
   .cite-modal .panel {
     border: 0;

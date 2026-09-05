@@ -5,7 +5,7 @@ interface Props {
   className?: string;
   /** When true, applies the .hero size cap (clamped to viewport width). */
   hero?: boolean;
-  /** Astro view-transition name to morph between pages. */
+  /** Native view-transition name to morph between pages. */
   transitionName?: string;
 }
 
@@ -24,7 +24,7 @@ const classes = ['ooaarg-mark', hero ? 'hero' : '', className].filter(Boolean).j
   // Document-delegated hover/focus → graceful animation finish.
   // Adds .is-bouncing on enter; on leave, waits for the next animationiteration
   // event so the wordmark always finishes its cycle at scaleX(1) instead of
-  // freezing mid-stretch. Idempotent across view transitions.
+  // freezing mid-stretch. Delegation includes the mobile menu wordmark.
   type MarkState = { leaving: boolean };
   const state = new WeakMap<HTMLElement, MarkState>();
 
@@ -55,13 +55,9 @@ const classes = ['ooaarg-mark', hero ? 'hero' : '', className].filter(Boolean).j
     }
   }
 
-  // Install once.
-  if (!(window as unknown as { __ooaargBound?: boolean }).__ooaargBound) {
-    document.addEventListener('pointerenter', onEnter, true);
-    document.addEventListener('pointerleave', onLeave, true);
-    document.addEventListener('focusin', onEnter, true);
-    document.addEventListener('focusout', onLeave, true);
-    document.addEventListener('animationiteration', onIteration as EventListener, true);
-    (window as unknown as { __ooaargBound: boolean }).__ooaargBound = true;
-  }
+  document.addEventListener('pointerenter', onEnter, true);
+  document.addEventListener('pointerleave', onLeave, true);
+  document.addEventListener('focusin', onEnter, true);
+  document.addEventListener('focusout', onLeave, true);
+  document.addEventListener('animationiteration', onIteration as EventListener, true);
 </script>

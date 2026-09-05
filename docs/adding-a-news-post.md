@@ -2,15 +2,15 @@
 
 News posts (e.g. _"Three OOAARG papers accepted at NeurIPS 2026"_) appear on `/blog` mixed with publications, sorted by date, and get a dedicated detail page at `/blog/<slug>`. They are **excluded from `/publications` and `/rss.xml`**, which contain publications only.
 
-Each news post is one MDX file in `src/content/news/`. Filename — without the extension — becomes the URL slug.
+Each news post is one Markdown file in `src/content/news/`. Filename — without the extension — becomes the URL slug.
 
 ```
-src/content/news/neurips-2026-accepted.mdx   →   /blog/neurips-2026-accepted
+src/content/news/neurips-2026-accepted.md   →   /blog/neurips-2026-accepted
 ```
 
 ## 1. Create the file
 
-```mdx
+```md
 ---
 title: "Three OOAARG papers accepted at NeurIPS 2026"
 date: 2026-12-01
@@ -23,7 +23,7 @@ span: 4
 href: "https://neurips.cc/"
 ---
 
-The body is MDX. Whatever you write here renders as the article on
+The body is Markdown. Whatever you write here renders as the article on
 `/blog/<slug>`. The `summary` above is what shows on the bento tile
 and as the lede on the detail page.
 ```
@@ -42,7 +42,7 @@ and as the lede on the detail page.
 
 ## 3. Body conventions
 
-The body is rendered into `/blog/<slug>`. Plain Markdown is fine; MDX gives you JSX components if you ever need them. The math processor is configured globally, but KaTeX CSS is only imported by publication detail pages. If adding math to news, include the required CSS on the news detail route and check rendering.
+The body is rendered into `/blog/<slug>`. Use plain Markdown without JSX component imports. The math processor is configured globally, but KaTeX CSS is only imported by publication detail pages. If adding math to news, include the required CSS on the news detail route and check rendering.
 
 A minimal entry can be just frontmatter — the body is optional.
 
@@ -54,8 +54,8 @@ bun dev
 
 Open `http://localhost:4321/blog` to confirm the news tile renders, then click into it to confirm the detail page at `/blog/<slug>`.
 
-If you renamed an existing `.md` to `.mdx` (or vice versa) and the dev server stops seeing the entry, clear Astro's content cache:
+If the dev server misses a renamed entry, restart it. To refresh cached content when troubleshooting a build:
 
 ```bash
-rm -rf .astro node_modules/.astro && bun dev
+bun run build --force
 ```

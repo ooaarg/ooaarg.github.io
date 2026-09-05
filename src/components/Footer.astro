@@ -1,8 +1,7 @@
 ---
 import KineticLogo from './KineticLogo.astro';
 
-const buildTime = import.meta.env.BUILD_TIME ?? new Date().toISOString();
-const buildDate = new Date(buildTime).toISOString().slice(0, 10);
+const buildDate = new Date().toISOString().slice(0, 10);
 ---
 
 <footer class="site-footer" id="contact">

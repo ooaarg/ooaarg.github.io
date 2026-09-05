@@ -1,44 +1,64 @@
 # OOAARG website
 
-Source for [ooaarg.github.io](https://ooaarg.github.io): the public site for the Online Optimization And Applications Research Group.
+Source for [ooaarg.github.io](https://ooaarg.github.io): the public site for the Online Optimization And Applications Research Group. The site helps readers understand the group's research, find and cite publications, learn about its people, and get in touch.
 
-## Setup
+## Development
+
+Use **Bun 1.4.2** for dependencies and scripts, as pinned in `package.json`. Node.js **24 or newer** is required; CI uses Node 24 LTS.
 
 ```bash
-bun install
-bun dev      # http://localhost:4321
+bun install --frozen-lockfile
+bun dev
 ```
 
----
+Open `http://localhost:4321`. The site uses Astro 7 with static output, native Preact islands, and Markdown content collections with KaTeX math. Navigation uses normal browser page loads with native view transitions where supported. Fonts are self-hosted, and shared styles are served as cacheable CSS files.
 
-## Adding content
+TypeScript stays on version 6 to match Astro's checker, and KaTeX stays on 0.16 to match `rehype-katex`. Upgrade these together with their consumers when compatible releases are available.
 
-Each content type has its own guide:
+| Command | Purpose |
+| --- | --- |
+| `bun dev` | Start the development server. |
+| `bun run typecheck` | Check Astro, Preact, TypeScript, and content schemas. |
+| `bun test` | Verify citation types, unique keys, escaping, and identifiers. |
+| `bun run lint` | Check JS/TS with oxlint; `lint:fix` applies fixes. |
+| `bun run format:check` | Check formatting with oxfmt; `format` writes changes. |
+| `bun run build` | Create the static site in `dist/`. |
+| `bun run preview` | Serve the built site locally. |
 
-- [Adding a publication](./docs/adding-a-publication.md) — papers, preprints, code, and talks (`src/content/publications/`).
-- [Adding a news post](./docs/adding-a-news-post.md) — blog/news tiles (`src/content/news/`).
-- [Adding a person](./docs/adding-a-person.md) — people on `/about` (`src/content/people/`).
+Builds preserve Astro's cache and let Astro clear `dist/`. To refresh cached content while troubleshooting, use `bun run build --force`.
 
----
+Run typecheck, tests, lint, format checks, and a build for code or content changes. For UI changes, also check affected pages on desktop and mobile; see [AGENTS.md](./AGENTS.md) for browser checks and performance targets.
 
-## Conventions when contributing
+## Pages
 
-- **Don't rename slugs** once published — they're the canonical URL.
-- **Don't include `id` in frontmatter** — it's derived from the filename.
-- **Use the `summary` field for the bento copy**, not a body paragraph. The body is for the detail page only.
-- **Featured tiles cost real estate** — only mark `featured: true` for headline results. Two or three featured at a time is plenty.
-- **Run `bun run typecheck` before pushing** — it catches frontmatter typos that won't otherwise surface until build time. Run `bun run format` and `bun run lint` too if you touched code.
+| Route | Content |
+| --- | --- |
+| `/` | Recent published papers, research areas, latest publications, and the join section. |
+| `/blog` | Publications and news together, newest first, with a year filter. |
+| `/blog/<id>` | News detail. |
+| `/publications` | Search and filters over publications only. |
+| `/publications/<id>` | Publication body, links, figure when available, and citations. |
+| `/about` | Lead, staff, partners grouped by organization, and alumni. |
+| `/about/<id>` | Person's bio and publications; partner pages omit the publication list. |
+| `/rss.xml` | Publications feed; news is excluded. |
 
----
+Astro also builds the 404 page and sitemap.
 
-## Commands
+## Content and contributions
 
-| Command                | What it does                                                     |
-| ---------------------- | ---------------------------------------------------------------- |
-| `bun install`          | Install dependencies.                                            |
-| `bun dev`              | Dev server with hot reload at `http://localhost:4321`.           |
-| `bun run typecheck`    | Type-check Astro components, Preact islands, and content schemas (`astro check`). |
-| `bun run lint`         | Lint JS/TS with [oxlint](https://oxc.rs/docs/guide/usage/linter). `lint:fix` autofixes. |
-| `bun run format`       | Format JS/TS/CSS with [oxfmt](https://oxc.rs/docs/guide/usage/formatter). `format:check` verifies without writing. |
-| `bun run build`        | Static build into `dist/`.                                       |
-| `bun run preview`      | Serve `dist/` locally.                                           |
+- [Add a publication](./docs/adding-a-publication.md).
+- [Add a news post](./docs/adding-a-news-post.md).
+- [Add a person or photo](./docs/adding-a-person.md).
+- [Agent and implementation guidance](./AGENTS.md).
+
+Schemas in [src/content.config.ts](./src/content.config.ts) define accepted frontmatter. Filenames determine IDs and URLs; keep published slugs stable. Publication authors link to people by exact display-name match.
+
+`featured: true` emphasizes a publication's blog tile. The home carousel independently selects the five newest published papers; `featured` does not control that selection.
+
+Keep the interface focused on research, readable, and quick to navigate. Use the existing components and styles when extending it.
+
+## Deployment configuration
+
+[The GitHub Pages workflow](./.github/workflows/deploy.yml) builds with Bun and uploads `dist/`. It currently runs on pushes to `main` or manual dispatch. Configure the intended repository, deployment branch, and Pages source (GitHub Actions) when setting up this new repo for hosting.
+
+Keep the public URL in [astro.config.mjs](./astro.config.mjs), [SeoHead.astro](./src/components/SeoHead.astro), [rss.xml.ts](./src/pages/rss.xml.ts), and [robots.txt](./public/robots.txt) consistent. A custom domain also needs `public/CNAME`; hosting below a repository subpath needs a review of root-relative links and Astro's `base` setting.

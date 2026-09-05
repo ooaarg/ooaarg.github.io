@@ -350,12 +350,12 @@
 }
 
 .ri-results > li {
+  position: relative;
   padding: 24px 0;
   border-bottom: 1px solid var(--border);
   display: grid;
   grid-template-columns: 120px 1fr;
   gap: 32px;
-  cursor: pointer;
   transition: background var(--t-fast);
 }
 
@@ -381,6 +381,32 @@
   line-height: 1.15;
   margin-bottom: 8px;
   overflow-wrap: anywhere;
+}
+
+.ri-result-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Extend the publication link across its row, keeping author links above it. */
+.ri-result-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.ri-result-link:focus-visible {
+  outline: none;
+}
+
+.ri-result-link:focus-visible::after {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.ri-results .author-link {
+  position: relative;
+  z-index: 1;
 }
 
 .ri-abstract {

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "preact/hooks";
 import type { TargetedKeyboardEvent, TargetedPointerEvent } from "preact";
 import PaperFigure, { hasPaperFigure } from "../publications/detail/PaperFigure";
 
@@ -20,7 +20,7 @@ interface Props {
 const SWIPE_THRESHOLD = 40;
 
 const Chevron = ({ dir }: { dir: "left" | "right" }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
     {dir === "left" ? <path d="M15 6l-6 6 6 6" /> : <path d="M9 6l6 6-6 6" />}
   </svg>
 );
@@ -51,11 +51,15 @@ export default function FeaturedHero({ slides }: Props) {
   };
 
   const onPointerDown = (e: TargetedPointerEvent<HTMLElement>) => {
+    // Preact refs are mutable; this React rule does not recognize preact/hooks useRef.
+    // oxlint-disable-next-line react/immutability
     dragStart.current = e.clientX;
   };
   const onPointerUp = (e: TargetedPointerEvent<HTMLElement>) => {
     if (dragStart.current == null) return;
     const dx = e.clientX - dragStart.current;
+    // Preact refs are mutable; this React rule does not recognize preact/hooks useRef.
+    // oxlint-disable-next-line react/immutability
     dragStart.current = null;
     if (Math.abs(dx) >= SWIPE_THRESHOLD) go(index + (dx < 0 ? 1 : -1));
   };

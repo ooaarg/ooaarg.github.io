@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useRef, useState } from "preact/hooks";
 
 interface NavLink {
   href: string;
@@ -18,56 +17,51 @@ interface Props {
 }
 
 const MenuIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
     <path d="M4 7h16M4 12h16M4 17h16" />
   </svg>
 );
 
 const CloseIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
     <path d="M6 6l12 12M6 18L18 6" />
   </svg>
 );
 
 export default function MobileNav({ active }: Props) {
   const [open, setOpen] = useState(false);
-  // The sheet is portalled to <body>. Without portalling, the parent
-  // .site-header creates a containing block (via backdrop-filter) and
-  // position:fixed inset:0 sizes to the header instead of the viewport.
-  const sheetRef = useRef<HTMLDivElement>(null);
+  const sheetRef = useRef<HTMLDialogElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!open) return;
+    const sheet = sheetRef.current;
     const trigger = triggerRef.current;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
+    const previousOverflow = document.body.style.overflow;
+    // A modal dialog enters the top layer, outside the header's containing block.
+    sheet?.showModal();
     document.body.style.overflow = "hidden";
-    sheetRef.current?.querySelector<HTMLButtonElement>("button[data-close]")?.focus();
     return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
+      sheet?.close();
+      document.body.style.overflow = previousOverflow;
       trigger?.focus();
     };
   }, [open]);
 
   const sheet = (
-    <div
+    <dialog
       ref={sheetRef}
       id="mobile-nav-sheet"
       className="mobile-nav-sheet"
-      hidden={!open}
-      role="dialog"
-      aria-modal="true"
+      onCancel={() => setOpen(false)}
+      onClose={() => setOpen(false)}
       aria-label="Site navigation"
     >
       <header>
         <a
           className="ooaarg-mark"
           href="/"
-          style={{ ["--ooaarg-size" as never]: "32px" }}
+          style={{ "--ooaarg-size": "32px" }}
           aria-label="ÕOAARG home"
           onClick={() => setOpen(false)}
         >
@@ -77,7 +71,7 @@ export default function MobileNav({ active }: Props) {
         <button
           type="button"
           className="btn btn-ghost btn-icon"
-          data-close
+          autoFocus
           aria-label="Close menu"
           onClick={() => setOpen(false)}
         >
@@ -97,7 +91,7 @@ export default function MobileNav({ active }: Props) {
         ))}
       </nav>
       <p className="sheet-tagline">Online Optimization &amp; Applications Research Group</p>
-    </div>
+    </dialog>
   );
 
   return (
@@ -113,7 +107,7 @@ export default function MobileNav({ active }: Props) {
       >
         <MenuIcon />
       </button>
-      {open ? createPortal(sheet, document.body) : null}
+      {sheet}
     </>
   );
 }

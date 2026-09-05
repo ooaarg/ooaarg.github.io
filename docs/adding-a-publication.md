@@ -1,12 +1,12 @@
 # Adding a publication
 
-Create a Markdown or MDX file in `src/content/publications/`. Its filename determines the URL: `example-paper.mdx` becomes `/publications/example-paper`. Keep a slug stable once published; it is also used in citation keys and figure lookup.
+Create a Markdown file in `src/content/publications/`. Its filename determines the URL: `example-paper.md` becomes `/publications/example-paper`. Keep a slug stable once published; it is also used in citation keys and figure lookup.
 
 ## Entry template
 
 The values below are examples to replace with the actual paper metadata. The body is optional.
 
-```mdx
+```md
 ---
 title: "Example publication"
 authors: ["Example Researcher"]
@@ -74,7 +74,7 @@ The detail page shows Paper, arXiv, PDF, GitHub, and remaining extra links when 
 
 The body renders on the publication detail page. Use `##` headings for sections, and `$inline$` or `$$display$$` for math. Choose sections that explain the actual work; no fixed section sequence is required.
 
-An optional figure is a Preact component at `src/components/publications/detail/figures/<area>/<slug>.tsx`, with a default export. Existing components use React-compatible imports. The basename must match the publication slug; `PaperFigure.tsx` registers it automatically. It renders on blog and detail pages, and in the home/search islands when that publication is shown. No frontmatter figure field or separate hydration directive is needed for a static SVG.
+An optional figure is a Preact component at `src/components/publications/detail/figures/<area>/<slug>.tsx`, with a default export. Use native Preact imports, such as `preact/hooks` when hooks are needed. The basename must match the publication slug; `PaperFigure.tsx` registers it automatically. It renders on blog and detail pages, and in the home/search islands when that publication is shown. Figures are rendered by the page and card components, outside the Markdown body; do not import JSX components into an entry. No frontmatter figure field or separate hydration directive is needed for a static SVG.
 
 ## Preview and validation
 
@@ -91,4 +91,4 @@ bun run typecheck
 bun run build
 ```
 
-Quote numeric-looking arXiv IDs, keep summaries within their length limit, and use the schema's exact enum values. If the dev server misses a renamed entry, restart it; the build script clears the content cache before rebuilding.
+Quote numeric-looking arXiv IDs, keep summaries within their length limit, and use the schema's exact enum values. If the dev server misses a renamed entry, restart it; use `bun run build --force` to refresh cached content when troubleshooting.

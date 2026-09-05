@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import Facet from "./Facet";
 import FacetDropdown from "./FacetDropdown";
 import PaperFigure, { hasPaperFigure } from "../detail/PaperFigure";
@@ -256,7 +256,7 @@ export default function SearchIndex({ pubs }: Props) {
   return (
     <>
       <div className="search-bar" style={{ marginTop: 8 }}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
           <circle cx="11" cy="11" r="7" />
           <path d="m20 20-3.5-3.5" />
         </svg>
@@ -265,7 +265,7 @@ export default function SearchIndex({ pubs }: Props) {
           id="ri-search"
           placeholder="Search titles, abstracts, authors, tags…"
           value={q}
-          onChange={(e) => setQ(e.currentTarget.value)}
+          onInput={(e) => setQ(e.currentTarget.value)}
           aria-label="Search publications"
         />
         <kbd>⌘K</kbd>
@@ -322,15 +322,7 @@ export default function SearchIndex({ pubs }: Props) {
 
           <ul className="ri-results">
             {filtered.map((p) => (
-              <li
-                key={p.id}
-                onClick={() => (window.location.href = `/publications/${p.id}`)}
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") window.location.href = `/publications/${p.id}`;
-                }}
-                aria-label={`Open publication: ${p.title}`}
-              >
+              <li key={p.id}>
                 <div className="ri-meta-col">
                   <span className="pill accent" style={{ textTransform: "capitalize" }}>
                     {p.type}
@@ -343,7 +335,11 @@ export default function SearchIndex({ pubs }: Props) {
                   </span>
                 </div>
                 <div>
-                  <h3>{p.title}</h3>
+                  <h3>
+                    <a className="ri-result-link" href={`/publications/${p.id}`}>
+                      {p.title}
+                    </a>
+                  </h3>
                   <p
                     style={{
                       fontSize: 13,
@@ -354,11 +350,7 @@ export default function SearchIndex({ pubs }: Props) {
                     {p.authorLinks.map((a, i) => (
                       <span key={`${p.id}-${i}`}>
                         {a.id ? (
-                          <a
-                            className="author-link"
-                            href={`/about/${a.id}`}
-                            onClick={(e) => e.stopPropagation()}
-                          >
+                          <a className="author-link" href={`/about/${a.id}`}>
                             {a.name}
                           </a>
                         ) : (

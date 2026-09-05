@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from "preact/hooks";
 
 interface FacetItem {
   id: string;
@@ -44,7 +44,7 @@ export default function FacetDropdown({
             height="14"
             fill="none"
             stroke="currentColor"
-            strokeWidth="1.6"
+            stroke-width="1.6"
             aria-hidden="true"
           >
             <path d="M6 9l6 6 6-6" />
@@ -57,7 +57,7 @@ export default function FacetDropdown({
               className="facet-dd-search"
               placeholder={`Filter ${title.toLowerCase()}…`}
               value={q}
-              onChange={(e) => setQ(e.currentTarget.value)}
+              onInput={(e) => setQ(e.currentTarget.value)}
             />
           )}
           <div className="facet-dd-list">

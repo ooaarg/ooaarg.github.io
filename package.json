@@ -4,11 +4,11 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "rm -rf dist .astro node_modules/.astro/data-store.json",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
     "typecheck": "astro check",
+    "test": "bun test",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "format": "oxfmt --write .",
@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@astrojs/markdown-remark": "7.3.0",
-    "@astrojs/mdx": "8.0.0",
     "@astrojs/preact": "^6.0.5",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "3.7.4",
