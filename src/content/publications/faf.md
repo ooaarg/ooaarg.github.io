@@ -10,7 +10,7 @@ area: "autobidding"
 featured: true
 span: 2
 tags:
-  ["reranking", constrained optimization, e-commerce"]
+  ["reranking", "constrained optimization", "e-commerce"]
 arxiv: "2606.28059"
 doi: "10.1145/3805712.3808449"
 summary: "We state the reranking problem as an integer linear program (ILP) that maximizes revenue subject to per-query constraints on other metrics, e.g., relevance."
