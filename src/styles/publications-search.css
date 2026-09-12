@@ -327,6 +327,36 @@
   gap: 12px;
 }
 
+.ri-sort {
+  display: inline-flex;
+  flex-shrink: 0;
+  padding: 3px;
+  gap: 2px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elev);
+}
+
+.ri-sort button {
+  min-height: 36px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--fg-muted);
+  font: inherit;
+  cursor: pointer;
+}
+
+.ri-sort button:hover {
+  color: var(--fg);
+}
+
+.ri-sort button[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
 .ri-results {
   list-style: none;
   padding: 0;

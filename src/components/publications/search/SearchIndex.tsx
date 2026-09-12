@@ -293,24 +293,20 @@ export default function SearchIndex({ pubs }: Props) {
                 </>
               )}
             </span>
-            <span style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <span>Sort by</span>
-              <select
-                className="input"
-                style={{
-                  height: 30,
-                  width: "auto",
-                  padding: "0 8px",
-                  fontSize: 13,
-                }}
-                value={sort}
-                onChange={(e) => updateSearch({ ...search, sort: e.currentTarget.value as typeof sort })}
-                aria-label="Sort order"
-              >
-                <option value="newest">Date (newest)</option>
-                <option value="oldest">Date (oldest)</option>
-              </select>
-            </span>
+            <div className="ri-sort" role="group" aria-label="Sort by date">
+              {(["newest", "oldest"] as const).map((order) => (
+                <button
+                  key={order}
+                  type="button"
+                  aria-pressed={sort === order}
+                  onClick={() => {
+                    if (sort !== order) updateSearch({ ...search, sort: order });
+                  }}
+                >
+                  {order === "newest" ? "Newest" : "Oldest"}
+                </button>
+              ))}
+            </div>
           </div>
 
           <ul className="ri-results">
