@@ -15,6 +15,19 @@ arxiv: "2606.28059"
 doi: "10.1145/3805712.3808449"
 summary: "We state the reranking problem as an integer linear program (ILP) that maximizes revenue subject to per-query constraints on other metrics, e.g., relevance."
 heroSummary: "Search and recommender systems have produced highly relevant search results. A natural next step in the development of such systems in e-commerce is to rerank these results to increase the platform's revenue from paid promotion products."
+ru:
+  tags:
+    "reranking": "переранжирование"
+    "constrained optimization": "оптимизация с ограничениями"
+    "e-commerce": "электронная коммерция"
+  authors:
+    "Svetlana Shirokovskikh": "Светлана Широковских"
+    "Roman Loginov": "Роман Логинов"
+  title: "Быстро и реализуемо: перестановочный переранжировщик с ограничениями для максимизации выручки"
+  summary: "Мы формулируем задачу переранжирования как задачу целочисленного линейного программирования (ILP), максимизирующую выручку при ограничениях на другие метрики для каждого запроса, например релевантность."
+  heroSummary: "Поисковые и рекомендательные системы научились выдавать очень релевантные результаты. Естественный следующий шаг для таких систем в электронной коммерции — переранжировать результаты, чтобы увеличить выручку платформы от платных промо-продуктов."
+  body: |
+    Поисковые и рекомендательные системы научились выдавать очень релевантные результаты. Естественный следующий шаг для таких систем в электронной коммерции — переранжировать результаты, чтобы увеличить выручку платформы от платных промо-продуктов. Однако максимизация только выручки может ухудшить пользовательский опыт, снизив релевантность или повысив риск мошенничества. Чтобы избежать этого, мы формулируем задачу переранжирования как задачу целочисленного линейного программирования (ILP), максимизирующую выручку при ограничениях на другие метрики для каждого запроса, например релевантность. Поскольку точное решение ILP для каждого запроса слишком медленно для развёртывания в онлайн-сервисе, мы предлагаем лёгкий перестановочный приближённый алгоритм переранжирования PermR. На каждом шаге алгоритм выбирает пару соседних элементов и меняет их местами, чтобы либо улучшить целевую функцию, либо устранить нарушенное ограничение. Мы оцениваем PermR на нескольких категориях крупной классифайд-платформы в офлайн- и онлайн-режимах. PermR достигает около 63 % улучшения выручки, обеспечиваемого ILP, в пределах производственных ограничений по задержке и при сохранении всех ограничений. В 14-дневном онлайн A/B-тесте на 56 млн поисковых запросов PermR увеличил выручку на 2 %.
 ---
 
 Search and recommender systems have produced highly relevant search results. A natural next step in the development of such systems in e-commerce is to rerank these results to increase the platform's revenue from paid promotion products. However, maximizing revenue alone may degrade the user experience by reducing relevance or increasing fraud risk. To avoid this, we state the reranking problem as an integer linear program (ILP) that maximizes revenue subject to per-query constraints on other metrics, e.g., relevance. Since solving ILP exactly for every query is slow for deployment to the online service, we propose a lightweight permutation-based reranking approximation algorithm PermR. At each step, the algorithm selects a pair of neighboring items and swaps them to either improve the objective or repair a violated constraint. We evaluate PermR across multiple categories of a large classified platform in offline and online settings. PermR achieves about 63% of the ILP revenue improvement, within production latency limits, preserving all constraints. In a 14-day online A/B test over 56 million search queries, PermR increased revenue by 2%.

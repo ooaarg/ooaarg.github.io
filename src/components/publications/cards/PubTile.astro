@@ -1,4 +1,5 @@
 ---
+import LocalizedText from '../../LocalizedText.astro';
 import type { CollectionEntry } from 'astro:content';
 import PaperFigure, { hasPaperFigure } from '../detail/PaperFigure.tsx';
 import CiteButton from '../shared/CiteButton.tsx';
@@ -25,7 +26,7 @@ const showFigure = hasPaperFigure(id);
 const paper = paperUrl(data);
 const extra = extraLinks(data);
 const authorMap = await getAuthorMap();
-const authorEntries = resolveAuthors(data.authors, authorMap);
+const authorEntries = resolveAuthors(data.authors, authorMap, data.ru?.authors);
 const citable = {
   id,
   title: data.title,
@@ -46,16 +47,16 @@ const citable = {
     </div>
   )}
   <div class="meta">
-    <span class={`pill${featured ? ' accent' : ''}`}>{data.tag}</span>
-    <span style="margin-left: 8px;">{data.venue} · {year}</span>
+    <span class={`pill${featured ? ' accent' : ''}`} data-i18n={data.tag}>{data.tag}</span>
+    <span style="margin-left: 8px;"><LocalizedText en={data.venue} ru={data.ru?.venue} /> · {year}</span>
   </div>
   <h3>
-    <a href={detailHref} style="color: inherit; text-decoration: none;">{data.title}</a>
+    <a href={detailHref} style="color: inherit; text-decoration: none;"><LocalizedText en={data.title} ru={data.ru?.title} /></a>
   </h3>
   <p style={`color: var(--fg-muted); font-size: ${featured ? 14 : 13}px;`}>
-    {featured ? data.summary : authorEntries.map((a, i) => (
+    {featured ? <LocalizedText en={data.summary} ru={data.ru?.summary} /> : authorEntries.map((a, i) => (
       <>
-        {a.id ? <a class="author-link" href={`/about/${a.id}`}>{a.name}</a> : a.name}
+        {a.id ? <a class="author-link" href={`/about/${a.id}`}><LocalizedText en={a.name} ru={a.ru} /></a> : <LocalizedText en={a.name} ru={a.ru} />}
         {i < authorEntries.length - 1 ? ', ' : ''}
       </>
     ))}
@@ -64,7 +65,7 @@ const citable = {
     <p style="font-size: 13px; color: var(--fg-muted);">
       {authorEntries.map((a, i) => (
         <>
-          {a.id ? <a class="author-link" href={`/about/${a.id}`}>{a.name}</a> : a.name}
+          {a.id ? <a class="author-link" href={`/about/${a.id}`}><LocalizedText en={a.name} ru={a.ru} /></a> : <LocalizedText en={a.name} ru={a.ru} />}
           {i < authorEntries.length - 1 ? ', ' : ''}
         </>
       ))}
@@ -72,16 +73,16 @@ const citable = {
   )}
   <div class="actions">
     {paper ? (
-      <a class="btn btn-sm" href={paper} target="_blank" rel="noopener">Paper</a>
+      <a class="btn btn-sm" href={paper} target="_blank" rel="noopener" data-i18n="Paper">Paper</a>
     ) : data.arxiv ? (
       <a class="btn btn-sm" href={`https://arxiv.org/abs/${data.arxiv}`} target="_blank" rel="noopener">arXiv</a>
     ) : extra.length > 0 ? (
-      <a class="btn btn-sm" href={extra[0].url} target="_blank" rel="noopener">{extra[0].label}</a>
+      <a class="btn btn-sm" href={extra[0].url} target="_blank" rel="noopener"><LocalizedText en={extra[0].label} ru={data.ru?.links?.[extra[0].label]} /></a>
     ) : null}
     {data.github && (
       <a class="btn btn-sm" href={data.github} target="_blank" rel="noopener">GitHub</a>
     )}
     <CiteButton client:visible pub={citable} />
-    <a class="btn btn-sm btn-ghost" href={detailHref}>Read →</a>
+    <a class="btn btn-sm btn-ghost" href={detailHref} data-i18n="Read →">Read →</a>
   </div>
 </article>

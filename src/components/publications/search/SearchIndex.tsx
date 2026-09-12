@@ -1,3 +1,6 @@
+import { contentText, contentLanguage } from "../../../lib/content-language";
+import { formatDate } from "../../../lib/dates";
+import { useLocale } from "../../../lib/use-locale";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "preact/hooks";
 import {
   FILTER_KEYS,
@@ -15,9 +18,11 @@ import "../../../styles/publications-cards.css";
 export interface IndexedPub {
   id: string;
   title: string;
+  ru?: { title?: string; summary?: string; venue?: string; tags?: Record<string, string> };
   authors: string[];
-  authorLinks: Array<{ name: string; id?: string; staff?: boolean }>;
+  authorLinks: Array<{ name: string; id?: string; staff?: boolean; ru?: string }>;
   date: string; // Display label, e.g. 17 Aug 2026
+  dateISO: string;
   year: number;
   venue: string;
   type: "paper" | "preprint" | "code" | "talk";
@@ -51,6 +56,7 @@ interface Props {
 }
 
 export default function SearchIndex({ pubs }: Props) {
+  const { t, locale } = useLocale();
   const [search, setSearch] = useState(() => readSearch());
   const { q, filters, sort } = search;
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -76,8 +82,12 @@ export default function SearchIndex({ pubs }: Props) {
 
   const venueItems = useMemo(() => {
     const set = new Set(pubs.map((p) => p.venue));
-    return [...set].sort().map((v) => ({ id: v, label: v }));
-  }, [pubs]);
+    return [...set].sort().map((v) => ({
+      id: v,
+      label: contentText(v, pubs.find((p) => p.venue === v && p.ru?.venue)?.ru?.venue, locale),
+      lang: contentLanguage(pubs.find((p) => p.venue === v && p.ru?.venue)?.ru?.venue, locale),
+    }));
+  }, [pubs, locale]);
 
   const yearItems = useMemo(() => {
     const set = new Set(pubs.map((p) => p.year));
@@ -94,18 +104,34 @@ export default function SearchIndex({ pubs }: Props) {
     // OOAARG staff lead the list, then everyone
     // else, each group alphabetical.
     return [...set]
-      .map((a) => ({ id: a, label: a, member: staff.has(a) }))
+      .map((a) => ({
+        id: a,
+        label: contentText(
+          a,
+          pubs.flatMap((p) => p.authorLinks).find((author) => author.name === a && author.ru)?.ru,
+          locale,
+        ),
+        lang: contentLanguage(
+          pubs.flatMap((p) => p.authorLinks).find((author) => author.name === a && author.ru)?.ru,
+          locale,
+        ),
+        member: staff.has(a),
+      }))
       .sort((x, y) => {
         if (x.member !== y.member) return x.member ? -1 : 1;
         return x.label.localeCompare(y.label);
       });
-  }, [pubs]);
+  }, [pubs, locale]);
 
   const tagItems = useMemo(() => {
     const set = new Set<string>();
     pubs.forEach((p) => p.tags.forEach((t) => set.add(t)));
-    return [...set].sort().map((t) => ({ id: t, label: t }));
-  }, [pubs]);
+    return [...set].sort().map((t) => ({
+      id: t,
+      label: contentText(t, pubs.find((p) => p.ru?.tags?.[t])?.ru?.tags?.[t], locale),
+      lang: contentLanguage(pubs.find((p) => p.ru?.tags?.[t])?.ru?.tags?.[t], locale),
+    }));
+  }, [pubs, locale]);
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -117,7 +143,20 @@ export default function SearchIndex({ pubs }: Props) {
       if (filters.author.size && !p.authors.some((a) => filters.author.has(a))) return false;
       if (filters.tag.size && !p.tags.some((t) => filters.tag.has(t))) return false;
       if (needle) {
-        const hay = [p.title, p.abstract, p.authors.join(" "), p.venue, ...p.tags].join(" ").toLowerCase();
+        const hay = [
+          p.title,
+          p.abstract,
+          p.authors.join(" "),
+          p.venue,
+          ...p.tags,
+          p.ru?.title,
+          p.ru?.summary,
+          p.ru?.venue,
+          ...Object.values(p.ru?.tags ?? {}),
+          ...p.authorLinks.map((a) => a.ru),
+        ]
+          .join(" ")
+          .toLowerCase();
         if (!hay.includes(needle)) return false;
       }
       return true;
@@ -196,7 +235,7 @@ export default function SearchIndex({ pubs }: Props) {
       />
       <Facet
         title="Type"
-        items={FACETS.type}
+        items={FACETS.type.filter((type) => (counts.type[type.id] ?? 0) > 0)}
         selected={filters.type}
         counts={counts.type}
         onToggle={(v) => toggle("type", v)}
@@ -238,7 +277,7 @@ export default function SearchIndex({ pubs }: Props) {
       />
       {totalActive > 0 && (
         <button type="button" className="btn btn-ghost btn-sm" style={{ marginTop: 16 }} onClick={clearAll}>
-          Clear all filters ({totalActive})
+          {t("Clear all filters")} ({totalActive})
         </button>
       )}
     </>
@@ -254,10 +293,10 @@ export default function SearchIndex({ pubs }: Props) {
         <input
           ref={inputRef}
           id="ri-search"
-          placeholder="Search titles, abstracts, authors, tags…"
+          placeholder={t("Search titles, abstracts, authors, tags\u2026")}
           value={q}
           onInput={(e) => updateSearch({ ...search, q: e.currentTarget.value }, "replaceState")}
-          aria-label="Search publications"
+          aria-label={t("Search publications")}
         />
         <kbd>⌘K</kbd>
       </div>
@@ -272,28 +311,28 @@ export default function SearchIndex({ pubs }: Props) {
           aria-expanded={sheetOpen}
           aria-controls="publication-filters"
         >
-          Filters{totalActive > 0 ? ` (${totalActive})` : ""}
+          {t("Filters")}
+          {totalActive > 0 ? ` (${totalActive})` : ""}
         </button>
       </div>
 
       <div className="ri-grid">
-        <aside className="ri-side" aria-label="Filters">
+        <aside className="ri-side" aria-label={t("Filters")}>
           {facetGroups}
         </aside>
 
         <div>
           <div className="ri-summary">
             <span role="status" aria-live="polite" aria-atomic="true">
-              <strong style={{ color: "var(--fg)" }}>{filtered.length}</strong> result
-              {filtered.length === 1 ? "" : "s"}
+              {t("Results")}: <strong style={{ color: "var(--fg)" }}>{filtered.length}</strong>
               {q && (
                 <>
                   {" "}
-                  for <em>"{q}"</em>
+                  {t("for")} <em>"{q}"</em>
                 </>
               )}
             </span>
-            <div className="ri-sort" role="group" aria-label="Sort by date">
+            <div className="ri-sort" role="group" aria-label={t("Sort by date")}>
               {(["newest", "oldest"] as const).map((order) => (
                 <button
                   key={order}
@@ -303,7 +342,7 @@ export default function SearchIndex({ pubs }: Props) {
                     if (sort !== order) updateSearch({ ...search, sort: order });
                   }}
                 >
-                  {order === "newest" ? "Newest" : "Oldest"}
+                  {order === "newest" ? t("Newest") : t("Oldest")}
                 </button>
               ))}
             </div>
@@ -328,7 +367,7 @@ export default function SearchIndex({ pubs }: Props) {
                         <path d="M14 3v6h6M8 13h8M8 17h5" />
                       </svg>
                     )}
-                    <span>{p.type}</span>
+                    <span>{t(p.type)}</span>
                   </span>
                   <span className="ri-meta-item">
                     <svg
@@ -341,7 +380,7 @@ export default function SearchIndex({ pubs }: Props) {
                       <rect x="3" y="5" width="18" height="16" rx="2" />
                       <path d="M7 3v4m10-4v4M3 11h18" />
                     </svg>
-                    <span>{p.date}</span>
+                    <time dateTime={p.dateISO}>{formatDate(p.dateISO, locale)}</time>
                   </span>
                   <span className="ri-meta-item">
                     <svg
@@ -354,34 +393,38 @@ export default function SearchIndex({ pubs }: Props) {
                       <circle cx="12" cy="7" r="3" />
                       <path d="M6 21v-3a6 6 0 0 1 12 0v3M5 4a3 3 0 0 0 0 6m14-6a3 3 0 0 1 0 6M3 20v-3a5 5 0 0 1 3-4m15 7v-3a5 5 0 0 0-3-4" />
                     </svg>
-                    <span>{p.venue}</span>
+                    <span lang={contentLanguage(p.ru?.venue, locale)}>
+                      {contentText(p.venue, p.ru?.venue, locale)}
+                    </span>
                   </span>
                 </div>
                 <div>
-                  <h3>
+                  <h3 lang={contentLanguage(p.ru?.title, locale)}>
                     <a className="ri-result-link" href={`/publications/${p.id}`}>
-                      {p.title}
+                      {contentText(p.title, p.ru?.title, locale)}
                     </a>
                   </h3>
                   <p className="ri-authors">
                     {p.authorLinks.map((a, i) => (
-                      <span key={`${p.id}-${i}`}>
+                      <span key={`${p.id}-${i}`} lang={contentLanguage(a.ru, locale)}>
                         {a.id ? (
                           <a className="author-link" href={`/about/${a.id}`}>
-                            {a.name}
+                            {contentText(a.name, a.ru, locale)}
                           </a>
                         ) : (
-                          a.name
+                          contentText(a.name, a.ru, locale)
                         )}
                         {i < p.authorLinks.length - 1 ? ", " : ""}
                       </span>
                     ))}
                   </p>
-                  <p className="ri-abstract">{p.abstract}</p>
+                  <p className="ri-abstract" lang={contentLanguage(p.ru?.summary, locale)}>
+                    {contentText(p.abstract, p.ru?.summary, locale)}
+                  </p>
                   <div className="ri-tags">
                     {p.tags.map((t) => (
-                      <span key={t} className="pill">
-                        {t}
+                      <span key={t} className="pill" lang={contentLanguage(p.ru?.tags?.[t], locale)}>
+                        {contentText(t, p.ru?.tags?.[t], locale)}
                       </span>
                     ))}
                   </div>
@@ -402,7 +445,7 @@ export default function SearchIndex({ pubs }: Props) {
                   color: "var(--fg-muted)",
                 }}
               >
-                No papers match these filters.
+                {t("No papers match these filters.")}
               </li>
             )}
           </ul>
@@ -417,19 +460,19 @@ export default function SearchIndex({ pubs }: Props) {
         onClick={(e) => {
           if (e.target === e.currentTarget) e.currentTarget.close();
         }}
-        aria-label="Filters"
+        aria-label={t("Filters")}
       >
         <div className="panel">
           <div className="grabber" aria-hidden="true" />
           <header>
-            <h2>Filters</h2>
+            <h2>{t("Filters")}</h2>
             <button
               ref={doneRef}
               type="button"
               className="btn btn-ghost btn-sm"
               onClick={() => sheetRef.current?.close()}
             >
-              Done
+              {t("Done")}
             </button>
           </header>
           {facetGroups}

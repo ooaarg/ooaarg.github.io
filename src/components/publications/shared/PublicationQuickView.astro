@@ -1,4 +1,6 @@
 ---
+import LocalizedText from '../../LocalizedText.astro';
+import LocalizedDate from '../../LocalizedDate.astro';
 import type { CollectionEntry } from 'astro:content';
 import { paperUrl } from '../../../lib/pubs';
 import type { resolveAuthors } from '../../../lib/people';
@@ -10,8 +12,6 @@ interface Props {
   selfName?: string;
 }
 const { publication: p, authors, selfName } = Astro.props;
-const fmt = (d: Date) =>
-  new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(d);
 ---
 
           <li>
@@ -21,33 +21,33 @@ const fmt = (d: Date) =>
                   <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Z" />
                   <path d="M14 3v6h6M8 13h8M8 17h5" />
                 </svg>
-                {p.data.type}
+                <span data-i18n={p.data.type}>{p.data.type}</span>
               </span>
               <span class="pub-meta-item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
                   <rect x="3" y="5" width="18" height="16" rx="2" />
                   <path d="M7 3v4m10-4v4M3 11h18" />
                 </svg>
-                <time datetime={p.data.date.toISOString()}>{fmt(p.data.date)}</time>
+                <LocalizedDate date={p.data.date} />
               </span>
               <span class="pub-meta-item pub-venue">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
                   <circle cx="12" cy="7" r="3" />
                   <path d="M6 21v-3a6 6 0 0 1 12 0v3M5 4a3 3 0 0 0 0 6m14-6a3 3 0 0 1 0 6M3 20v-3a5 5 0 0 1 3-4m15 7v-3a5 5 0 0 0-3-4" />
                 </svg>
-                <span>{p.data.venue}</span>
+                <span><LocalizedText en={p.data.venue} ru={p.data.ru?.venue} /></span>
               </span>
             </div>
             <div class="pub-body">
               <h3 class="pub-title">
-                <a class="pub-title-link" href={`/publications/${p.id}`}>{p.data.title}</a>
+                <a class="pub-title-link" href={`/publications/${p.id}`}><LocalizedText en={p.data.title} ru={p.data.ru?.title} /></a>
               </h3>
               <p class="pub-meta">
                 {authors.map((a, i, arr) => (
                   <>
-                    {a.name === selfName ? <strong>{a.name}</strong> : a.id ? (
-                      <a class="author-link" href={`/about/${a.id}`}>{a.name}</a>
-                    ) : a.name}
+                    {a.name === selfName ? <strong><LocalizedText en={a.name} ru={a.ru} /></strong> : a.id ? (
+                      <a class="author-link" href={`/about/${a.id}`}><LocalizedText en={a.name} ru={a.ru} /></a>
+                    ) : <LocalizedText en={a.name} ru={a.ru} />}
                     {i < arr.length - 1 ? ', ' : ''}
                   </>
                 ))}
@@ -55,7 +55,7 @@ const fmt = (d: Date) =>
             </div>
             <div class="pub-actions">
               {paperUrl(p.data) ? (
-                <a class="btn btn-sm" href={paperUrl(p.data)} target="_blank" rel="noopener">
+                <a class="btn btn-sm" href={paperUrl(p.data)} target="_blank" rel="noopener" data-i18n="Paper">
                   Paper
                 </a>
               ) : p.data.arxiv && (
@@ -63,6 +63,6 @@ const fmt = (d: Date) =>
                   arXiv
                 </a>
               )}
-              <a class="btn btn-sm btn-ghost" href={`/publications/${p.id}`} aria-label={`Read ${p.data.title}`}>→</a>
+              <a class="btn btn-sm btn-ghost" href={`/publications/${p.id}`} aria-label={`Read ${p.data.title}`} data-content-aria-label-en={`Read ${p.data.title}`} data-content-aria-label-ru={`Читать: ${p.data.ru?.title ?? p.data.title}`}>→</a>
             </div>
           </li>

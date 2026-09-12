@@ -17,11 +17,13 @@ import '../styles/kinetic-logo.css';
 
 interface Props {
   title?: string;
+  titleRu?: string;
+  descriptionRu?: string;
   description?: string;
   active?: 'home' | 'blog' | 'pubs' | 'about';
 }
 
-const { title, description, active } = Astro.props;
+const { title, description, active, titleRu, descriptionRu } = Astro.props;
 ---
 
 <!doctype html>
@@ -34,7 +36,7 @@ const { title, description, active } = Astro.props;
     <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
     <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)" />
-    <SeoHead title={title} description={description} />
+    <SeoHead title={title} description={description} titleRu={titleRu} descriptionRu={descriptionRu} />
     <slot name="head" />
 
     {/* Inline theme init — runs BEFORE paint to avoid dark↔light flash. */}

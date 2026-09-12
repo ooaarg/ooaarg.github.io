@@ -13,6 +13,12 @@ const pubs = await getCollection('publications');
 
 const slides = featuredCarousel(pubs).map((p) => ({
   id: p.id,
+  ru: {
+    title: p.data.ru?.title,
+    summary: p.data.ru?.heroSummary ?? p.data.ru?.summary,
+    venue: p.data.ru?.venue,
+    keywords: p.data.ru?.tags,
+  },
   title: p.data.title,
   venue: p.data.venue,
   keywords: p.data.tags.slice(0, 4),
@@ -23,7 +29,7 @@ const slides = featuredCarousel(pubs).map((p) => ({
 }));
 ---
 
-<Site
+<Site titleRu="Исследовательская Группа Онлайн Оптимизация И Приложения" descriptionRu="Исследовательская группа по онлайн-оптимизации, онлайн-обучению, многоруким бандитам и оптимизации СУБД. Теоретические гарантии регрета и практическое применение."
   active="home"
   title="OOAARG — Online Optimization And Applications Research Group"
   description="A research group on online optimization, online learning, bandits, and DBMS optimization. Provable regret guarantees, practical deployment."
@@ -34,7 +40,7 @@ const slides = featuredCarousel(pubs).map((p) => ({
     <div class="container">
       <div class="section-head">
         <div>
-          <h2>What we work on</h2>
+          <h2 data-i18n="What we work on">What we work on</h2>
         </div>
       </div>
       <AreasOfResearch pubs={pubs} />

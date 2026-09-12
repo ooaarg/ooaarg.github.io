@@ -1,9 +1,11 @@
+import { useLocale } from "../../../lib/use-locale";
 import { useState } from "preact/hooks";
 
 interface FacetItem {
   id: string;
   label: string;
   member?: boolean;
+  lang?: "en" | "ru";
 }
 
 interface Props {
@@ -25,17 +27,24 @@ export default function FacetDropdown({
   onClear,
   searchable,
 }: Props) {
+  const { t, locale } = useLocale();
   const [q, setQ] = useState("");
-  const filtered = q ? items.filter((it) => it.label.toLowerCase().includes(q.toLowerCase())) : items;
+  const filtered = q
+    ? items.filter((it) => [it.label, it.id].some((value) => value.toLowerCase().includes(q.toLowerCase())))
+    : items;
   const count = selected.size;
 
   return (
     <div className="ri-group">
-      <h3 className="ri-group-label">{title}</h3>
+      <h3 className="ri-group-label">{t(title)}</h3>
       <details className="facet-dd">
         <summary>
           <span className="facet-dd-label">
-            {count === 0 ? `Any ${title.toLowerCase()}` : `${count} selected`}
+            {count === 0
+              ? locale === "ru"
+                ? "Все"
+                : `Any ${title.toLowerCase()}`
+              : `${count} ${t("selected")}`}
           </span>
           <svg
             className="facet-dd-chev"
@@ -55,8 +64,8 @@ export default function FacetDropdown({
             <input
               type="text"
               className="facet-dd-search"
-              placeholder={`Filter ${title.toLowerCase()}…`}
-              aria-label={`Filter ${title.toLowerCase()}`}
+              placeholder={`${t("Filter")}: ${t(title)}…`}
+              aria-label={`${t("Filter")}: ${t(title)}`}
               value={q}
               onInput={(e) => setQ(e.currentTarget.value)}
             />
@@ -66,16 +75,16 @@ export default function FacetDropdown({
               <label key={it.id} className={it.member ? "is-member" : undefined}>
                 <span className="left">
                   <input type="checkbox" checked={selected.has(it.id)} onChange={() => onToggle(it.id)} />
-                  {it.label}
+                  <span lang={it.lang}>{it.label}</span>
                 </span>
                 <span className="count">{counts[it.id] || 0}</span>
               </label>
             ))}
-            {filtered.length === 0 && <p className="facet-dd-empty">No matches.</p>}
+            {filtered.length === 0 && <p className="facet-dd-empty">{t("No matches.")}</p>}
           </div>
           {count > 0 && onClear && (
             <button type="button" className="btn btn-ghost btn-sm facet-dd-clear" onClick={onClear}>
-              Clear ({count})
+              {t("Clear")} ({count})
             </button>
           )}
         </div>

@@ -1,4 +1,5 @@
 ---
+import { formatDate } from '../../lib/dates';
 import { getCollection } from 'astro:content';
 import Site from '../../layouts/Site.astro';
 import SearchIndex from '../../components/publications/search/SearchIndex.tsx';
@@ -10,18 +11,18 @@ const all = (await getCollection('publications')).sort(sortByDateDesc);
 const authorMap = await getAuthorMap();
 const staffAuthorNames = await getStaffAuthorNames();
 
-const fmt = (d: Date) =>
-  new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(d);
 
 const pubs: IndexedPub[] = all.map((p) => ({
   id: p.id,
   title: p.data.title,
+  ru: p.data.ru ? { title: p.data.ru.title, summary: p.data.ru.summary, venue: p.data.ru.venue, tags: p.data.ru.tags } : undefined,
   authors: p.data.authors,
-  authorLinks: resolveAuthors(p.data.authors, authorMap).map((author) => ({
+  authorLinks: resolveAuthors(p.data.authors, authorMap, p.data.ru?.authors).map((author) => ({
     ...author,
     staff: staffAuthorNames.has(author.name),
   })),
-  date: fmt(p.data.date),
+  date: formatDate(p.data.date, 'en'),
+  dateISO: p.data.date.toISOString(),
   year: p.data.date.getFullYear(),
   venue: p.data.venue,
   type: p.data.type,
@@ -31,22 +32,22 @@ const pubs: IndexedPub[] = all.map((p) => ({
 }));
 ---
 
-<Site
+<Site titleRu="Публикации · ООИПИГ" descriptionRu="Поиск публикаций ООИПИГ по теме, изданию, году, автору и типу."
   active="pubs"
   title="Publications · OOAARG"
   description="Search and filter every OOAARG publication by topic, venue, year, author, or type."
 >
   <section class="pubs-hero">
     <div class="container">
-      <h1>Publications</h1>
-      <p>
+      <h1 data-i18n="Publications">Publications</h1>
+      <p data-i18n="Filter by area, type, author, year, or venue — or just type a few words.">
         Filter by area, type, author, year, or venue — or just type a few words.
       </p>
     </div>
   </section>
 
   <div class="container">
-    <h2 class="kicker" style="margin-bottom: 8px;">Search the corpus</h2>
+    <h2 class="kicker" style="margin-bottom: 8px;" data-i18n="Search the corpus">Search the corpus</h2>
     <SearchIndex client:load pubs={pubs} />
   </div>
 </Site>

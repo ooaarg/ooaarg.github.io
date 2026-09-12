@@ -9,6 +9,18 @@ const publications = defineCollection({
   }),
   schema: z.object({
     title: z.string(),
+    ru: z
+      .object({
+        title: z.string().optional(),
+        summary: z.string().max(320).optional(),
+        body: z.string().optional(),
+        heroSummary: z.string().max(500).optional(),
+        venue: z.string().optional(),
+        authors: z.record(z.string(), z.string()).optional(),
+        tags: z.record(z.string(), z.string()).optional(),
+        links: z.record(z.string(), z.string()).optional(),
+      })
+      .optional(),
     authors: z.array(z.string()).min(1),
     date: z.coerce.date(),
     venue: z.string(),
@@ -51,6 +63,18 @@ const people = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/people" }),
   schema: z.object({
     name: z.string(),
+    ru: z
+      .object({
+        name: z.string().optional(),
+        initials: z.string().min(1).max(3).optional(),
+        role: z.string().optional(),
+        topic: z.string().optional(),
+        org: z.string().optional(),
+        office: z.string().optional(),
+        body: z.string().optional(),
+        links: z.record(z.string(), z.string()).optional(),
+      })
+      .optional(),
     initials: z.string().min(1).max(3),
     role: z.string(),
     topic: z.string(),
@@ -90,6 +114,14 @@ const news = defineCollection({
   schema: ({ image }) =>
     z.object({
       title: z.string(),
+      ru: z
+        .object({
+          title: z.string().optional(),
+          summary: z.string().max(320).optional(),
+          imageAlt: z.string().optional(),
+          body: z.string().optional(),
+        })
+        .optional(),
       date: z.coerce.date(),
       /** Path relative to the entry file — co-located in `src/content/news/`.
        *  Astro resolves and processes the asset at build time. Optional; the

@@ -1,3 +1,4 @@
+import { useLocale } from "../../../lib/use-locale";
 import { useState } from "preact/hooks";
 import CiteModal from "../../shared/CiteModal";
 import type { CitablePublication } from "../../../lib/bibtex";
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export default function CiteButton({ pub, variant = "default", size = "sm", label = "Cite" }: Props) {
+  const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const className = ["btn", size === "sm" ? "btn-sm" : "", variant === "accent" ? "btn-accent" : ""]
     .filter(Boolean)
@@ -23,7 +25,7 @@ export default function CiteButton({ pub, variant = "default", size = "sm", labe
             <path d="M4 4h7v8c0 5-3 8-7 8v-3c2 0 4-2 4-5H4V4Zm10 0h7v8c0 5-3 8-7 8v-3c2 0 4-2 4-5h-4V4Z" />
           </svg>
         )}
-        {label}
+        {t(label)}
       </button>
       <CiteModal pub={{ ...pub, date: new Date(pub.dateISO) }} open={open} onClose={() => setOpen(false)} />
     </>

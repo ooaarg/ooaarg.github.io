@@ -1,4 +1,6 @@
 ---
+import LocalizedText from '../LocalizedText.astro';
+import LocalizedDate from '../LocalizedDate.astro';
 import type { CollectionEntry } from 'astro:content';
 import { AREAS, computeAreaStats } from '../../data/areas';
 
@@ -8,16 +10,15 @@ interface Props {
 
 const { pubs } = Astro.props;
 const stats = computeAreaStats(pubs);
+const tagTranslations = Object.assign({}, ...pubs.map((p) => p.data.ru?.tags ?? {})) as Record<string, string>;
 
-const MONTH = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const fmtLatest = (d: Date | null) => (d ? `${MONTH[d.getMonth()]} ${d.getFullYear()}` : null);
 ---
 
 <ul class="areas-grid">
   {AREAS.filter((area) => area.showOnHome !== false).map((area) => {
     const s = stats[area.id];
     const active = s.count > 0;
-    const latest = fmtLatest(s.latest);
+
     return (
       <li>
       <a
@@ -25,30 +26,30 @@ const fmtLatest = (d: Date | null) => (d ? `${MONTH[d.getMonth()]} ${d.getFullYe
         href={active ? `/publications?area=${area.id}` : '/publications'}
       >
         <div class="area-card-head">
-          <h3>{area.name}</h3>
+          <h3 data-i18n={area.name}>{area.name}</h3>
           <span class="area-card-arrow" aria-hidden="true">→</span>
         </div>
-        <p class="area-card-blurb">{area.blurb}</p>
+        <p class="area-card-blurb" data-i18n={area.blurb}>{area.blurb}</p>
 
         {s.topTags.length > 0 && (
           <div class="area-card-tags">
-            {s.topTags.map((t) => <span class="pill">{t}</span>)}
+            {s.topTags.map((t) => <span class="pill"><LocalizedText en={t} ru={tagTranslations[t]} /></span>)}
           </div>
         )}
 
         <div class="area-card-foot">
           {active ? (
             <>
-              <span class="area-count">{s.count} {s.count === 1 ? 'paper' : 'papers'}</span>
-              {latest && (
+              <span class="area-count"><span data-i18n="Papers:">Papers:</span> {s.count}</span>
+              {s.latest && (
                 <>
                   <span class="area-dot" aria-hidden="true">·</span>
-                  <span class="area-latest mono">latest {latest}</span>
+                  <span class="area-latest mono"><span data-i18n="latest">latest</span> <LocalizedDate date={s.latest} precision="month" /></span>
                 </>
               )}
             </>
           ) : (
-            <span class="area-count area-nascent-label">In development</span>
+            <span class="area-count area-nascent-label" data-i18n="In development">In development</span>
           )}
         </div>
       </a>

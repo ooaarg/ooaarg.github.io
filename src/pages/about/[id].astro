@@ -1,4 +1,6 @@
 ---
+import LocalizedBody from '../../components/LocalizedBody.astro';
+import LocalizedText from '../../components/LocalizedText.astro';
 import { getCollection, render } from 'astro:content';
 import Site from '../../layouts/Site.astro';
 import Avatar from '../../components/people/Avatar.astro';
@@ -51,25 +53,27 @@ const linkRow = [
 <Site
   active="about"
   title={`${data.name} · OOAARG`}
+  titleRu={`${data.ru?.name ?? data.name} · ООИПИГ`}
+  descriptionRu={data.ru?.topic}
   description={`${data.role}: ${data.topic}`}
 >
   <section class="person-detail">
     <div class="container">
       <div class="breadcrumb">
-        <a href="/about">About</a> <span>/</span> {data.name}
+        <a href="/about" data-i18n="About">About</a> <span>/</span> <LocalizedText en={data.name} ru={data.ru?.name} />
       </div>
 
       <div class="person-detail-hero">
         <Avatar person={person} />
         <div>
-          <div class="role">{data.role}</div>
-          <h1 style="margin-top: 8px;">{data.name}</h1>
+          <div class="role"><LocalizedText en={data.role} ru={data.ru?.role} /></div>
+          <h1 style="margin-top: 8px;"><LocalizedText en={data.name} ru={data.ru?.name} /></h1>
           <p class="topic" style="margin-top: 12px; font-size: 18px; max-width: 56ch;">
-            {data.topic}
+            <LocalizedText en={data.topic} ru={data.ru?.topic} />
           </p>
           {data.office && (
             <p class="mono" style="margin-top: 12px; font-size: 13px; color: var(--fg-muted);">
-              {data.office}
+              <LocalizedText en={data.office} ru={data.ru?.office} />
             </p>
           )}
           {linkRow.length > 0 && (
@@ -81,7 +85,7 @@ const linkRow = [
                   target={l.href.startsWith('http') ? '_blank' : undefined}
                   rel={l.href.startsWith('http') ? 'noopener' : undefined}
                 >
-                  {l.label}
+                  <LocalizedText en={l.label} ru={data.ru?.links?.[l.label]} />
                 </a>
               ))}
             </div>
@@ -90,17 +94,17 @@ const linkRow = [
       </div>
 
       <section class="person-section">
-        <h2 class="kicker">About</h2>
+        <h2 class="kicker" data-i18n="About the researcher">About the researcher</h2>
         <div class="person-bio">
-          {hasBio ? <Content /> : <p>Bio coming soon.</p>}
+          {hasBio || data.ru?.body ? <LocalizedBody ru={data.ru?.body}><Content /></LocalizedBody> : <p><span data-i18n="Bio coming soon.">Bio coming soon.</span></p>}
         </div>
       </section>
 
       {showPubs && (
       <section class="person-section">
-        <h2 class="kicker">Publications</h2>
+        <h2 class="kicker" data-i18n="Publications">Publications</h2>
         {yearGroups.length === 0 ? (
-          <p class="person-pubs-empty">No publications listed yet.</p>
+          <p class="person-pubs-empty"><span data-i18n="No publications listed yet.">No publications listed yet.</span></p>
         ) : (
           <div class="person-pubs">
             {yearGroups.map(([year, pubs]) => (
@@ -110,7 +114,7 @@ const linkRow = [
                   {pubs.map((p) => (
                     <PublicationQuickView
                       publication={p}
-                      authors={resolveAuthors(p.data.authors, authorMap)}
+                      authors={resolveAuthors(p.data.authors, authorMap, p.data.ru?.authors)}
                       selfName={data.name}
                     />
                   ))}

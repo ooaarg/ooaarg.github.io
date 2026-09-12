@@ -63,3 +63,8 @@ bun dev
 ```
 
 Open `http://localhost:4321/about` to confirm the card renders in the right group, then click into it to confirm the detail page at `/about/<slug>`.
+
+## Russian translations
+
+See [English and Russian content](./translations.md) for optional `ru` fields,
+Markdown bodies, and fallback rules. Keep original metadata intact.

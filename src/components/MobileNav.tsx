@@ -1,3 +1,4 @@
+import { useLocale } from "../lib/use-locale";
 import { useEffect, useRef, useState } from "preact/hooks";
 
 interface NavLink {
@@ -29,6 +30,7 @@ const CloseIcon = () => (
 );
 
 export default function MobileNav({ active }: Props) {
+  const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const sheetRef = useRef<HTMLDialogElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -55,30 +57,30 @@ export default function MobileNav({ active }: Props) {
       className="mobile-nav-sheet"
       onCancel={() => setOpen(false)}
       onClose={() => setOpen(false)}
-      aria-label="Site navigation"
+      aria-label={t("Site navigation")}
     >
       <header>
         <a
           className="ooaarg-mark"
           href="/"
           style={{ "--ooaarg-size": "32px" }}
-          aria-label="OOAARG home"
+          aria-label={t("OOAARG home")}
           onClick={() => setOpen(false)}
         >
-          <span>OO</span>
-          <span className="ooaarg-stretch">AARG</span>
+          <span>{t("OO")}</span>
+          <span className="ooaarg-stretch">{t("AARG")}</span>
         </a>
         <button
           type="button"
           className="btn btn-ghost btn-icon"
           autoFocus
-          aria-label="Close menu"
+          aria-label={t("Close menu")}
           onClick={() => setOpen(false)}
         >
           <CloseIcon />
         </button>
       </header>
-      <nav aria-label="Mobile navigation">
+      <nav aria-label={t("Mobile navigation")}>
         {LINKS.map((l) => (
           <a
             key={l.href}
@@ -86,11 +88,11 @@ export default function MobileNav({ active }: Props) {
             className={active === l.href ? "active" : ""}
             onClick={() => setOpen(false)}
           >
-            {l.label}
+            {t(l.label)}
           </a>
         ))}
       </nav>
-      <p className="sheet-tagline">Online Optimization &amp; Applications Research Group</p>
+      <p className="sheet-tagline">{t("Online Optimization & Applications Research Group")}</p>
     </dialog>
   );
 
@@ -100,7 +102,7 @@ export default function MobileNav({ active }: Props) {
         ref={triggerRef}
         type="button"
         className="btn btn-ghost btn-icon mobile-only"
-        aria-label="Open menu"
+        aria-label={t("Open menu")}
         aria-expanded={open}
         aria-controls="mobile-nav-sheet"
         onClick={() => setOpen(true)}

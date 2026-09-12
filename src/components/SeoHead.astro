@@ -1,6 +1,8 @@
 ---
 interface Props {
   title?: string;
+  titleRu?: string;
+  descriptionRu?: string;
   description?: string;
   canonical?: string;
 }
@@ -9,20 +11,22 @@ const {
   title = 'OOAARG — Online Optimization And Applications Research Group',
   description = 'Online optimization, online learning, bandits, and DBMS optimization research at OOAARG.',
   canonical,
+  titleRu,
+  descriptionRu,
 } = Astro.props;
 
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site ?? 'https://ooaarg.github.io').href;
 ---
 
-<title>{title}</title>
-<meta name="description" content={description} />
+<title data-content-en={title} data-content-ru={titleRu} lang="en">{title}</title>
+<meta name="description" content={description} data-content-content-en={description} data-content-content-ru={descriptionRu} />
 <link rel="canonical" href={canonicalUrl} />
 
 <meta property="og:type" content="website" />
-<meta property="og:title" content={title} />
-<meta property="og:description" content={description} />
+<meta property="og:title" content={title} data-content-content-en={title} data-content-content-ru={titleRu} />
+<meta property="og:description" content={description} data-content-content-en={description} data-content-content-ru={descriptionRu} />
 <meta property="og:url" content={canonicalUrl} />
 
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content={title} />
-<meta name="twitter:description" content={description} />
+<meta name="twitter:title" content={title} data-content-content-en={title} data-content-content-ru={titleRu} />
+<meta name="twitter:description" content={description} data-content-content-en={description} data-content-content-ru={descriptionRu} />

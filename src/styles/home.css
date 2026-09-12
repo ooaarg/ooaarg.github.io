@@ -297,7 +297,7 @@
   display: grid;
   grid-template-columns: 1.4fr 1fr;
   gap: 64px;
-  align-items: end;
+  align-items: start;
 }
 
 .join-actions {
@@ -305,6 +305,13 @@
   flex-direction: column;
   gap: 10px;
   align-items: stretch;
+}
+
+.join-actions .btn {
+  height: auto;
+  min-height: 36px;
+  padding-block: 8px;
+  white-space: normal;
 }
 
 @media (max-width: 900px) {
@@ -327,7 +334,8 @@
     min-height: 0;
     gap: 16px;
   }
-  .hero-copy {
+  .hero-copy,
+  .hero-sizing-copy {
     --hero-title-size: clamp(20px, 6vw, 24px);
     height: 192px;
     margin-top: 16px;
@@ -498,8 +506,14 @@
   }
 }
 
-/* Browser tabs can leave a wide tablet with a short content viewport. */
-@media (min-width: 901px) and (max-height: 800px) {
+@media (min-width: 901px) {
+  [data-extended-title="true"] h1 {
+    font-size: clamp(28px, 2.8vw, 36px);
+  }
+}
+
+/* Leave room for actions when browser chrome reduces the available height. */
+@media (min-width: 901px) and (max-height: 1000px) {
   .hero-featured-grid {
     min-height: 0;
     gap: 32px;
@@ -541,7 +555,8 @@
     grid-template-columns: minmax(0, 1fr) minmax(160px, 0.55fr);
     gap: 24px;
   }
-  .hero-copy {
+  .hero-copy,
+  .hero-sizing-copy {
     height: 144px;
     margin-top: 8px;
     --hero-title-size: 20px;

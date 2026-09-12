@@ -59,3 +59,8 @@ If the dev server misses a renamed entry, restart it. To refresh cached content 
 ```bash
 bun run build --force
 ```
+
+## Russian translations
+
+See [English and Russian content](./translations.md) for optional `ru` fields,
+Markdown bodies, and fallback rules. Keep original metadata intact.

@@ -1,5 +1,17 @@
 ---
 name: "Jingbang Chen"
+ru:
+  name: "Цзинбан Чэнь"
+  initials: "ЦЧ"
+  role: "Ассистент-профессор · Ph.D."
+  topic: "Алгоритмы на графах, структуры данных, ИИ."
+  org: "Китайский университет Гонконга (Шэньчжэнь)"
+  links:
+    "Homepage": "Домашняя страница"
+  body: |
+    Я ассистент-профессор в Китайском университете Гонконга (Шэньчжэнь) (CUHK-Shenzhen) и Шэньчжэньском институте Loop Area (SLAI) с сентября 2025 года. Я получил степень Ph.D. в [Algorithms & Complexity Group](https://algcomp.uwaterloo.ca/) [Университета Уотерлу](https://uwaterloo.ca/). Мне посчастливилось работать под руководством [Richard Peng](https://www.cs.cmu.edu/~yangp/). До этого я получил степень магистра в [Технологическом институте Джорджии](https://www.gatech.edu/) и степень бакалавра с отличием в [Чжэцзянском университете](https://www.zju.edu.cn/) под руководством [Can Wang](https://person.zju.edu.cn/wangcan).
+
+    Мои исследования посвящены проектированию, анализу и реализации доказуемо эффективных алгоритмов и структур данных, прежде всего для графов. Сейчас я исследую применение ИИ. Я один из основателей и координатор недавно созданной [SDS CS Theory Group](https://sds-theory.github.io/).
 initials: "JC"
 role: "Research Assistant Professor · Ph.D."
 topic: "Graph algorithms, Data structures, AI."

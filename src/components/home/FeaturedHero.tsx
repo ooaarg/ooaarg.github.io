@@ -1,8 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from "preact/hooks";
+import { contentText, contentLanguage } from "../../lib/content-language";
+import { useLocale } from "../../lib/use-locale";
+import { useCallback, useEffect, useMemo, useRef, useState } from "preact/hooks";
 import type { TargetedKeyboardEvent, TargetedPointerEvent } from "preact";
 
 export interface HeroSlide {
   id: string;
+  ru?: { title?: string; summary?: string; venue?: string; keywords?: Record<string, string> };
   title: string;
   venue: string;
   keywords: string[];
@@ -18,13 +21,36 @@ interface Props {
 
 const SWIPE_THRESHOLD = 40;
 
+// Long titles need more room; the detail page carries the complete summary.
+function desktopSummary(title: string, summary: string, locale: string): string {
+  if (title.length <= 100) return summary;
+  return (
+    new Intl.Segmenter(locale, { granularity: "sentence" })
+      .segment(summary)
+      [Symbol.iterator]()
+      .next()
+      .value?.segment.trim() ?? summary
+  );
+}
+
 const Chevron = ({ dir }: { dir: "left" | "right" }) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
     {dir === "left" ? <path d="M15 6l-6 6 6 6" /> : <path d="M9 6l6 6-6 6" />}
   </svg>
 );
 
-export default function FeaturedHero({ slides }: Props) {
+export default function FeaturedHero({ slides: sourceSlides }: Props) {
+  const { t, locale } = useLocale();
+  const slides = useMemo(
+    () =>
+      sourceSlides.map((slide) => ({
+        ...slide,
+        title: contentText(slide.title, slide.ru?.title, locale),
+        summary: contentText(slide.summary, slide.ru?.summary, locale),
+        venue: contentText(slide.venue, slide.ru?.venue, locale),
+      })),
+    [sourceSlides, locale],
+  );
   const [index, setIndex] = useState(0);
   const [mobileSummaries, setMobileSummaries] = useState<string[]>([]);
   const heroRef = useRef<HTMLElement>(null);
@@ -33,7 +59,7 @@ export default function FeaturedHero({ slides }: Props) {
   useEffect(() => {
     const hero = heroRef.current;
     if (!hero) return;
-    const sentences = new Intl.Segmenter("en", { granularity: "sentence" });
+    const sentences = new Intl.Segmenter(locale, { granularity: "sentence" });
     const measureLayout = () => {
       const nextSummaries: string[] = [];
       const mobile = window.matchMedia("(max-width: 900px)").matches;
@@ -90,7 +116,7 @@ export default function FeaturedHero({ slides }: Props) {
       active = false;
       observer.disconnect();
     };
-  }, [slides]);
+  }, [slides, locale]);
 
   const n = slides.length;
   const slide = slides[index];
@@ -137,9 +163,51 @@ export default function FeaturedHero({ slides }: Props) {
       onPointerDown={onPointerDown}
       onPointerUp={onPointerUp}
       aria-roledescription="carousel"
-      aria-label="Featured papers"
+      aria-label={t("Featured papers")}
     >
       <div className="hero-slides">
+        {/* Reserve both translations before hydration so changing language cannot
+            move the actions or the following section. These copies are inert. */}
+        {sourceSlides.map((slide) => {
+          const sizingLocale = locale === "en" ? "ru" : "en";
+          return (
+            <div
+              key={`sizing-${slide.id}`}
+              className="container hero-featured-grid hero-sizing"
+              aria-hidden="true"
+              inert
+            >
+              <div className="hero-slide-text">
+                <div className="kicker">{t("Featured paper")}</div>
+                <div
+                  className="hero-sizing-copy"
+                  data-extended-title={String(
+                    contentText(slide.title, slide.ru?.title, sizingLocale).length > 100,
+                  )}
+                >
+                  <h1>{contentText(slide.title, slide.ru?.title, sizingLocale)}</h1>
+                  <p className="hero-sub hero-sub-desktop">
+                    {desktopSummary(
+                      contentText(slide.title, slide.ru?.title, sizingLocale),
+                      contentText(slide.summary, slide.ru?.summary, sizingLocale),
+                      sizingLocale,
+                    )}
+                  </p>
+                </div>
+              </div>
+              <ul className="hero-metadata">
+                <li className="hero-ribbon hero-ribbon-venue">
+                  {contentText(slide.venue, slide.ru?.venue, sizingLocale)}
+                </li>
+                {slide.keywords.slice(0, 4).map((keyword) => (
+                  <li key={keyword} className="hero-ribbon">
+                    #{contentText(keyword, slide.ru?.keywords?.[keyword], sizingLocale).replace(/\s+/g, "-")}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
         {slides.map((slide, i) => (
           <div
             key={slide.id}
@@ -148,18 +216,31 @@ export default function FeaturedHero({ slides }: Props) {
             inert={i !== index}
           >
             <div key={`text-${slide.id}`} className="hero-slide hero-slide-text">
-              <div className="kicker">Featured paper</div>
-              <div className="hero-copy" data-long-title={String(slide.title.length > 100)}>
-                <h1>{slide.title}</h1>
-                <p className="hero-sub hero-sub-desktop">{slide.summary}</p>
+              <div className="kicker">{t("Featured paper")}</div>
+              <div
+                lang={contentLanguage(slide.ru?.summary, locale)}
+                className="hero-copy"
+                data-extended-title={String(slide.title.length > 100)}
+                data-long-title={String(slide.title.length > 100)}
+              >
+                <h1 lang={contentLanguage(slide.ru?.title, locale)}>{slide.title}</h1>
+                <p className="hero-sub hero-sub-desktop">
+                  {desktopSummary(slide.title, slide.summary, locale)}
+                </p>
                 {mobileSummaries[i] && <p className="hero-sub hero-sub-mobile">{mobileSummaries[i]}</p>}
               </div>
             </div>
-            <ul className="hero-metadata hero-slide" aria-label="Venue and keywords">
-              <li className="hero-ribbon hero-ribbon-venue">{slide.venue}</li>
+            <ul className="hero-metadata hero-slide" aria-label={t("Venue and keywords")}>
+              <li className="hero-ribbon hero-ribbon-venue" lang={contentLanguage(slide.ru?.venue, locale)}>
+                {slide.venue}
+              </li>
               {slide.keywords.slice(0, 4).map((keyword) => (
-                <li key={keyword} className="hero-ribbon">
-                  #{keyword.replace(/\s+/g, "-")}
+                <li
+                  key={keyword}
+                  className="hero-ribbon"
+                  lang={contentLanguage(slide.ru?.keywords?.[keyword], locale)}
+                >
+                  #{contentText(keyword, slide.ru?.keywords?.[keyword], locale).replace(/\s+/g, "-")}
                 </li>
               ))}
             </ul>
@@ -171,16 +252,16 @@ export default function FeaturedHero({ slides }: Props) {
           {slides.map((slide, i) => (
             <div key={slide.id} className="hero-cta" aria-hidden={i !== index} inert={i !== index}>
               <a className="btn btn-accent" href={`/publications/${slide.id}`}>
-                Read more →
+                {t("Read more \u2192")}
               </a>
               {slide.paper && (
                 <a className="btn" href={slide.paper} target="_blank" rel="noopener">
-                  View paper
+                  {t("View paper")}
                 </a>
               )}
               {slide.github && (
                 <a className="btn hero-cta-code" href={slide.github} target="_blank" rel="noopener">
-                  View code
+                  {t("View code")}
                 </a>
               )}
               {!slide.paper && slide.arxiv && (
@@ -196,16 +277,16 @@ export default function FeaturedHero({ slides }: Props) {
             </div>
           ))}
         </div>
-        <div className="hero-controls" role="group" aria-label="Carousel controls">
+        <div className="hero-controls" role="group" aria-label={t("Carousel controls")}>
           <button
             type="button"
             className="btn btn-ghost btn-icon"
-            aria-label="Previous featured paper"
+            aria-label={t("Previous featured paper")}
             onClick={() => go(index - 1)}
           >
             <Chevron dir="left" />
           </button>
-          <div className="hero-dots" role="tablist" aria-label="Featured papers">
+          <div className="hero-dots" role="tablist" aria-label={t("Featured papers")}>
             {slides.map((s, i) => (
               <button
                 key={s.id}
@@ -214,7 +295,7 @@ export default function FeaturedHero({ slides }: Props) {
                 role="tab"
                 aria-selected={i === index}
                 aria-current={i === index || undefined}
-                aria-label={`Show featured paper ${i + 1} of ${n}: ${s.title}`}
+                aria-label={`${t("Show featured paper")} ${i + 1} ${t("of")} ${n}: ${s.title}`}
                 onClick={() => go(i)}
               />
             ))}
@@ -222,7 +303,7 @@ export default function FeaturedHero({ slides }: Props) {
           <button
             type="button"
             className="btn btn-ghost btn-icon"
-            aria-label="Next featured paper"
+            aria-label={t("Next featured paper")}
             onClick={() => go(index + 1)}
           >
             <Chevron dir="right" />

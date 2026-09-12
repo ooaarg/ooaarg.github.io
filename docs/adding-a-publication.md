@@ -95,3 +95,8 @@ bun run build
 ```
 
 Quote numeric-looking arXiv IDs, keep summaries within their length limit, and use the schema's exact enum values. If the dev server misses a renamed entry, restart it; use `bun run build --force` to refresh cached content when troubleshooting.
+
+## Russian translations
+
+See [English and Russian content](./translations.md) for optional `ru` fields,
+Markdown bodies, and fallback rules. Keep original metadata intact.

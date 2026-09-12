@@ -1,3 +1,4 @@
+import { useLocale } from "../../../lib/use-locale";
 interface FacetItem {
   id: string;
   label: string;
@@ -12,15 +13,16 @@ interface Props {
 }
 
 export default function Facet({ title, items, selected, counts, onToggle }: Props) {
+  const { t } = useLocale();
   return (
     <div className="ri-group">
-      <h3 className="ri-group-label">{title}</h3>
+      <h3 className="ri-group-label">{t(title)}</h3>
       <div className="facet">
         {items.map((it) => (
           <label key={it.id}>
             <span className="left">
               <input type="checkbox" checked={selected.has(it.id)} onChange={() => onToggle(it.id)} />
-              {it.label}
+              {t(it.label)}
             </span>
             <span className="count">{counts[it.id] || 0}</span>
           </label>

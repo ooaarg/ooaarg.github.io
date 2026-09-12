@@ -1,4 +1,5 @@
 ---
+import LocalizedDate from './LocalizedDate.astro';
 import KineticLogo from './KineticLogo.astro';
 
 const buildDate = new Date().toISOString().slice(0, 10);
@@ -11,34 +12,34 @@ const buildDate = new Date().toISOString().slice(0, 10);
         <div style="margin-bottom: 14px;">
           <KineticLogo size="28px" />
         </div>
-        <p style="max-width: 32ch; color: var(--fg-muted);">
+        <p style="max-width: 32ch; color: var(--fg-muted);" data-i18n="Online Optimization And Applications Research Group.">
           Online Optimization And Applications Research Group.
         </p>
       </div>
       <div>
-        <h2 class="foot-label">Research</h2>
+        <h2 class="foot-label" data-i18n="Research">Research</h2>
         <ul>
-          <li><a href="/blog">Blog</a></li>
-          <li><a href="/publications">Publications</a></li>
+          <li><a href="/blog" data-i18n="Blog">Blog</a></li>
+          <li><a href="/publications" data-i18n="Publications">Publications</a></li>
         </ul>
       </div>
       <div>
-        <h2 class="foot-label">Group</h2>
+        <h2 class="foot-label" data-i18n="Group">Group</h2>
         <ul>
-          <li><a href="/about">About</a></li>
-          <li><a href="/#join">Join us</a></li>
+          <li><a href="/about" data-i18n="About">About</a></li>
+          <li><a href="/#join" data-i18n="Join us">Join us</a></li>
         </ul>
       </div>
       <div>
-        <h2 class="foot-label">Elsewhere</h2>
+        <h2 class="foot-label" data-i18n="Elsewhere">Elsewhere</h2>
         <ul>
           <li><a href="https://github.com/ooaarg">GitHub</a></li>
         </ul>
       </div>
     </div>
     <div class="foot-bottom">
-      <span>© {new Date().getFullYear()} OOAARG · CC BY 4.0 unless noted</span>
-      <span>Last build: {buildDate}</span>
+      <span>© {new Date().getFullYear()} <span data-i18n="OOAARG">OOAARG</span> · <span data-i18n="CC BY 4.0 unless noted">CC BY 4.0 unless noted</span></span>
+      <span><span data-i18n="Last build:">Last build:</span> <LocalizedDate date={buildDate} /></span>
     </div>
   </div>
 </footer>

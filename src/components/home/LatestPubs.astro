@@ -14,20 +14,20 @@ const authorMap = await getAuthorMap();
   <div class="container">
     <div class="section-head">
       <div>
-        <h2>Out of the lab</h2>
+        <h2 data-i18n="Out of the lab">Out of the lab</h2>
       </div>
     </div>
 
     <ul class="pub-list">
       {
         pubs.map((p) => (
-          <PublicationQuickView publication={p} authors={resolveAuthors(p.data.authors, authorMap)} />
+          <PublicationQuickView publication={p} authors={resolveAuthors(p.data.authors, authorMap, p.data.ru?.authors)} />
         ))
       }
     </ul>
 
     <div style="margin-top: 32px; display: flex; justify-content: center;">
-      <a class="btn" href="/publications">All publications →</a>
+      <a class="btn" href="/publications" data-i18n="All publications →">All publications →</a>
     </div>
   </div>
 </section>

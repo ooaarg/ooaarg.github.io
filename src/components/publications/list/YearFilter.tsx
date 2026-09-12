@@ -1,3 +1,4 @@
+import { useLocale } from "../../../lib/use-locale";
 import { useState } from "preact/hooks";
 
 interface Props {
@@ -6,6 +7,7 @@ interface Props {
 }
 
 export default function YearFilter({ years, total }: Props) {
+  const { t, locale } = useLocale();
   const [active, setActive] = useState<"all" | number>("all");
 
   const [visibleCount, setVisibleCount] = useState(total);
@@ -33,13 +35,13 @@ export default function YearFilter({ years, total }: Props) {
             onClick={() => selectYear(y)}
             aria-pressed={active === y}
           >
-            {y === "all" ? "All" : y}
+            {y === "all" ? t("All") : y}
           </button>
         ))}
       </div>
       <div className="toolbar-spacer" />
       <span className="mono" style={{ fontSize: 12, color: "var(--fg-muted)" }}>
-        {visibleCount} of {total} posts
+        {locale === "ru" ? `Записи: ${visibleCount} из ${total}` : `${visibleCount} of ${total} posts`}
       </span>
     </>
   );

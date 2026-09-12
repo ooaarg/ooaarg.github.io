@@ -1,5 +1,10 @@
 ---
 name: "Daniel Skachkov"
+ru:
+  name: "Даниил Скачков"
+  initials: "ДС"
+  role: "Аспирант"
+  topic: "информатика, комбинаторная оптимизация."
 initials: "DS"
 role: "Ph.D. Student"
 topic: "computer science, combinatorial optimization."

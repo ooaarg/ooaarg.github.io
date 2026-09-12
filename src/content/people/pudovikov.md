@@ -1,5 +1,10 @@
 ---
 name: "Andrey Pudovikov"
+ru:
+  name: "Андрей Пудовиков"
+  initials: "АП"
+  role: "Студент"
+  topic: "Алгоритмическая теория игр, автоматические ставки, онлайн-оптимизация."
 initials: "AP"
 role: "Student"
 topic: "Algorithmic Game Theory, Autobidding, Online Optimization."

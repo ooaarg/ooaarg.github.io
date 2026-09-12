@@ -18,15 +18,15 @@ const allYears = [...new Set(items.map((i) => i.data.date.getFullYear()))].sort(
 const tiles = packBento(items, (i) => i.data.span);
 ---
 
-<Site
+<Site titleRu="Блог · ООИПИГ" descriptionRu="Новости исследовательской группы ООИПИГ."
   active="blog"
   title="Blog · OOAARG"
   description="News from the OOAARG research group."
 >
   <section class="pubs-hero">
     <div class="container">
-      <h1>Latest news</h1>
-      <p>
+      <h1 data-i18n="Latest news">Latest news</h1>
+      <p data-i18n="News and updates from our research group.">
         News and updates from our research group.
       </p>
     </div>
@@ -34,9 +34,9 @@ const tiles = packBento(items, (i) => i.data.span);
 
   <div class="container">
     <div class="pubs-toolbar">
-      <h2 class="kicker" style="margin-right: 4px;">Filter</h2>
+      <h2 class="kicker" style="margin-right: 4px;" data-i18n="Filter">Filter</h2>
       <YearFilter client:load years={allYears} total={items.length} />
-      <a class="btn btn-sm" href="/publications">Publications →</a>
+      <a class="btn btn-sm" href="/publications" data-i18n="Publications →">Publications →</a>
     </div>
 
     <div class="bento">

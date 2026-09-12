@@ -5,11 +5,11 @@ export type Person = CollectionEntry<"people">;
 
 const STAFF_GROUPS = new Set<Person["data"]["group"]>(["faculty", "postdoc", "phd"]);
 
-/** name → person id, for resolving publication author strings to /about/<id>. */
-export async function getAuthorMap(): Promise<Map<string, string>> {
+/** Canonical name → profile id and supplied Russian spelling. */
+export async function getAuthorMap(): Promise<Map<string, { id: string; ru?: string }>> {
   const people = await getCollection("people");
-  const map = new Map<string, string>();
-  for (const p of people) map.set(p.data.name, p.id);
+  const map = new Map<string, { id: string; ru?: string }>();
+  for (const p of people) map.set(p.data.name, { id: p.id, ru: p.data.ru?.name });
   return map;
 }
 
@@ -38,10 +38,11 @@ export function groupPubsByYear(pubs: Pub[]): Array<[number, Pub[]]> {
 /** Resolve each author string to { name, id? } for link-aware rendering. */
 export function resolveAuthors(
   authors: string[],
-  authorMap: Map<string, string>,
-): Array<{ name: string; id?: string }> {
+  authorMap: Map<string, { id: string; ru?: string }>,
+  russian?: Record<string, string>,
+): Array<{ name: string; id?: string; ru?: string }> {
   return authors.map((name) => {
-    const id = authorMap.get(name);
-    return id ? { name, id } : { name };
+    const person = authorMap.get(name);
+    return { name, id: person?.id, ru: russian?.[name] ?? person?.ru };
   });
 }

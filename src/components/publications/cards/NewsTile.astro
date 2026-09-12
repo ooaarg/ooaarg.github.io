@@ -1,4 +1,6 @@
 ---
+import LocalizedText from '../../LocalizedText.astro';
+import LocalizedDate from '../../LocalizedDate.astro';
 import type { CollectionEntry } from 'astro:content';
 import { Image } from 'astro:assets';
 
@@ -11,33 +13,28 @@ const { item, span: spanOverride } = Astro.props;
 const { data, id } = item;
 const year = data.date.getFullYear();
 const span = spanOverride ?? data.span ?? 3;
-const dateLabel = data.date.toLocaleDateString('en-US', {
-  month: 'short',
-  day: 'numeric',
-  year: 'numeric',
-});
 const detailHref = `/blog/${id}`;
 ---
 
 <article class={`bento-tile span-${span} news-tile`} data-year={year}>
   {data.image && (
     <div class="figure news-figure">
-      <Image src={data.image} alt={data.imageAlt} loading="lazy" decoding="async" />
+      <Image src={data.image} alt={data.imageAlt} data-content-alt-en={data.imageAlt} data-content-alt-ru={data.ru?.imageAlt} loading="lazy" decoding="async" />
     </div>
   )}
   <div class="meta">
-    <span class="pill accent">News</span>
-    <span style="margin-left: 8px;">{dateLabel}</span>
+    <span class="pill accent"><span data-i18n="News">News</span></span>
+    <span style="margin-left: 8px;"><LocalizedDate date={data.date} /></span>
   </div>
   <h3>
-    <a href={detailHref} style="color: inherit; text-decoration: none;">{data.title}</a>
+    <a href={detailHref} style="color: inherit; text-decoration: none;"><LocalizedText en={data.title} ru={data.ru?.title} /></a>
   </h3>
-  <p style="color: var(--fg-muted); font-size: 14px;">{data.summary}</p>
+  <p style="color: var(--fg-muted); font-size: 14px;"><LocalizedText en={data.summary} ru={data.ru?.summary} /></p>
   <div class="actions">
     {data.href && (
-      <a class="btn btn-sm" href={data.href} target="_blank" rel="noopener">Conference</a>
+      <a class="btn btn-sm" href={data.href} target="_blank" rel="noopener" data-i18n="Conference">Conference</a>
     )}
-    <a class="btn btn-sm btn-ghost" href={detailHref}>Read →</a>
+    <a class="btn btn-sm btn-ghost" href={detailHref} data-i18n="Read →">Read →</a>
   </div>
 </article>
 

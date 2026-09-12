@@ -20,6 +20,24 @@ tags: ["cold-start", "CTR prediction", "multi-armed bandits", "feature engineeri
 doi: "10.1145/3770855.3817886"
 summary: "We introduce UCB-FE, a model-agnostic technique that transforms behavioral features with position-aware upper confidence bounds, boosting cold items in CTR ranking without any weight or architecture changes."
 heroSummary: "CTR models rank new items poorly until they gather enough clicks. UCB-FE wraps any CTR model with position-aware upper confidence bounds at inference time, boosting cold items — no retraining, no architecture changes — and comes with a new coldNDCG metric to measure it."
+ru:
+  tags:
+    "cold-start": "холодный старт"
+    "CTR prediction": "прогнозирование CTR"
+    "multi-armed bandits": "многорукие бандиты"
+    "feature engineering": "инженерия признаков"
+  authors:
+    "Roman Snetkov": "Роман Снетков"
+    "Alina Babenko": "Алина Бабенко"
+  title: "Инженерия признаков на основе UCB для холодного старта в рекомендательных системах"
+  summary: "Мы представляем UCB-FE — модельно-агностичную технику, которая преобразует поведенческие признаки с помощью позиционно-зависимых верхних доверительных границ, повышая холодные товары в CTR-ранжировании без изменения весов или архитектуры."
+  heroSummary: "CTR-модели плохо ранжируют новые товары, пока не накопят достаточно кликов. UCB-FE оборачивает любую CTR-модель позиционно-зависимыми верхними доверительными границами на этапе вывода, повышая холодные товары — без переобучения и изменений архитектуры — и сопровождается новой метрикой coldNDCG для её измерения."
+  body: |
+    Промышленные системы ранжирования часто полагаются на сортировку по прогнозируемой кликабельности (CTR). Однако современные CTR-модели сильно зависят от признаков, производных от поведенческих сигналов пользователей, и с трудом ранжируют холодные товары при недостатке поведенческих данных.
+
+    Чтобы решить эту проблему, мы представляем **UCB-FE** — модельно-агностичную технику, которая легко интегрируется с CTR-моделями и не требует изменений их весов или архитектуры. UCB-FE преобразует входные поведенческие признаки во время вывода с помощью позиционно-зависимых верхних доверительных границ.
+
+    Наша экспериментальная оценка на промышленных и публичных наборах данных демонстрирует повышение холодных товаров без резкого падения общего качества результатов поиска. Более того, чтобы количественно оценить качество поиска с учётом возросшей важности эффективности холодных товаров, мы предлагаем метрику **coldNDCG**. В экспериментах мы подтверждаем, что UCB-FE значительно улучшает coldNDCG для современных моделей прогнозирования CTR, включая градиентный бустинг на решающих деревьях и табличные глубокие нейронные сети. Мы обосновываем UCB-FE теоретическим анализом позиционно-зависимой UCB-оценки поведенческих признаков.
 ---
 
 Industrial ranking systems often rely on sorting by predicted Click-Through Rate (CTR). However, current CTR models heavily depend on features derived from user behavioral signals and struggle to accurately rank cold items in the case of insufficient user behavioral data.

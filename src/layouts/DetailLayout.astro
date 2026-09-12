@@ -1,4 +1,5 @@
 ---
+import LocalizedText from '../components/LocalizedText.astro';
 import Site from './Site.astro';
 
 import '../styles/publications-detail.css';
@@ -8,14 +9,17 @@ interface Props {
   title: string;
   description: string;
   heading: string;
+  headingRu?: string;
+  titleRu?: string;
+  descriptionRu?: string;
 }
 
-const { active, title, description, heading } = Astro.props;
+const { active, title, description, heading, headingRu, titleRu, descriptionRu } = Astro.props;
 const hasActions = Astro.slots.has('actions');
 const hasFigure = Astro.slots.has('figure');
 ---
 
-<Site active={active} title={title} description={description}>
+<Site active={active} title={title} description={description} titleRu={titleRu} descriptionRu={descriptionRu}>
   <slot name="head" slot="head" />
   <section class={`pub-detail${active === 'blog' ? ' is-news' : ''}`}>
     <div class="container">
@@ -29,7 +33,7 @@ const hasFigure = Astro.slots.has('figure');
             <slot name="badges" />
           </div>
 
-          <h1 style="view-transition-name: hero-title;">{heading}</h1>
+          <h1 lang="en" style="view-transition-name: hero-title;"><LocalizedText en={heading} ru={headingRu} /></h1>
           <slot name="byline" />
 
           {hasActions && (
@@ -41,7 +45,7 @@ const hasFigure = Astro.slots.has('figure');
           {hasFigure && <slot name="figure" />}
 
           <div class="pub-content">
-            <article>
+            <article lang="en">
               <slot />
             </article>
           </div>

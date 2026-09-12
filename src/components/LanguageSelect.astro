@@ -1,0 +1,111 @@
+<div class="language-select">
+  <button id="language-select" class="btn btn-sm language-trigger" type="button"
+    aria-label="Language / Язык" aria-expanded="false" aria-controls="language-options" disabled>
+    <span data-language-label>EN</span>
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+      <path d="m3 4.5 3 3 3-3" />
+    </svg>
+  </button>
+  <div id="language-options" class="language-options" role="group" aria-label="Language / Язык" hidden>
+    <button type="button" data-locale="en" lang="en" aria-pressed="true">English <svg class="language-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m3 8 3 3 7-7" /></svg></button>
+    <button type="button" data-locale="ru" lang="ru" aria-pressed="false">Русский <svg class="language-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m3 8 3 3 7-7" /></svg></button>
+  </div>
+</div>
+
+<script>
+  import { contentText, contentLanguage } from '../lib/content-language';
+  import { formatDate } from '../lib/dates';
+  import { languageUrl, readLocale, translate, type Locale } from '../lib/i18n';
+
+  const root = document.querySelector<HTMLElement>('.language-select')!;
+  const trigger = root.querySelector<HTMLButtonElement>('#language-select')!;
+  const label = trigger.querySelector<HTMLElement>('[data-language-label]')!;
+  const menu = root.querySelector<HTMLElement>('#language-options')!;
+  const options = Array.from(menu.querySelectorAll<HTMLButtonElement>('[data-locale]'));
+
+  function close(restoreFocus = false) {
+    menu.hidden = true;
+    trigger.setAttribute('aria-expanded', 'false');
+    if (restoreFocus) trigger.focus();
+  }
+  function open() {
+    menu.hidden = false;
+    trigger.setAttribute('aria-expanded', 'true');
+    options.find((option) => option.getAttribute('aria-pressed') === 'true')?.focus();
+  }
+  function apply(locale: Locale) {
+    const url = languageUrl(new URL(window.location.href), locale);
+    if (url.href !== window.location.href) history.replaceState(history.state, "", url);
+    try { localStorage.setItem("ooaarg-language", locale); } catch {}
+    document.documentElement.lang = locale;
+    label.textContent = locale === 'ru' ? 'РУ' : 'EN';
+    options.forEach((option) => option.setAttribute('aria-pressed', String(option.dataset.locale === locale)));
+    document.querySelectorAll<HTMLElement>('[data-i18n]').forEach((element) => {
+      element.textContent = translate(element.dataset.i18n!, locale);
+    });
+    for (const attribute of ['aria-label', 'title']) {
+      document.querySelectorAll<HTMLElement>(`[data-i18n-${attribute}]`).forEach((element) => {
+        element.setAttribute(attribute, translate(element.getAttribute(`data-i18n-${attribute}`)!, locale));
+      });
+    }
+    document.querySelectorAll<HTMLTimeElement>('time[data-localized-date]').forEach((element) => {
+      element.textContent = formatDate(element.dateTime, locale, element.dataset.localizedDate === 'month' ? 'month' : 'day');
+    });
+    document.querySelectorAll<HTMLElement>('[data-content-en]').forEach((element) => {
+      element.textContent = contentText(element.dataset.contentEn!, element.dataset.contentRu, locale);
+      element.lang = contentLanguage(element.dataset.contentRu, locale);
+    });
+    document.querySelectorAll<HTMLElement>('[data-content-body]').forEach((element) => {
+      element.hidden = element.dataset.contentBody !== locale;
+    });
+    for (const attribute of ['alt', 'aria-label', 'content']) {
+      document.querySelectorAll<HTMLElement>(`[data-content-${attribute}-en]`).forEach((element) => {
+        element.setAttribute(attribute, contentText(element.getAttribute(`data-content-${attribute}-en`)!, element.getAttribute(`data-content-${attribute}-ru`) ?? undefined, locale));
+        if (attribute === 'alt') element.lang = contentLanguage(element.getAttribute('data-content-alt-ru') ?? undefined, locale);
+      });
+    }
+    window.dispatchEvent(new Event('ooaarg:language'));
+  }
+  trigger.disabled = false;
+  apply(readLocale());
+  trigger.addEventListener('click', () => menu.hidden ? open() : close());
+  trigger.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      event.stopPropagation();
+      open();
+    }
+  });
+  options.forEach((option) => {
+    option.addEventListener('click', () => {
+      const locale = option.dataset.locale === 'ru' ? 'ru' : 'en';
+      apply(locale);
+      close(true);
+    });
+  });
+  root.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !menu.hidden) {
+      event.preventDefault();
+      close(true);
+    } else if (!menu.hidden && ['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
+      event.preventDefault();
+      const current = options.indexOf(document.activeElement as HTMLButtonElement);
+      const next = event.key === 'Home' ? 0 : event.key === 'End' ? options.length - 1
+        : (current + (event.key === 'ArrowDown' ? 1 : -1) + options.length) % options.length;
+      options[next]?.focus();
+    }
+  });
+  root.addEventListener('focusout', (event) => {
+    if (!root.contains(event.relatedTarget as Node | null)) close();
+  });
+  document.addEventListener('click', (event) => {
+    if (!root.contains(event.target as Node)) close();
+  });
+  window.addEventListener('popstate', () => { close(); apply(readLocale()); });
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) { close(); apply(readLocale()); }
+  });
+  window.addEventListener('storage', (event) => {
+    if (event.key === 'ooaarg-language' || event.key === null) apply(readLocale());
+  });
+</script>

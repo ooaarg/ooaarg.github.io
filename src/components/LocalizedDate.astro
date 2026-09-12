@@ -1,0 +1,11 @@
+---
+import { formatDate } from '../lib/dates';
+
+interface Props {
+  date: Date | string;
+  precision?: 'day' | 'month';
+}
+const { date, precision = 'day' } = Astro.props;
+const iso = typeof date === 'string' ? date : date.toISOString();
+---
+<time datetime={iso} data-localized-date={precision}>{formatDate(iso, 'en', precision)}</time>

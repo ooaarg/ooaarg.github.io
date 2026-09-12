@@ -1,4 +1,5 @@
 ---
+import LocalizedText from '../components/LocalizedText.astro';
 import { getCollection } from 'astro:content';
 import Site from '../layouts/Site.astro';
 import PersonCard from '../components/people/PersonCard.astro';
@@ -35,15 +36,15 @@ const partnersByOrg = [
 const alumni = all.filter((p) => p.data.group === 'alumni').sort(byOrder);
 ---
 
-<Site
+<Site titleRu="О группе · ООИПИГ" descriptionRu="Исследовательская Группа Онлайн Оптимизация И Приложения: руководитель, команда и выпускники."
   active="about"
   title="About · OOAARG"
   description="Online Optimization And Applications Research Group: lead, staff, and alumni."
 >
   <section class="people-hero">
     <div class="container">
-      <h1 class="about-title">Online Optimization And Applications Research Group</h1>
-      <p style="margin-top: 24px; color: var(--fg-muted); max-width: 80ch; font-size: 18px;">
+      <h1 class="about-title" data-i18n="Online Optimization And Applications Research Group">Online Optimization And Applications Research Group</h1>
+      <p style="margin-top: 24px; color: var(--fg-muted); max-width: 80ch; font-size: 18px;" data-i18n="A research group studying decisions under uncertainty. Theory, algorithms, and the messy real-world problems that motivate both.">
           A research group studying decisions under uncertainty. Theory, algorithms, and the messy real-world problems that motivate both.
       </p>
     </div>
@@ -52,7 +53,7 @@ const alumni = all.filter((p) => p.data.group === 'alumni').sort(byOrder);
   {lead && (
     <section class="people-section">
       <div class="container">
-        <h2 class="kicker">Lead</h2>
+        <h2 class="kicker" data-i18n="Lead">Lead</h2>
         <PersonLead person={lead} />
       </div>
     </section>
@@ -61,7 +62,7 @@ const alumni = all.filter((p) => p.data.group === 'alumni').sort(byOrder);
   {staff.length > 0 && (
     <section class="people-section">
       <div class="container">
-        <h2 class="kicker">Staff</h2>
+        <h2 class="kicker" data-i18n="Staff">Staff</h2>
         <div class="people-grid">
           {staff.map((p) => (
             <a class="person-card-link" href={`/about/${p.id}`}>
@@ -76,13 +77,13 @@ const alumni = all.filter((p) => p.data.group === 'alumni').sort(byOrder);
   {partners.length > 0 && (
     <section class="people-section">
       <div class="container">
-        <h2 class="kicker">Partners</h2>
+        <h2 class="kicker" data-i18n="Partners">Partners</h2>
         <div class="partner-orgs">
           {partnersByOrg.map(([org, members]) => (
             <div class="partner-org">
               <div class="partner-org-label">
                 <span class="partner-org-marker" aria-hidden="true"></span>
-                <span class="partner-org-name">{org}</span>
+                <span class="partner-org-name"><LocalizedText en={org} ru={members.find((p) => p.data.ru?.org)?.data.ru?.org} /></span>
               </div>
               <div class="people-grid">
                 {members.map((p) => (
@@ -101,7 +102,7 @@ const alumni = all.filter((p) => p.data.group === 'alumni').sort(byOrder);
   {alumni.length > 0 && (
     <section class="people-section">
       <div class="container">
-        <h2 class="kicker">Alumni</h2>
+        <h2 class="kicker" data-i18n="Alumni">Alumni</h2>
         <div class="people-grid">
           {alumni.map((p) => (
             <a class="person-card-link" href={`/about/${p.id}`}>

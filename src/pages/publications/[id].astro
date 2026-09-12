@@ -1,4 +1,7 @@
 ---
+import LocalizedBody from '../../components/LocalizedBody.astro';
+import LocalizedText from '../../components/LocalizedText.astro';
+import LocalizedDate from '../../components/LocalizedDate.astro';
 import { getCollection, render } from 'astro:content';
 import DetailLayout from '../../layouts/DetailLayout.astro';
 import PaperFigure, { hasPaperFigure } from '../../components/publications/detail/PaperFigure.tsx';
@@ -21,10 +24,8 @@ const { pub } = Astro.props;
 const { data, id } = pub;
 const { Content } = await render(pub);
 const authorMap = await getAuthorMap();
-const authorEntries = resolveAuthors(data.authors, authorMap);
+const authorEntries = resolveAuthors(data.authors, authorMap, data.ru?.authors);
 
-const fmt = (d: Date) =>
-  `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
 
 const citable = {
   id,
@@ -49,6 +50,9 @@ const bibtexPath = `/publications/${id}.bib`;
   title={`${data.title} · OOAARG`}
   description={data.summary}
   heading={data.title}
+  headingRu={data.ru?.title}
+  titleRu={`${data.ru?.title ?? data.title} · ООИПИГ`}
+  descriptionRu={data.ru?.summary}
 >
   <Fragment slot="head">
     {data.type !== 'code' && data.type !== 'talk' && (
@@ -65,14 +69,14 @@ const bibtexPath = `/publications/${id}.bib`;
   </Fragment>
 
   <Fragment slot="breadcrumb">
-    <a href="/publications">Publications</a> <span>/</span> <a href={`/publications?venue=${encodeURIComponent(data.venue)}`}>{data.venue}</a>{' '}<span>/</span>{' '}
-    {data.authors[0].split(/\s+/).pop()} et al.
+    <a href="/publications" data-i18n="Publications">Publications</a> <span>/</span> <a href={`/publications?venue=${encodeURIComponent(data.venue)}`}><LocalizedText en={data.venue} ru={data.ru?.venue} /></a>{' '}<span>/</span>{' '}
+    <LocalizedText en={authorEntries[0].name} ru={authorEntries[0].ru} /> <span data-i18n="et al.">et al.</span>
   </Fragment>
 
   <Fragment slot="badges">
     <span class="detail-type">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Z" /><path d="M14 3v6h6M8 13h8M8 17h5" /></svg>
-      {data.type === 'paper' && data.tag === 'Preprint' ? 'Preprint' : data.type}
+      <span data-i18n={data.type === 'paper' && data.tag === 'Preprint' ? 'Preprint' : data.type}>{data.type === 'paper' && data.tag === 'Preprint' ? 'Preprint' : data.type}</span>
     </span>
   </Fragment>
 
@@ -80,9 +84,9 @@ const bibtexPath = `/publications/${id}.bib`;
     {authorEntries.map((a, i) => (
       <>
         {a.id ? (
-          <a class="author-link" href={`/about/${a.id}`}><strong>{a.name}</strong></a>
+          <a class="author-link" href={`/about/${a.id}`}><strong><LocalizedText en={a.name} ru={a.ru} /></strong></a>
         ) : (
-          <strong>{a.name}</strong>
+          <strong><LocalizedText en={a.name} ru={a.ru} /></strong>
         )}
         {i < authorEntries.length - 1 ? ', ' : ''}
       </>
@@ -91,7 +95,7 @@ const bibtexPath = `/publications/${id}.bib`;
 
   <Fragment slot="actions">
     {paper && (
-      <a class="btn btn-accent" href={paper} target="_blank" rel="noopener">Paper</a>
+      <a class="btn btn-accent" href={paper} target="_blank" rel="noopener" data-i18n="Paper">Paper</a>
     )}
     {data.arxiv && (
       <a
@@ -106,10 +110,10 @@ const bibtexPath = `/publications/${id}.bib`;
     {data.pdf && <a class="btn" href={data.pdf} target="_blank" rel="noopener">PDF</a>}
     {data.github && <a class="btn" href={data.github} target="_blank" rel="noopener">GitHub</a>}
     {extraLinks(data).map((l) => (
-      <a class="btn" href={l.url} target="_blank" rel="noopener">{l.label}</a>
+      <a class="btn" href={l.url} target="_blank" rel="noopener"><LocalizedText en={l.label} ru={data.ru?.links?.[l.label]} /></a>
     ))}
     <CiteButton client:visible pub={citable} size="md" label="Cite" />
-    <a class="btn" href={bibtexPath} download={`${id}.bib`}><svg class="publication-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5" /></svg>Download .bib</a>
+    <a class="btn" href={bibtexPath} download={`${id}.bib`}><svg class="publication-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5" /></svg><span data-i18n="Download .bib">Download .bib</span></a>
   </Fragment>
 
   {showFigure && (
@@ -118,22 +122,22 @@ const bibtexPath = `/publications/${id}.bib`;
     </div>
   )}
 
-  <Content />
+  <LocalizedBody ru={data.ru?.body}><Content /></LocalizedBody>
 
   <Fragment slot="aside">
     <div class="group">
-      <h2 class="aside-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M7 3v4m10-4v4M3 11h18" /></svg>Published</h2>
-      <p class="mono" style="color: var(--fg);">{fmt(data.date)}</p>
+      <h2 class="aside-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M7 3v4m10-4v4M3 11h18" /></svg><span data-i18n="Published">Published</span></h2>
+      <p class="mono" style="color: var(--fg);"><LocalizedDate date={data.date} /></p>
     </div>
     <div class="group">
-      <h2 class="aside-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-6 9 6H3Zm2 3v6m5-6v6m4-6v6m5-6v6M3 21h18M3 18h18" /></svg>Venue</h2>
-      <p><a class="venue-link" href={`/publications?venue=${encodeURIComponent(data.venue)}`}>{data.venue}</a></p>
+      <h2 class="aside-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-6 9 6H3Zm2 3v6m5-6v6m4-6v6m5-6v6M3 21h18M3 18h18" /></svg><span data-i18n="Venue">Venue</span></h2>
+      <p><a class="venue-link" href={`/publications?venue=${encodeURIComponent(data.venue)}`}><LocalizedText en={data.venue} ru={data.ru?.venue} /></a></p>
     </div>
     {data.tags.length > 0 && (
       <div class="group">
-        <h2 class="aside-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h8l10 10-8 8L3 11V3Z" /><circle cx="7.5" cy="7.5" r="1" /></svg>Keywords</h2>
+        <h2 class="aside-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h8l10 10-8 8L3 11V3Z" /><circle cx="7.5" cy="7.5" r="1" /></svg><span data-i18n="Keywords">Keywords</span></h2>
         <p class="publication-keywords">
-          {data.tags.map((t, i) => (<><a href={`/publications?tag=${encodeURIComponent(t)}`}>{t}</a>{i < data.tags.length - 1 ? ", " : ""}</>))}
+          {data.tags.map((t, i) => (<><a href={`/publications?tag=${encodeURIComponent(t)}`}><LocalizedText en={t} ru={data.ru?.tags?.[t]} /></a>{i < data.tags.length - 1 ? ", " : ""}</>))}
         </p>
       </div>
     )}

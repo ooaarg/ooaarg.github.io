@@ -1,4 +1,5 @@
 ---
+import LocalizedText from '../LocalizedText.astro';
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import type { ImageMetadata } from 'astro';
@@ -30,12 +31,12 @@ const photo = PHOTO_MAP[id];
   {photo ? (
     <Image
       src={photo}
-      alt={data.name}
+      alt={data.name} data-content-alt-en={data.name} data-content-alt-ru={data.ru?.name}
       widths={[240, 360, 560]}
       sizes="(max-width: 900px) 50vw, 280px"
       class="avatar-photo"
     />
   ) : (
-    <div class="initials">{data.initials}</div>
+    <div class="initials"><LocalizedText en={data.initials} ru={data.ru?.initials} /></div>
   )}
 </div>

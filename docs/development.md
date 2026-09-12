@@ -46,3 +46,31 @@ The build also generates the 404 page and sitemap. The [GitHub Pages workflow](.
 ## Content
 
 Publication, news, and people entries live in [src/content](../src/content). See the [authoring guides](../README.md#start-here) for fields, images, figures, and examples. [src/content.config.ts](../src/content.config.ts) defines the accepted frontmatter.
+
+## Interface languages
+
+The header offers English (default) and Russian. Share the current URL with
+`?lang=en` or `?lang=ru` to open a page in that language. A supported URL language
+overrides the saved `ooaarg-language` preference. Loading a page or switching
+language updates the current URL without adding a history entry, preserving
+filters and fragments. The selected language is saved for subsequent navigation;
+Back/Forward restores the language from the URL. Without JavaScript the site
+stays in English and the selector is disabled.
+
+Translations live in [src/lib/i18n.ts](../src/lib/i18n.ts). Mark static text-only
+elements with `data-i18n="English source text"`; use a child span when an element
+also contains icons or other markup. Accessible labels use
+`data-i18n-aria-label` or `data-i18n-title`. Preact components use
+[useLocale](../src/lib/use-locale.ts) and `t("English source text")` so updates
+remain part of their normal rendering. Unknown strings fall back to the original.
+
+Content entries accept optional Russian fields as described in
+[English and Russian content](./translations.md). Display text and browser page
+metadata use provided translations, with English fallback. Search matches both
+languages. Citations and scholarly metadata retain the originals. The same routes serve both languages, selected with the `lang` query parameter.
+
+Displayed dates use [formatDate](../src/lib/dates.ts) with `en-GB` or `ru-RU`
+and UTC, including search results, news, detail pages, research summaries, and the
+footer. Static pages use [LocalizedDate](../src/components/LocalizedDate.astro);
+search results carry a separate ISO date for formatting. Month-only summaries
+stay month-only. Machine-readable dates and citation output are unchanged.
