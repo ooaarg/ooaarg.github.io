@@ -3,16 +3,15 @@
 }
 
 .about-title {
-  margin-top: 8px;
   font-size: clamp(32px, 4vw, 56px);
-  line-height: 1.1;
+  line-height: 1.02;
   letter-spacing: -0.025em;
   font-weight: 550;
 }
 
 .people-section {
   position: relative;
-  padding: 48px 0;
+  padding: 24px 0 48px;
 }
 
 .people-section::before {
