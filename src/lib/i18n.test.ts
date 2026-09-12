@@ -21,3 +21,46 @@ test("changing language preserves the route, repeated filters, and fragment", ()
   assert.deepEqual(next.searchParams.getAll("lang"), ["ru"]);
   assert.equal(original.searchParams.get("lang"), "en");
 });
+
+test("shared language overrides storage; missing or invalid language uses storage", async () => {
+  const { readLocale } = await import("./i18n");
+  const previousWindow = Object.getOwnPropertyDescriptor(globalThis, "window");
+  const previousStorage = Object.getOwnPropertyDescriptor(globalThis, "localStorage");
+  let href = "https://example.com/?lang=ru";
+  let saved = "en";
+  Object.defineProperty(globalThis, "window", {
+    configurable: true,
+    value: {
+      location: {
+        get href() {
+          return href;
+        },
+      },
+    },
+  });
+  Object.defineProperty(globalThis, "localStorage", { configurable: true, value: { getItem: () => saved } });
+  try {
+    assert.equal(readLocale(), "ru");
+    saved = "ru";
+    href = "https://example.com/?lang=en";
+    assert.equal(readLocale(), "en");
+    href = "https://example.com/";
+    assert.equal(readLocale(), "ru");
+    href = "https://example.com/?lang=invalid";
+    assert.equal(readLocale(), "ru");
+    Object.defineProperty(globalThis, "localStorage", {
+      configurable: true,
+      get() {
+        throw new Error("Storage blocked");
+      },
+    });
+    assert.equal(readLocale(), "en");
+    href = "https://example.com/?lang=ru";
+    assert.equal(readLocale(), "ru");
+  } finally {
+    if (previousWindow) Object.defineProperty(globalThis, "window", previousWindow);
+    else Reflect.deleteProperty(globalThis, "window");
+    if (previousStorage) Object.defineProperty(globalThis, "localStorage", previousStorage);
+    else Reflect.deleteProperty(globalThis, "localStorage");
+  }
+});

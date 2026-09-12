@@ -49,13 +49,13 @@ Publication, news, and people entries live in [src/content](../src/content). See
 
 ## Interface languages
 
-The header offers English (default) and Russian. The visitor's choice is saved in
-`ooaarg-language` and used for every page. Opening a URL with `?lang=en` or
-`?lang=ru` sets the language for a visitor who has not chosen one; an explicit
-choice takes precedence over the URL. Loading a page or switching language updates
-the current URL without adding a history entry, preserving filters and fragments.
-Back/Forward keeps the saved choice. Without JavaScript the site stays in English
-and the selector is disabled.
+The header offers English (default) and Russian. Share the current URL with
+`?lang=en` or `?lang=ru` to open a page in that language. A supported URL language
+overrides the saved `ooaarg-language` preference. Loading a page or switching
+language updates the current URL without adding a history entry, preserving
+filters and fragments. The selected language is saved for subsequent navigation;
+Back/Forward restores the language from the URL. Without JavaScript the site
+stays in English and the selector is disabled.
 
 Translations live in [src/lib/i18n.ts](../src/lib/i18n.ts). Mark static text-only
 elements with `data-i18n="English source text"`; use a child span when an element

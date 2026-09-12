@@ -160,15 +160,14 @@ export function languageUrl(url: URL, locale: Locale): URL {
 }
 
 export function readLocale(): Locale {
-  // An explicit choice wins so navigation (including Back/Forward) cannot flip
-  // the language via a `?lang=` parameter left in an older URL.
-  try {
-    const saved = localStorage.getItem("ooaarg-language");
-    if (saved === "ru" || saved === "en") return saved;
-  } catch {}
+  // Shared links take precedence over this browser's saved preference.
   if (typeof window !== "undefined") {
     const locale = localeFromUrl(new URL(window.location.href));
     if (locale) return locale;
   }
-  return "en";
+  try {
+    return localStorage.getItem("ooaarg-language") === "ru" ? "ru" : "en";
+  } catch {
+    return "en";
+  }
 }
