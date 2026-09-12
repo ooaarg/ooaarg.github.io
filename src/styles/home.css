@@ -124,42 +124,21 @@
 }
 
 .hero-ribbon {
-  position: relative;
-  isolation: isolate;
   padding: 18px 24px;
+  border-radius: var(--radius);
+  background: var(--bg-elev);
+  box-shadow: inset 0 0 0 1px var(--border-strong);
   color: var(--fg-muted);
   font-size: clamp(14px, 1.5vw, 20px);
   line-height: 1.4;
   overflow-wrap: anywhere;
 }
 
-.hero-ribbon::before,
-.hero-ribbon::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: var(--radius);
-  background: var(--border-strong);
-}
-
-.hero-ribbon::after {
-  inset: 1px;
-  border-radius: calc(var(--radius) - 1px);
-  background: var(--bg-elev);
-}
-
 .hero-ribbon-venue {
   color: var(--accent);
   font-weight: 600;
   letter-spacing: 0.03em;
-}
-
-.hero-ribbon-venue::before {
-  background: var(--accent);
-}
-
-.hero-ribbon-venue::after {
+  box-shadow: inset 0 0 0 1px var(--accent);
   background: linear-gradient(to right, color-mix(in oklab, var(--accent) 12%, var(--bg)), var(--bg));
 }
 
@@ -437,6 +416,7 @@
 .hero-featured {
   position: relative;
   overflow-x: clip;
+  padding-top: 24px;
   padding-bottom: 0;
   touch-action: pan-y;
 }
@@ -520,9 +500,6 @@
 
 /* Browser tabs can leave a wide tablet with a short content viewport. */
 @media (min-width: 901px) and (max-height: 800px) {
-  .hero-featured {
-    padding-top: 24px;
-  }
   .hero-featured-grid {
     min-height: 0;
     gap: 32px;
