@@ -18,6 +18,11 @@ export default function CiteButton({ pub, variant = "default", size = "sm", labe
   return (
     <>
       <button type="button" className={className} onClick={() => setOpen(true)} aria-haspopup="dialog">
+        {size === "md" && (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M4 4h7v8c0 5-3 8-7 8v-3c2 0 4-2 4-5H4V4Zm10 0h7v8c0 5-3 8-7 8v-3c2 0 4-2 4-5h-4V4Z" />
+          </svg>
+        )}
         {label}
       </button>
       <CiteModal pub={{ ...pub, date: new Date(pub.dateISO) }} open={open} onClose={() => setOpen(false)} />

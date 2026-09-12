@@ -17,7 +17,7 @@ export interface IndexedPub {
   title: string;
   authors: string[];
   authorLinks: Array<{ name: string; id?: string; staff?: boolean }>;
-  date: string; // Display label: DD/MM/YYYY
+  date: string; // Display label, e.g. 17 Aug 2026
   year: number;
   venue: string;
   type: "paper" | "preprint" | "code" | "talk";
@@ -317,14 +317,48 @@ export default function SearchIndex({ pubs }: Props) {
             {filtered.map((p) => (
               <li key={p.id}>
                 <div className="ri-meta-col">
-                  <span className="pill accent" style={{ textTransform: "capitalize" }}>
-                    {p.type}
+                  <span className="ri-type ri-meta-item">
+                    {(p.type === "paper" || p.type === "preprint") && (
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Z" />
+                        <path d="M14 3v6h6M8 13h8M8 17h5" />
+                      </svg>
+                    )}
+                    <span>{p.type}</span>
                   </span>
-                  <span className="mono" style={{ fontSize: 12, color: "var(--fg-muted)" }}>
-                    {p.date}
+                  <span className="ri-meta-item">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      aria-hidden="true"
+                    >
+                      <rect x="3" y="5" width="18" height="16" rx="2" />
+                      <path d="M7 3v4m10-4v4M3 11h18" />
+                    </svg>
+                    <span>{p.date}</span>
                   </span>
-                  <span className="mono" style={{ fontSize: 12, color: "var(--fg-muted)" }}>
-                    {p.venue}
+                  <span className="ri-meta-item">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      aria-hidden="true"
+                    >
+                      <circle cx="12" cy="7" r="3" />
+                      <path d="M6 21v-3a6 6 0 0 1 12 0v3M5 4a3 3 0 0 0 0 6m14-6a3 3 0 0 1 0 6M3 20v-3a5 5 0 0 1 3-4m15 7v-3a5 5 0 0 0-3-4" />
+                    </svg>
+                    <span>{p.venue}</span>
                   </span>
                 </div>
                 <div>
@@ -333,13 +367,7 @@ export default function SearchIndex({ pubs }: Props) {
                       {p.title}
                     </a>
                   </h3>
-                  <p
-                    style={{
-                      fontSize: 13,
-                      color: "var(--fg-muted)",
-                      marginBottom: 8,
-                    }}
-                  >
+                  <p className="ri-authors">
                     {p.authorLinks.map((a, i) => (
                       <span key={`${p.id}-${i}`}>
                         {a.id ? (

@@ -76,7 +76,7 @@ export default function CiteModal({ pub, open, onClose }: Props) {
             APA-style
           </button>
         </div>
-        <pre className="cite-block" tabIndex={0}>
+        <pre className={`cite-block${tab === "apa" ? " cite-block-apa" : ""}`} tabIndex={0}>
           {text}
         </pre>
         <p className="cite-status" role="status">

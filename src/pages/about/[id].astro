@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Site from '../../layouts/Site.astro';
 import Avatar from '../../components/people/Avatar.astro';
+import PublicationQuickView from '../../components/publications/shared/PublicationQuickView.astro';
 import {
   getAuthorMap,
   getPersonPubs,
@@ -45,8 +46,6 @@ const linkRow = [
   data.email && { label: data.email, href: `mailto:${data.email}` },
 ].filter(Boolean) as Array<{ label: string; href: string }>;
 
-const fmt = (d: Date) =>
-  `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
 ---
 
 <Site
@@ -106,33 +105,15 @@ const fmt = (d: Date) =>
           <div class="person-pubs">
             {yearGroups.map(([year, pubs]) => (
               <div class="person-pubs-year">
-                <h3>{year}</h3>
-                <ul>
-                  {pubs.map((p) => {
-                    const authors = resolveAuthors(p.data.authors, authorMap);
-                    return (
-                      <li class="person-pubs-row">
-                        <span class="pill accent">{p.data.tag}</span>
-                        <div>
-                          <a class="person-pubs-title" href={`/publications/${p.id}`}>
-                            {p.data.title}
-                          </a>
-                          <p class="person-pubs-authors">
-                            {authors.map((a, i) => {
-                              const isSelf = a.name === data.name;
-                              const tail = i < authors.length - 1 ? ', ' : '';
-                              if (isSelf) return <><strong>{a.name}</strong>{tail}</>;
-                              if (a.id) return <><a href={`/about/${a.id}`}>{a.name}</a>{tail}</>;
-                              return <>{a.name}{tail}</>;
-                            })}
-                          </p>
-                          <p class="person-pubs-meta mono">
-                            {p.data.venue} · {fmt(p.data.date)}
-                          </p>
-                        </div>
-                      </li>
-                    );
-                  })}
+                <p class="person-pubs-year-label">{year}</p>
+                <ul class="pub-list">
+                  {pubs.map((p) => (
+                    <PublicationQuickView
+                      publication={p}
+                      authors={resolveAuthors(p.data.authors, authorMap)}
+                      selfName={data.name}
+                    />
+                  ))}
                 </ul>
               </div>
             ))}

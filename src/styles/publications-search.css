@@ -9,9 +9,17 @@
   position: sticky;
   top: 88px;
   align-self: start;
+  max-height: calc(100dvh - 104px);
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+  padding: 4px;
 }
 
 .ri-group {
+  flex-shrink: 0;
   padding: 20px 0;
   border-top: 1px solid var(--border);
 }
@@ -199,36 +207,12 @@
 }
 
 .facet-dd-list {
-  max-height: 220px;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-strong) transparent;
-}
-
-.facet-dd-list::-webkit-scrollbar {
-  width: 8px;
-}
-
-.facet-dd-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.facet-dd-list::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
-  border-radius: 4px;
-  border: 2px solid transparent;
-  background-clip: padding-box;
-}
-
-.facet-dd-list::-webkit-scrollbar-thumb:hover {
-  background: var(--fg-muted);
-  background-clip: padding-box;
-  border: 2px solid transparent;
 }
 
 .facet-dd-list > label {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -258,9 +242,7 @@
   gap: 8px;
   flex: 1;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 .facet-dd-list .count {
@@ -348,38 +330,65 @@
 .ri-results {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 20px 0 0;
+  display: grid;
+  gap: 16px;
 }
 
 .ri-results > li {
   position: relative;
-  padding: 24px 0;
-  border-bottom: 1px solid var(--border);
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 32px;
-  transition: background var(--t-fast);
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: 24px;
 }
 
-/* Rows whose paper has a figure get a third column for the thumbnail. */
 .ri-results > li:has(.ri-figure) {
-  grid-template-columns: 120px 1fr 200px;
-}
-
-.ri-results > li:hover {
-  background: color-mix(in oklab, var(--bg-sunken) 60%, transparent);
+  grid-template-columns: 160px minmax(0, 1fr) 150px;
 }
 
 .ri-meta-col {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 18px;
+}
+
+.ri-type {
+  color: var(--fg-muted);
+  font-size: 14px;
+  line-height: 1.5;
+  text-transform: capitalize;
+}
+
+.ri-meta-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--fg-muted);
+  overflow-wrap: anywhere;
+}
+
+.ri-meta-item svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.ri-authors {
+  font-size: 16px;
+  color: var(--fg-muted);
+  margin-bottom: 16px;
 }
 
 .ri-results h3 {
   font-family: var(--font-sans);
   font-size: 22px;
-  font-weight: 550;
+  font-weight: 600;
   line-height: 1.15;
   margin-bottom: 8px;
   overflow-wrap: anywhere;
@@ -388,6 +397,12 @@
 .ri-result-link {
   color: inherit;
   text-decoration: none;
+  transition: color var(--t-fast);
+}
+
+.ri-result-link:hover,
+.ri-result-link:focus-visible {
+  color: var(--accent);
 }
 
 /* Extend the publication link across its row, keeping author links above it. */
@@ -413,11 +428,15 @@
 
 .ri-abstract {
   font-size: 14px;
+  line-height: 1.55;
   color: var(--fg-muted);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+}
+
+.ri-tags .pill {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
 }
 
 .ri-tags {
@@ -428,6 +447,9 @@
 }
 
 .ri-figure {
+  grid-column: 3;
+  grid-row: 1;
+  width: 150px;
   height: 110px;
   border-radius: var(--radius-sm);
   align-self: center;
@@ -511,15 +533,15 @@
 @media (max-width: 900px) {
   .ri-grid {
     grid-template-columns: 1fr;
+    margin-top: 12px;
+  }
+  .ri-summary {
+    margin-top: 0;
+    padding: 0 0 12px;
   }
   .ri-side {
     display: none;
   }
-  /* Both selectors needed: `.ri-results > li:has(.ri-figure)` (the desktop
-   * 3-column rule) has higher specificity than `.ri-results > li`, so the
-   * single-column override has to match it directly. Without this, mobile
-   * rows on papers with figures keep the desktop grid template and squeeze
-   * the title into a narrow column. */
   .ri-results > li,
   .ri-results > li:has(.ri-figure) {
     grid-template-columns: 1fr;
@@ -530,5 +552,27 @@
   }
   .filters-trigger {
     display: inline-flex;
+  }
+}
+
+@media (max-width: 1100px) {
+  .ri-results > li,
+  .ri-results > li:has(.ri-figure) {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px;
+  }
+  .ri-meta-col {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    gap: 12px 20px;
+  }
+  .ri-figure {
+    display: none;
+  }
+  .ri-results h3 {
+    font-size: 20px;
   }
 }

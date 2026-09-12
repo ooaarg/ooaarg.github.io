@@ -1,12 +1,11 @@
-import { useCallback, useRef, useState } from "preact/hooks";
+import { useCallback, useEffect, useRef, useState } from "preact/hooks";
 import type { TargetedKeyboardEvent, TargetedPointerEvent } from "preact";
-import PaperFigure, { hasPaperFigure } from "../publications/detail/PaperFigure";
 
 export interface HeroSlide {
   id: string;
   title: string;
   venue: string;
-  tag: string;
+  keywords: string[];
   summary: string;
   paper?: string | null;
   arxiv?: string;
@@ -27,7 +26,71 @@ const Chevron = ({ dir }: { dir: "left" | "right" }) => (
 
 export default function FeaturedHero({ slides }: Props) {
   const [index, setIndex] = useState(0);
+  const [mobileSummaries, setMobileSummaries] = useState<string[]>([]);
+  const heroRef = useRef<HTMLElement>(null);
   const dragStart = useRef<number | null>(null);
+
+  useEffect(() => {
+    const hero = heroRef.current;
+    if (!hero) return;
+    const sentences = new Intl.Segmenter("en", { granularity: "sentence" });
+    const measureLayout = () => {
+      const nextSummaries: string[] = [];
+      const mobile = window.matchMedia("(max-width: 900px)").matches;
+      for (const [i, copy] of Array.from(hero.querySelectorAll<HTMLElement>(".hero-copy")).entries()) {
+        const title = copy.querySelector("h1");
+        if (!title) continue;
+        // Measure at the normal mobile title size, independent of the expanded style.
+        copy.removeAttribute("data-long-title");
+        copy.dataset.measuringTitle = "true";
+        const lineHeight = Number.parseFloat(getComputedStyle(title).lineHeight);
+        const isLong = title.getBoundingClientRect().height > lineHeight * 4 + 1;
+        delete copy.dataset.measuringTitle;
+        copy.dataset.longTitle = String(isLong);
+        let fitted = "";
+        if (mobile && !isLong) {
+          const probe = document.createElement("p");
+          probe.className = "hero-sub";
+          probe.style.cssText = `position:absolute;visibility:hidden;pointer-events:none;width:${copy.clientWidth}px;`;
+          copy.append(probe);
+          const available =
+            copy.clientHeight -
+            title.getBoundingClientRect().height -
+            Number.parseFloat(getComputedStyle(probe).marginTop);
+          let candidate = "";
+          for (const { segment } of sentences.segment(slides[i]?.summary ?? "")) {
+            candidate += segment;
+            if (!/[.!?]["'”’\])}]*$/u.test(candidate.trim())) continue;
+            probe.textContent = candidate.trim();
+            if (probe.getBoundingClientRect().height > available + 1) break;
+            fitted = candidate.trim();
+          }
+          probe.remove();
+        }
+        nextSummaries.push(fitted);
+      }
+      setMobileSummaries((previous) =>
+        previous.length === nextSummaries.length && previous.every((text, i) => text === nextSummaries[i])
+          ? previous
+          : nextSummaries,
+      );
+      for (const row of hero.querySelectorAll<HTMLElement>(".hero-cta")) {
+        row.dataset.actionsFit = "true";
+        row.dataset.actionsFit = String(row.scrollWidth <= row.clientWidth);
+      }
+    };
+    const observer = new ResizeObserver(measureLayout);
+    observer.observe(hero);
+    measureLayout();
+    let active = true;
+    void document.fonts.ready.then(() => {
+      if (active) measureLayout();
+    });
+    return () => {
+      active = false;
+      observer.disconnect();
+    };
+  }, [slides]);
 
   const n = slides.length;
   const slide = slides[index];
@@ -66,60 +129,72 @@ export default function FeaturedHero({ slides }: Props) {
 
   if (n === 0 || !slide) return null;
 
-  const hasFigure = hasPaperFigure(slide.id);
-
   return (
     <section
-      className="hero hero-plot"
+      ref={heroRef}
+      className="hero hero-featured"
       onKeyDown={onKeyDown}
       onPointerDown={onPointerDown}
       onPointerUp={onPointerUp}
       aria-roledescription="carousel"
       aria-label="Featured papers"
     >
-      <div className="container hero-plot-grid">
-        <div key={`text-${slide.id}`} className="hero-slide hero-slide-text">
-          <div className="kicker">
-            Featured · {slide.venue} · {slide.tag}
-          </div>
-          <h1>{slide.title}</h1>
-          <p className="hero-sub">{slide.summary}</p>
-        </div>
-        {hasFigure && (
+      <div className="hero-slides">
+        {slides.map((slide, i) => (
           <div
-            key={`fig-${slide.id}`}
-            className="regret-plot fig-placeholder hero-slide hero-slide-fig"
-            style={{ aspectRatio: "4 / 3" }}
+            key={slide.id}
+            className="container hero-featured-grid"
+            aria-hidden={i !== index}
+            inert={i !== index}
           >
-            <PaperFigure id={slide.id} />
+            <div key={`text-${slide.id}`} className="hero-slide hero-slide-text">
+              <div className="kicker">Featured paper</div>
+              <div className="hero-copy" data-long-title={String(slide.title.length > 100)}>
+                <h1>{slide.title}</h1>
+                <p className="hero-sub hero-sub-desktop">{slide.summary}</p>
+                {mobileSummaries[i] && <p className="hero-sub hero-sub-mobile">{mobileSummaries[i]}</p>}
+              </div>
+            </div>
+            <ul className="hero-metadata hero-slide" aria-label="Venue and keywords">
+              <li className="hero-ribbon hero-ribbon-venue">{slide.venue}</li>
+              {slide.keywords.slice(0, 4).map((keyword) => (
+                <li key={keyword} className="hero-ribbon">
+                  #{keyword.replace(/\s+/g, "-")}
+                </li>
+              ))}
+            </ul>
           </div>
-        )}
+        ))}
       </div>
       <div className="container hero-actions">
-        <div key={`cta-${slide.id}`} className="hero-cta">
-          <a className="btn btn-accent" href={`/publications/${slide.id}`}>
-            Read more →
-          </a>
-          {slide.paper && (
-            <a className="btn" href={slide.paper} target="_blank" rel="noopener">
-              Paper
-            </a>
-          )}
-          {slide.github && (
-            <a className="btn" href={slide.github} target="_blank" rel="noopener">
-              View code
-            </a>
-          )}
-          {!slide.paper && slide.arxiv && (
-            <a
-              className="btn btn-ghost"
-              href={`https://arxiv.org/abs/${slide.arxiv}`}
-              target="_blank"
-              rel="noopener"
-            >
-              arXiv
-            </a>
-          )}
+        <div className="hero-cta-stack">
+          {slides.map((slide, i) => (
+            <div key={slide.id} className="hero-cta" aria-hidden={i !== index} inert={i !== index}>
+              <a className="btn btn-accent" href={`/publications/${slide.id}`}>
+                Read more →
+              </a>
+              {slide.paper && (
+                <a className="btn" href={slide.paper} target="_blank" rel="noopener">
+                  View paper
+                </a>
+              )}
+              {slide.github && (
+                <a className="btn hero-cta-code" href={slide.github} target="_blank" rel="noopener">
+                  View code
+                </a>
+              )}
+              {!slide.paper && slide.arxiv && (
+                <a
+                  className="btn btn-ghost"
+                  href={`https://arxiv.org/abs/${slide.arxiv}`}
+                  target="_blank"
+                  rel="noopener"
+                >
+                  arXiv
+                </a>
+              )}
+            </div>
+          ))}
         </div>
         <div className="hero-controls" role="group" aria-label="Carousel controls">
           <button
@@ -152,9 +227,6 @@ export default function FeaturedHero({ slides }: Props) {
           >
             <Chevron dir="right" />
           </button>
-          <span className="hero-counter mono">
-            {index + 1} / {n}
-          </span>
         </div>
       </div>
     </section>

@@ -4,7 +4,23 @@
   z-index: 50;
   background: color-mix(in oklab, var(--bg) 88%, transparent);
   backdrop-filter: saturate(140%) blur(10px);
-  border-bottom: 1px solid var(--border);
+}
+
+.site-header::after,
+.site-footer::before {
+  content: "";
+  position: absolute;
+  inset-inline: calc(max(0px, (100% - var(--max-w)) / 2) + var(--gutter));
+  border-top: 1px solid var(--border);
+  pointer-events: none;
+}
+
+.site-header::after {
+  bottom: 0;
+}
+
+.site-footer::before {
+  top: 0;
 }
 
 .nav {
@@ -71,7 +87,7 @@
   display: none !important;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 900px) {
   .nav-links,
   .nav-tools .desktop-only {
     display: none !important;
@@ -148,7 +164,7 @@
 }
 
 .site-footer {
-  border-top: 1px solid var(--border);
+  position: relative;
   margin-top: 120px;
   padding: 64px 0 48px;
   font-size: 13px;

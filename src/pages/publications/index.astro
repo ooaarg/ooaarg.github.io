@@ -11,7 +11,7 @@ const authorMap = await getAuthorMap();
 const staffAuthorNames = await getStaffAuthorNames();
 
 const fmt = (d: Date) =>
-  `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+  new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(d);
 
 const pubs: IndexedPub[] = all.map((p) => ({
   id: p.id,
@@ -38,8 +38,7 @@ const pubs: IndexedPub[] = all.map((p) => ({
 >
   <section class="pubs-hero">
     <div class="container">
-      <div class="kicker">Publications</div>
-      <h1>Search</h1>
+      <h1>Publications</h1>
       <p>
         Filter by area, type, author, year, or venue — or just type a few words.
       </p>

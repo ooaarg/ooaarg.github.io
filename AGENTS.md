@@ -50,7 +50,7 @@ Navigation uses ordinary links and full browser page loads. `base.css` opts into
 
 ### Publications and filtering
 
-- `/blog` mixes news and publications. `/publications` and `/rss.xml` contain publications only.
+- `/blog` lists news. `/publications` and `/rss.xml` contain publications only.
 - `featuredCarousel()` in `src/lib/pubs.ts` selects the newest five entries with `type: paper` and `tag` other than `Preprint`. `heroSummary` falls back to `summary`. `featured` controls blog-tile emphasis; `featuredOrder` is accepted but unused.
 - `packBento()` expands the last tile of short rows to fill six columns. `YearFilter` hides tiles with the `hidden` attribute and counts visible tiles in the same pass. Filtering may leave gaps because packing happens at build time.
 - The search page passes publications sorted newest-first. `SearchIndex` preserves this order while filtering and reverses results for oldest-first; its `date` field is a display label. `src/lib/publication-search.ts` reads/writes query text, all six facets, and sorting. Restore from the URL after hydration and on `popstate`; only user actions write history. Text edits replace the current entry, while filter/sort changes push entries. Preserve unrelated query parameters and fragments.
@@ -63,7 +63,7 @@ Navigation uses ordinary links and full browser page loads. `base.css` opts into
 Use `src/content.config.ts` and the [content guides](./README.md#start-here) for field definitions instead of duplicating schemas here.
 
 - IDs come from filenames. Publication author strings must exactly match a person's `name` to resolve profile links.
-- Research area values are repeated in the content schema, `src/data/areas.ts`, `AREA_LABEL` in `src/pages/publications/[id].astro`, and `FACETS.area` in `SearchIndex.tsx`. Update all four when adding an area. `misc` is searchable but excluded from the home grid via `showOnHome: false`.
+- Research area values are repeated in the content schema, `src/data/areas.ts`, and `FACETS.area` in `SearchIndex.tsx`. Update all three when adding an area. `misc` is searchable but excluded from the home grid via `showOnHome: false`.
 - Paper figures live in `src/components/publications/detail/figures/<area>/<id>.tsx`. `PaperFigure.tsx` registers them by basename. They render statically in Astro pages and within the home/search islands; a figure is not automatically a separate island.
 - People photos live in `src/assets/people/<id>.{jpg,jpeg,png,webp,avif}` and fall back to initials. News images are co-located with their entry and referenced using its `image` field. Both use Astro's image processing.
 

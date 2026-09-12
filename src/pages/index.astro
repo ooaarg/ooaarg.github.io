@@ -15,7 +15,7 @@ const slides = featuredCarousel(pubs).map((p) => ({
   id: p.id,
   title: p.data.title,
   venue: p.data.venue,
-  tag: p.data.tag,
+  keywords: p.data.tags.slice(0, 4),
   summary: p.data.heroSummary ?? p.data.summary,
   paper: paperUrl(p.data),
   arxiv: p.data.arxiv,
@@ -34,7 +34,6 @@ const slides = featuredCarousel(pubs).map((p) => ({
     <div class="container">
       <div class="section-head">
         <div>
-          <div class="kicker">Areas of research</div>
           <h2>What we work on</h2>
         </div>
       </div>

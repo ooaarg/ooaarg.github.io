@@ -23,27 +23,29 @@ const hasFigure = Astro.slots.has('figure');
         <slot name="breadcrumb" />
       </div>
 
-      <div class="badge-row">
-        <slot name="badges" />
-      </div>
+      <div class="detail-layout">
+        <div class="detail-main">
+          <div class="badge-row">
+            <slot name="badges" />
+          </div>
 
-      <h1 style="margin-top: 24px; view-transition-name: hero-title;">{heading}</h1>
+          <h1 style="view-transition-name: hero-title;">{heading}</h1>
+          <slot name="byline" />
 
-      <slot name="byline" />
+          {hasActions && (
+            <div class="actions">
+              <slot name="actions" />
+            </div>
+          )}
 
-      {hasActions && (
-        <div class="actions">
-          <slot name="actions" />
+          {hasFigure && <slot name="figure" />}
+
+          <div class="pub-content">
+            <article>
+              <slot />
+            </article>
+          </div>
         </div>
-      )}
-
-      {hasFigure && <slot name="figure" />}
-
-      <div class="pub-content">
-        <article>
-          <slot />
-        </article>
-
         <aside class="pub-aside">
           <slot name="aside" />
         </aside>

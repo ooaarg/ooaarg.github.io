@@ -44,7 +44,6 @@ const publications = defineCollection({
      *  terse for bento tiles and the index). Falls back to `summary` if unset. */
     heroSummary: z.string().max(500).optional(),
     cited_by: z.number().int().nonnegative().optional(),
-    funding: z.string().optional(),
   }),
 });
 

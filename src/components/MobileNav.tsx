@@ -62,10 +62,10 @@ export default function MobileNav({ active }: Props) {
           className="ooaarg-mark"
           href="/"
           style={{ "--ooaarg-size": "32px" }}
-          aria-label="ÕOAARG home"
+          aria-label="OOAARG home"
           onClick={() => setOpen(false)}
         >
-          <span>ÕO</span>
+          <span>OO</span>
           <span className="ooaarg-stretch">AARG</span>
         </a>
         <button

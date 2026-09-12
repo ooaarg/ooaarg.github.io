@@ -107,7 +107,7 @@ a:focus-visible {
   align-items: center;
   height: 22px;
   padding: 0 8px;
-  border-radius: 11px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--bg-elev);
   font-family: var(--font-mono);
@@ -285,11 +285,22 @@ a.pill:hover {
   font-family: var(--font-mono);
   font-size: 13px;
   line-height: 1.7;
-  white-space: pre;
-  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  min-width: 0;
+  flex-shrink: 0;
   position: relative;
-  -webkit-overflow-scrolling: touch;
   margin: 0;
+}
+
+.cite-block-apa {
+  font-family: var(--font-sans);
+  font-size: 15px;
+}
+
+.cite-modal .panel {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) var(--bg-elev);
 }
 
 .cite-status {

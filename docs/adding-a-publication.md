@@ -60,9 +60,8 @@ Authors link to `/about/<id>` when their names exactly match a person entry's `n
 | `github`, `pdf` | | Optional URLs for code and the PDF. |
 | `links` | | Array of `{label, url}` objects for other resources. |
 | `cited_by` | | Nonnegative integer accepted by the schema; currently not displayed. |
-| `funding` | | Funding text shown in the detail-page aside. |
 
-To add a research area, update the schema, `src/data/areas.ts`, `AREA_LABEL` in `src/pages/publications/[id].astro`, and `FACETS.area` in `SearchIndex.tsx`. The existing `misc` area is excluded from the home research-area grid.
+To add a research area, update the schema, `src/data/areas.ts`, and `FACETS.area` in `SearchIndex.tsx`. The existing `misc` area is excluded from the home research-area grid.
 
 ## Links and citations
 

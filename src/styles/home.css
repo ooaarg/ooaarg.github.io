@@ -47,6 +47,7 @@
 }
 
 .hero-cta {
+  min-width: 0;
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
@@ -56,60 +57,110 @@
 .hero-sub {
   font-size: 18px;
   color: var(--fg-muted);
-  max-width: 52ch;
-  margin-top: 24px;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 5;
-  line-clamp: 5;
-  overflow: hidden;
-}
-
-.hero-plot-grid {
-  /* Reserve a consistent height so the CTA buttons + carousel controls keep the
-     same Y position on every slide — figure or not, short title or long. Content
-     is top-aligned (align-items: start); the reserve just sets the floor. */
-  --hero-reserve: clamp(300px, 38vw, 420px);
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 64px;
-  align-items: start;
-  min-height: var(--hero-reserve);
-}
-
-.hero-plot-grid:has(.hero-slide-fig) {
-  grid-template-columns: 1fr 1fr;
-}
-
-.hero-plot-grid:not(:has(.hero-slide-fig)) h1 {
-  max-width: 28ch;
-}
-
-.hero-plot-grid:not(:has(.hero-slide-fig)) .hero-sub {
   max-width: 64ch;
+  margin-top: 24px;
 }
 
-.hero-plot-grid h1 {
+.hero-sub-mobile {
+  display: none;
+}
+
+.hero-slides,
+.hero-cta-stack {
+  display: grid;
+}
+
+/* All slides size the same grid cell, including inactive slides. This reserves
+   the tallest content and action rows before interaction at every viewport. */
+.hero-slides > .hero-featured-grid,
+.hero-cta-stack > .hero-cta {
+  grid-area: 1 / 1;
+  width: 100%;
+  align-self: start;
+}
+
+.hero-featured-grid[aria-hidden="true"],
+.hero-cta[aria-hidden="true"] {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.hero-featured-grid[aria-hidden="true"] .hero-slide {
+  animation: none;
+}
+
+.hero-featured-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: clamp(48px, 7vw, 112px);
+  align-items: start;
+  min-height: 360px;
+}
+
+.hero-featured-grid h1 {
   font-size: clamp(32px, 3.4vw, 48px);
-  text-wrap: balance;
-  line-height: 1.05;
+  text-wrap: pretty;
+  line-height: 1.12;
+  margin-top: 20px;
 }
 
 .hero-slide-text {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
+  min-width: 0;
 }
 
-.hero-slide-fig {
-  align-self: start;
-  /* Never let the figure push the row past the reserved height (keeps the
-     buttons pinned even on figure slides); the SVG scales to fit. */
-  max-height: var(--hero-reserve);
+.hero-slide-text .kicker::before {
+  content: "/";
+  margin-right: 14px;
+  font-size: 20px;
 }
 
-.hero-plot-grid em {
+.hero-metadata {
+  display: grid;
+  gap: 18px;
+  list-style: none;
+  margin: 40px 0 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.hero-ribbon {
+  position: relative;
+  isolation: isolate;
+  padding: 18px 24px;
+  color: var(--fg-muted);
+  font-size: clamp(14px, 1.5vw, 20px);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.hero-ribbon::before,
+.hero-ribbon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: var(--radius);
+  background: var(--border-strong);
+}
+
+.hero-ribbon::after {
+  inset: 1px;
+  border-radius: calc(var(--radius) - 1px);
+  background: var(--bg-elev);
+}
+
+.hero-ribbon-venue {
   color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.hero-ribbon-venue::before {
+  background: var(--accent);
+}
+
+.hero-ribbon-venue::after {
+  background: linear-gradient(to right, color-mix(in oklab, var(--accent) 12%, var(--bg)), var(--bg));
 }
 
 .regret-plot {
@@ -259,74 +310,6 @@
   letter-spacing: 0.08em;
 }
 
-.pub-list {
-  list-style: none;
-  padding: 0;
-  margin: 48px 0 0;
-}
-
-.pub-list > li {
-  display: grid;
-  grid-template-columns: 110px 110px 1fr auto;
-  gap: 24px;
-  align-items: center;
-  padding: 24px 0;
-  border-top: 1px solid var(--border);
-  transition: background var(--t-fast);
-}
-
-.pub-list > li:last-child {
-  border-bottom: 1px solid var(--border);
-}
-
-.pub-list > li:hover {
-  background: color-mix(in oklab, var(--bg-sunken) 60%, transparent);
-}
-
-.pub-tag {
-  justify-self: start;
-}
-
-.pub-date {
-  font-size: 12px;
-  color: var(--fg-muted);
-}
-
-.pub-title {
-  margin: 0 0 4px;
-  overflow-wrap: anywhere;
-  font-family: var(--font-sans);
-  font-size: 17px;
-  font-weight: 600;
-  letter-spacing: -0.005em;
-  line-height: 1.3;
-}
-
-.pub-title-link {
-  color: inherit;
-  text-decoration: none;
-}
-
-.pub-title-link:hover {
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.pub-meta {
-  font-size: 13px;
-  color: var(--fg-muted);
-}
-
-.pub-dot {
-  color: var(--fg-subtle);
-  margin: 0 6px;
-}
-
-.pub-actions {
-  display: flex;
-  gap: 6px;
-}
-
 .join-strip {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -347,7 +330,7 @@
 
 @media (max-width: 900px) {
   .hero-foot,
-  .hero-plot-grid,
+  .hero-featured-grid,
   .section-head,
   .join-strip {
     grid-template-columns: 1fr;
@@ -360,25 +343,85 @@
     padding: 24px;
   }
 
-  .hero-plot-grid {
-    display: flex;
-    flex-direction: column;
-    --hero-reserve: 435px;
-    min-height: var(--hero-reserve);
-    gap: 20px;
+  .hero-featured-grid {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+    gap: 16px;
   }
-  .hero-slide-fig {
-    order: -1;
-    width: min(100%, 200px);
-    margin-inline: auto;
-    max-height: none;
+  .hero-copy {
+    --hero-title-size: clamp(20px, 6vw, 24px);
+    height: 192px;
+    margin-top: 16px;
+  }
+  .hero-copy h1 {
+    margin-top: 0;
+  }
+  /* Long titles use the description's space within the same fixed text area. */
+  .hero-featured-grid h1 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .hero-featured-grid h1 {
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+  }
+  .hero-sub {
+    margin-top: 16px;
+  }
+  .hero-sub-desktop {
+    display: none;
+  }
+  .hero-sub-mobile {
+    display: block;
+  }
+  .hero-copy[data-long-title="true"] h1 {
+    font-size: var(--hero-title-size);
+    -webkit-line-clamp: 9;
+    line-clamp: 9;
+  }
+  .hero-copy[data-measuring-title="true"] h1 {
+    display: block;
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+  }
+  .hero-copy[data-long-title="true"] .hero-sub {
+    display: none;
+  }
+  .hero-featured .hero-actions {
+    margin-top: 16px;
+    gap: 12px;
+  }
+  .hero-cta {
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+  .hero-cta .btn {
+    flex-shrink: 0;
+  }
+  .hero-cta .hero-cta-code {
+    display: none;
+  }
+  .hero-cta[data-actions-fit="true"] .hero-cta-code {
+    display: inline-flex;
+  }
+  .hero-slides > .hero-featured-grid {
+    align-self: stretch;
+  }
+  .hero-metadata {
+    align-self: end;
+    width: 100%;
+    margin-top: 0;
+  }
+  .hero-ribbon {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+  .hero-ribbon:not(.hero-ribbon-venue) {
+    display: none;
   }
   .hero {
     padding: 24px 0 32px;
-  }
-  .pub-list > li {
-    grid-template-columns: 1fr;
-    gap: 8px;
   }
   .join-strip {
     padding: 32px;
@@ -391,10 +434,9 @@
   }
 }
 
-.hero-plot {
+.hero-featured {
   position: relative;
-  /* The reserve already pins the controls; drop the hero's bottom padding so they
-     sit just above the divider of the next section instead of floating mid-air. */
+  overflow-x: clip;
   padding-bottom: 0;
   touch-action: pan-y;
 }
@@ -422,7 +464,7 @@
 .hero-actions {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 28px;
   margin-top: 24px;
 }
 
@@ -467,17 +509,59 @@
   transform: scale(1.25);
 }
 
-.hero-counter {
-  font-size: 12px;
-  color: var(--fg-muted);
-  margin-left: auto;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .hero-slide {
     animation: none;
   }
   .hero-dot::before {
     transition: none;
+  }
+}
+
+/* Short landscape phones need a horizontal hero and a single control row. */
+@media (min-width: 600px) and (max-width: 900px) and (max-height: 500px) {
+  .hero-featured {
+    padding-top: 16px;
+  }
+  .hero-featured-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(160px, 0.55fr);
+    gap: 24px;
+  }
+  .hero-copy {
+    height: 144px;
+    margin-top: 8px;
+    --hero-title-size: 20px;
+  }
+  .hero-featured-grid h1 {
+    font-size: 24px;
+  }
+  .hero-copy[data-long-title="true"] h1 {
+    font-size: var(--hero-title-size);
+  }
+  .hero-sub {
+    font-size: 16px;
+    margin-top: 12px;
+  }
+  .hero-metadata {
+    align-self: center;
+  }
+  .hero-ribbon {
+    padding: 12px;
+    font-size: 12px;
+  }
+  .hero-featured .hero-actions {
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    margin-top: 12px;
+  }
+  .hero-cta-stack {
+    flex: 1;
+    min-width: 0;
+  }
+  .hero-controls {
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+    gap: 4px;
   }
 }
