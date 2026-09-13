@@ -83,8 +83,8 @@ export default function MobileNav({ active }: Props) {
           aria-label={t("OOAARG home")}
           onClick={() => setOpen(false)}
         >
-          <span>{t("OO")}</span>
-          <span className="ooaarg-stretch">{t("AARG")}</span>
+          <span>OO</span>
+          <span className="ooaarg-stretch">AARG</span>
         </a>
         <button
           type="button"

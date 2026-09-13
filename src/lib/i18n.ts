@@ -2,9 +2,6 @@ export type Locale = "en" | "ru";
 
 const russian: Record<string, string> = {
   "Conference link": "Сайт конференции",
-  OO: "ОО",
-  AARG: "ИПИГ",
-  OOAARG: "ООИПИГ",
   "Online Optimization And Applications Research Group":
     "Исследовательская Группа Онлайн Оптимизация И Приложения",
   "Online Optimization And Applications Research Group.":
@@ -63,7 +60,7 @@ const russian: Record<string, string> = {
     "Такой страницы нет. Перейдите в один из разделов ниже.",
   "Site navigation": "Навигация по сайту",
   "Mobile navigation": "Мобильная навигация",
-  "OOAARG home": "ООИПИГ — главная",
+  "OOAARG home": "OOAARG — главная",
   "Open menu": "Открыть меню",
   "Close menu": "Закрыть меню",
   "Featured paper": "Избранная публикация",

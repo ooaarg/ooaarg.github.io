@@ -88,7 +88,7 @@ Markdown bodies, and [content-language.ts](../src/lib/content-language.ts)
 provides the same fallback rules for Preact. Do not pass translated display
 objects to citation generation.
 
-The Russian group name is **Исследовательская Группа Онлайн Оптимизация И Приложения**; the wordmark uses **ООИПИГ**. English retains **OOAARG**.
+The Russian full group name is **Исследовательская Группа Онлайн Оптимизация И Приложения**. The acronym and wordmark stay **OOAARG** in every language; do not translate or transliterate the acronym.
 These are browser-side language variants of the same static routes, not
 separately indexed localized URLs. Without JavaScript the original English
 content is shown.
