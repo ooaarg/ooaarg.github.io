@@ -8,7 +8,13 @@ import rehypeKatex from "rehype-katex";
 
 export default defineConfig({
   site: "https://ooaarg.github.io",
-  integrations: [preact(), sitemap()],
+  integrations: [
+    preact(),
+    sitemap({
+      filter: (page) =>
+        /^\/(en|ru)(\/|$)/.test(new URL(page).pathname) && !new URL(page).pathname.includes("/404"),
+    }),
+  ],
   markdown: {
     processor: unified({
       remarkPlugins: [remarkMath],

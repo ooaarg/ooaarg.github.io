@@ -1,21 +1,19 @@
 ---
+import { localeFromUrl, translate, localizedHref } from '../../lib/i18n';
+const locale = localeFromUrl(Astro.url);
 ---
 
 <section id="join" class="section">
   <div class="container">
     <div class="join-strip">
       <div>
-        <h2 data-i18n="Let's work together">Let's work together</h2>
-        <p style="margin-top: 16px; color: var(--fg-muted); max-width: 52ch;" data-i18n="We do science for both academia and industry, and we read every application. Whether you're a prospective student, a collaborator, or a company with a hard problem, we'd love to hear from you.">
-            We do science for both academia and industry, and we read every application.
-            Whether you're a prospective student, a collaborator, or a company with a hard
-            problem, we'd love to hear from you.
-        </p>
+        <h2>{translate("Let's work together", locale)}</h2>
+        <p style="margin-top: 16px; color: var(--fg-muted); max-width: 52ch;">{translate("We do science for both academia and industry, and we read every application. Whether you're a prospective student, a collaborator, or a company with a hard problem, we'd love to hear from you.", locale)}</p>
       </div>
       <div class="join-actions">
-        <a class="btn btn-accent" href="/about"><span data-i18n="Find an adviser">Find an adviser</span><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M5 12H19M12 19L19 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></a>
-        <a class="btn" href="mailto:dornyv@my.msu.ru?subject=Industry%20partnership%20inquiry" data-i18n="Industry partnerships">Industry partnerships</a>
-        <a class="btn btn-ghost" href="/publications" data-i18n="Browse our research">Browse our research</a>
+        <a class="btn btn-accent" href={localizedHref('/about', locale)}><span>{translate('Find an adviser', locale)}</span><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M5 12H19M12 19L19 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></a>
+        <a class="btn" href="mailto:dornyv@my.msu.ru?subject=Industry%20partnership%20inquiry">{translate('Industry partnerships', locale)}</a>
+        <a class="btn btn-ghost" href={localizedHref('/publications', locale)}>{translate('Browse our research', locale)}</a>
       </div>
     </div>
   </div>

@@ -1,3 +1,4 @@
+import { type Locale } from "../../../lib/i18n";
 import { useLocale } from "../../../lib/use-locale";
 import { useState } from "preact/hooks";
 
@@ -9,6 +10,7 @@ interface FacetItem {
 }
 
 interface Props {
+  initialLocale: Locale;
   title: string;
   items: FacetItem[];
   selected: Set<string>;
@@ -19,6 +21,7 @@ interface Props {
 }
 
 export default function FacetDropdown({
+  initialLocale,
   title,
   items,
   selected,
@@ -27,7 +30,7 @@ export default function FacetDropdown({
   onClear,
   searchable,
 }: Props) {
-  const { t, locale } = useLocale();
+  const { t, locale } = useLocale(initialLocale);
   const [q, setQ] = useState("");
   const filtered = q
     ? items.filter((it) => [it.label, it.id].some((value) => value.toLowerCase().includes(q.toLowerCase())))

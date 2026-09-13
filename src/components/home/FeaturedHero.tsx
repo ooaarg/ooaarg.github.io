@@ -1,3 +1,4 @@
+import { localizedHref, type Locale } from "../../lib/i18n";
 import { contentText, contentLanguage } from "../../lib/content-language";
 import { useLocale } from "../../lib/use-locale";
 import { useCallback, useEffect, useMemo, useRef, useState } from "preact/hooks";
@@ -16,6 +17,7 @@ export interface HeroSlide {
 }
 
 interface Props {
+  initialLocale: Locale;
   slides: HeroSlide[];
 }
 
@@ -60,8 +62,8 @@ const Chevron = ({ dir }: { dir: "left" | "right" }) =>
     </svg>
   );
 
-export default function FeaturedHero({ slides: sourceSlides }: Props) {
-  const { t, locale } = useLocale();
+export default function FeaturedHero({ initialLocale, slides: sourceSlides }: Props) {
+  const { t, locale } = useLocale(initialLocale);
   const slides = useMemo(
     () =>
       sourceSlides.map((slide) => ({
@@ -274,7 +276,7 @@ export default function FeaturedHero({ slides: sourceSlides }: Props) {
             <div key={slide.id} className="hero-cta" aria-hidden={i !== index} inert={i !== index}>
               <a
                 className="btn btn-accent"
-                href={`/publications/${slide.id}`}
+                href={localizedHref(`/publications/${slide.id}`, initialLocale)}
                 aria-label={`${t("Read")}: ${slide.title}`}
               >
                 {t("Publication details")}

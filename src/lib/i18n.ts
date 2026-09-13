@@ -143,26 +143,21 @@ export function translate(text: string, locale: Locale): string {
   return locale === "ru" ? (russian[text] ?? text) : text;
 }
 
-export function localeFromUrl(url: URL): Locale | undefined {
-  const locale = url.searchParams.get("lang");
-  return locale === "en" || locale === "ru" ? locale : undefined;
+export function localeFromUrl(url: URL): Locale {
+  return url.pathname === "/ru" || url.pathname.startsWith("/ru/") ? "ru" : "en";
 }
 
 export function languageUrl(url: URL, locale: Locale): URL {
   const next = new URL(url);
-  next.searchParams.set("lang", locale);
+  let path = next.pathname.replace(/^\/(?:en|ru)(?=\/|$)/, "") || "/";
+  if (/^\/404(?:\.html)?\/?$/.test(path)) path = "/404/";
+  next.pathname = "/" + locale + path;
+  next.searchParams.delete("lang");
   return next;
 }
 
-export function readLocale(): Locale {
-  // Shared links take precedence over this browser's saved preference.
-  if (typeof window !== "undefined") {
-    const locale = localeFromUrl(new URL(window.location.href));
-    if (locale) return locale;
-  }
-  try {
-    return localStorage.getItem("ooaarg-language") === "ru" ? "ru" : "en";
-  } catch {
-    return "en";
-  }
+export function localizedHref(href: string, locale: Locale): string {
+  if (!href.startsWith("/") || href.startsWith("//") || /\.[a-z0-9]+(?:[?#]|$)/i.test(href)) return href;
+  const url = languageUrl(new URL(href, "https://ooaarg.github.io"), locale);
+  return url.pathname + url.search + url.hash;
 }

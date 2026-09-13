@@ -13,8 +13,8 @@ ru:
 
     Мы представили две статьи группы:
 
-    - [**Функциональный многорукий бандит и задачи идентификации наилучшей функции**](/publications/functional-bandit)
-    - [**Устойчивые автоматические ставки для шумных моделей прогнозирования конверсий**](/publications/robust-autobidding)
+    - [**Функциональный многорукий бандит и задачи идентификации наилучшей функции**](/ru/publications/functional-bandit)
+    - [**Устойчивые автоматические ставки для шумных моделей прогнозирования конверсий**](/ru/publications/robust-autobidding)
 span: 3
 href: "https://cyprusconferences.org/aamas2026/"
 ---
@@ -23,5 +23,5 @@ href: "https://cyprusconferences.org/aamas2026/"
 
 We presented two papers from the group:
 
-- [**Functional multi-armed bandit and the best function identification problems**](/publications/functional-bandit)
-- [**Robust autobidding for noisy conversion prediction models**](/publications/robust-autobidding)
+- [**Functional multi-armed bandit and the best function identification problems**](/en/publications/functional-bandit)
+- [**Robust autobidding for noisy conversion prediction models**](/en/publications/robust-autobidding)

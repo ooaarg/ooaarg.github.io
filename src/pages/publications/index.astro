@@ -1,4 +1,5 @@
 ---
+import { localeFromUrl, translate } from '../../lib/i18n';
 import { formatDate } from '../../lib/dates';
 import { getCollection } from 'astro:content';
 import Site from '../../layouts/Site.astro';
@@ -30,6 +31,7 @@ const pubs: IndexedPub[] = all.map((p) => ({
   tags: p.data.tags,
   abstract: p.data.summary,
 }));
+const locale = localeFromUrl(Astro.url);
 ---
 
 <Site titleRu="Публикации · OOAARG" descriptionRu="Поиск публикаций OOAARG по теме, изданию, году, автору и типу."
@@ -39,15 +41,13 @@ const pubs: IndexedPub[] = all.map((p) => ({
 >
   <section class="pubs-hero">
     <div class="container">
-      <h1 data-i18n="Publications">Publications</h1>
-      <p data-i18n="Filter by area, type, author, year, or venue — or just type a few words.">
-        Filter by area, type, author, year, or venue — or just type a few words.
-      </p>
+      <h1>{translate('Publications', locale)}</h1>
+      <p>{translate('Filter by area, type, author, year, or venue — or just type a few words.', locale)}</p>
     </div>
   </section>
 
   <div class="container">
-    <h2 class="kicker" style="margin-bottom: 8px;" data-i18n="Search the corpus">Search the corpus</h2>
-    <SearchIndex client:load pubs={pubs} />
+    <h2 class="kicker" style="margin-bottom: 8px;">{translate('Search the corpus', locale)}</h2>
+    <SearchIndex initialLocale={locale} client:load pubs={pubs} />
   </div>
 </Site>

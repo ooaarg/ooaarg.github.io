@@ -1,13 +1,15 @@
+import { type Locale } from "../../../lib/i18n";
 import { useLocale } from "../../../lib/use-locale";
 import { useState } from "preact/hooks";
 
 interface Props {
+  initialLocale: Locale;
   years: number[];
   total: number;
 }
 
-export default function YearFilter({ years, total }: Props) {
-  const { t, locale } = useLocale();
+export default function YearFilter({ initialLocale, years, total }: Props) {
+  const { t, locale } = useLocale(initialLocale);
   const [active, setActive] = useState<"all" | number>("all");
 
   const [visibleCount, setVisibleCount] = useState(total);

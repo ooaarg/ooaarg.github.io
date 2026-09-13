@@ -1,4 +1,5 @@
 ---
+import { localeFromUrl, translate } from '../lib/i18n';
 import { getCollection } from 'astro:content';
 import Site from '../layouts/Site.astro';
 import FeaturedHero from '../components/home/FeaturedHero.tsx';
@@ -27,6 +28,7 @@ const slides = featuredCarousel(pubs).map((p) => ({
   arxiv: p.data.arxiv,
   github: p.data.github,
 }));
+const locale = localeFromUrl(Astro.url);
 ---
 
 <Site titleRu="Исследовательская Группа Онлайн Оптимизация И Приложения" descriptionRu="Исследовательская группа по онлайн-оптимизации, онлайн-обучению, многоруким бандитам и оптимизации СУБД. Теоретические гарантии регрета и практическое применение."
@@ -34,13 +36,13 @@ const slides = featuredCarousel(pubs).map((p) => ({
   title="OOAARG — Online Optimization And Applications Research Group"
   description="A research group on online optimization, online learning, bandits, and DBMS optimization. Provable regret guarantees, practical deployment."
 >
-  <FeaturedHero client:load slides={slides} />
+  <FeaturedHero initialLocale={locale} client:load slides={slides} />
 
   <section class="section section-after-hero">
     <div class="container">
       <div class="section-head">
         <div>
-          <h2 data-i18n="What we work on">What we work on</h2>
+          <h2>{translate('What we work on', locale)}</h2>
         </div>
       </div>
       <AreasOfResearch pubs={pubs} />

@@ -1,3 +1,4 @@
+import { type Locale } from "../../../lib/i18n";
 import { useLocale } from "../../../lib/use-locale";
 interface FacetItem {
   id: string;
@@ -5,6 +6,7 @@ interface FacetItem {
 }
 
 interface Props {
+  initialLocale: Locale;
   title: string;
   items: FacetItem[];
   selected: Set<string>;
@@ -12,8 +14,8 @@ interface Props {
   onToggle: (id: string) => void;
 }
 
-export default function Facet({ title, items, selected, counts, onToggle }: Props) {
-  const { t } = useLocale();
+export default function Facet({ initialLocale, title, items, selected, counts, onToggle }: Props) {
+  const { t } = useLocale(initialLocale);
   return (
     <div className="ri-group">
       <h3 className="ri-group-label">{t(title)}</h3>

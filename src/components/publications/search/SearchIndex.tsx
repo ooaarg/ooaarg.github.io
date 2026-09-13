@@ -1,3 +1,4 @@
+import { localizedHref, type Locale } from "../../../lib/i18n";
 import { contentText, contentLanguage } from "../../../lib/content-language";
 import { formatDate } from "../../../lib/dates";
 import { useLocale } from "../../../lib/use-locale";
@@ -51,12 +52,13 @@ const FACETS = {
 };
 
 interface Props {
+  initialLocale: Locale;
   /** Sorted by publication date, newest first, at build time. */
   pubs: IndexedPub[];
 }
 
-export default function SearchIndex({ pubs }: Props) {
-  const { t, locale } = useLocale();
+export default function SearchIndex({ initialLocale, pubs }: Props) {
+  const { t, locale } = useLocale(initialLocale);
   const [search, setSearch] = useState(() => readSearch());
   const { q, filters, sort } = search;
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -227,6 +229,7 @@ export default function SearchIndex({ pubs }: Props) {
   const facetGroups = (
     <>
       <Facet
+        initialLocale={initialLocale}
         title="Area"
         items={FACETS.area}
         selected={filters.area}
@@ -234,6 +237,7 @@ export default function SearchIndex({ pubs }: Props) {
         onToggle={(v) => toggle("area", v)}
       />
       <Facet
+        initialLocale={initialLocale}
         title="Type"
         items={FACETS.type.filter((type) => (counts.type[type.id] ?? 0) > 0)}
         selected={filters.type}
@@ -241,6 +245,7 @@ export default function SearchIndex({ pubs }: Props) {
         onToggle={(v) => toggle("type", v)}
       />
       <FacetDropdown
+        initialLocale={initialLocale}
         title="Author"
         items={authorItems}
         selected={filters.author}
@@ -250,6 +255,7 @@ export default function SearchIndex({ pubs }: Props) {
         searchable
       />
       <FacetDropdown
+        initialLocale={initialLocale}
         title="Year"
         items={yearItems}
         selected={filters.year}
@@ -258,6 +264,7 @@ export default function SearchIndex({ pubs }: Props) {
         onClear={() => clearKey("year")}
       />
       <FacetDropdown
+        initialLocale={initialLocale}
         title="Venue"
         items={venueItems}
         selected={filters.venue}
@@ -267,6 +274,7 @@ export default function SearchIndex({ pubs }: Props) {
         searchable
       />
       <FacetDropdown
+        initialLocale={initialLocale}
         title="Tag"
         items={tagItems}
         selected={filters.tag}
@@ -406,7 +414,10 @@ export default function SearchIndex({ pubs }: Props) {
                 </div>
                 <div>
                   <h3 lang={contentLanguage(p.ru?.title, locale)}>
-                    <a className="ri-result-link" href={`/publications/${p.id}`}>
+                    <a
+                      className="ri-result-link"
+                      href={localizedHref(`/publications/${p.id}`, initialLocale)}
+                    >
                       {contentText(p.title, p.ru?.title, locale)}
                     </a>
                   </h3>
@@ -414,7 +425,7 @@ export default function SearchIndex({ pubs }: Props) {
                     {p.authorLinks.map((a, i) => (
                       <span key={`${p.id}-${i}`} lang={contentLanguage(a.ru, locale)}>
                         {a.id ? (
-                          <a className="author-link" href={`/about/${a.id}`}>
+                          <a className="author-link" href={localizedHref(`/about/${a.id}`, initialLocale)}>
                             {contentText(a.name, a.ru, locale)}
                           </a>
                         ) : (

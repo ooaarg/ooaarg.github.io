@@ -78,7 +78,7 @@ News supports optional `ru.title`, `ru.summary`, `ru.imageAlt`, and
 
 `ru.body` is Markdown in a YAML block scalar. It is rendered at build time
 using the unified processor configured in [astro.config.mjs](../astro.config.mjs),
-including the math pipeline. Use site-root links such as `/publications/pub-25`
+including the math pipeline. Use localized site-root links such as `/ru/publications/pub-25`
 and public image URLs in translated Markdown; the news `image` field continues
 to use Astro's image processing. Original Markdown remains untouched.
 
@@ -89,6 +89,6 @@ provides the same fallback rules for Preact. Do not pass translated display
 objects to citation generation.
 
 The Russian full group name is **Исследовательская Группа Онлайн Оптимизация И Приложения**. The acronym and wordmark stay **OOAARG** in every language; do not translate or transliterate the acronym.
-These are browser-side language variants of the same static routes, not
-separately indexed localized URLs. Without JavaScript the original English
-content is shown.
+English pages are built under `/en/`; Russian pages are built under `/ru/`.
+Both languages are readable without JavaScript. Use `/ru/` paths for internal
+page links in Russian Markdown; keep download and external links unchanged.

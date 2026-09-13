@@ -1,66 +1,59 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { languageUrl, localeFromUrl } from "./i18n";
+import { languageUrl, localeFromUrl, localizedHref, translate } from "./i18n";
 
-test("shared language URLs accept only supported explicit locales", () => {
-  assert.equal(localeFromUrl(new URL("https://example.com/?lang=ru")), "ru");
-  assert.equal(localeFromUrl(new URL("https://example.com/?lang=en")), "en");
-  assert.equal(localeFromUrl(new URL("https://example.com/?lang=fr")), undefined);
-  assert.equal(localeFromUrl(new URL("https://example.com/")), undefined);
+test("the path determines the rendered locale, independently of legacy queries", () => {
+  for (const path of ["/ru", "/ru/", "/ru/publications/pub-25?lang=en"]) {
+    assert.equal(localeFromUrl(new URL(path, "https://example.com")), "ru");
+  }
+  for (const path of ["/", "/russian", "/publications?lang=ru"]) {
+    assert.equal(localeFromUrl(new URL(path, "https://example.com")), "en");
+  }
 });
 
-test("changing language preserves the route, repeated filters, and fragment", () => {
+test("language navigation preserves repeated filters and fragments without duplicate prefixes", () => {
   const original = new URL(
     "https://example.com/publications?area=bandits&year=2025&year=2026&lang=en#results",
   );
   const next = languageUrl(original, "ru");
-  assert.equal(next.pathname, "/publications");
+  assert.equal(next.pathname, "/ru/publications");
   assert.deepEqual(next.searchParams.getAll("year"), ["2025", "2026"]);
   assert.equal(next.searchParams.get("area"), "bandits");
   assert.equal(next.hash, "#results");
-  assert.deepEqual(next.searchParams.getAll("lang"), ["ru"]);
+  assert.equal(next.searchParams.has("lang"), false);
   assert.equal(original.searchParams.get("lang"), "en");
+  assert.equal(languageUrl(next, "ru").href, next.href);
+  assert.equal(languageUrl(next, "en").pathname, "/en/publications");
+  assert.equal(languageUrl(new URL("https://example.com/ru/"), "en").pathname, "/en/");
 });
 
-test("shared language overrides storage; missing or invalid language uses storage", async () => {
-  const { readLocale } = await import("./i18n");
-  const previousWindow = Object.getOwnPropertyDescriptor(globalThis, "window");
-  const previousStorage = Object.getOwnPropertyDescriptor(globalThis, "localStorage");
-  let href = "https://example.com/?lang=ru";
-  let saved = "en";
-  Object.defineProperty(globalThis, "window", {
-    configurable: true,
-    value: {
-      location: {
-        get href() {
-          return href;
-        },
-      },
-    },
-  });
-  Object.defineProperty(globalThis, "localStorage", { configurable: true, value: { getItem: () => saved } });
-  try {
-    assert.equal(readLocale(), "ru");
-    saved = "ru";
-    href = "https://example.com/?lang=en";
-    assert.equal(readLocale(), "en");
-    href = "https://example.com/";
-    assert.equal(readLocale(), "ru");
-    href = "https://example.com/?lang=invalid";
-    assert.equal(readLocale(), "ru");
-    Object.defineProperty(globalThis, "localStorage", {
-      configurable: true,
-      get() {
-        throw new Error("Storage blocked");
-      },
-    });
-    assert.equal(readLocale(), "en");
-    href = "https://example.com/?lang=ru";
-    assert.equal(readLocale(), "ru");
-  } finally {
-    if (previousWindow) Object.defineProperty(globalThis, "window", previousWindow);
-    else Reflect.deleteProperty(globalThis, "window");
-    if (previousStorage) Object.defineProperty(globalThis, "localStorage", previousStorage);
-    else Reflect.deleteProperty(globalThis, "localStorage");
+test("only page links are localized; downloads and external destinations remain intact", () => {
+  assert.equal(localizedHref("/about/person-01", "ru"), "/ru/about/person-01");
+  assert.equal(localizedHref("/#join", "ru"), "/ru/#join");
+  for (const href of [
+    "/publications/pub-25.bib",
+    "/rss.xml",
+    "/favicon.svg",
+    "https://example.com",
+    "//example.com/path",
+    "mailto:placeholder@example.com",
+    "#section",
+  ]) {
+    assert.equal(localizedHref(href, "ru"), href);
   }
+  assert.equal(translate("OOAARG", "ru"), "OOAARG");
+});
+
+test("the language switch resolves both localized 404 pages", () => {
+  assert.equal(languageUrl(new URL("https://example.com/ru/404/"), "en").pathname, "/en/404/");
+  assert.equal(languageUrl(new URL("https://example.com/404.html"), "ru").pathname, "/ru/404/");
+});
+
+test("English prefixes are replaced rather than nested", () => {
+  assert.equal(
+    languageUrl(new URL("https://example.com/en/about?year=2026#main"), "ru").href,
+    "https://example.com/ru/about?year=2026#main",
+  );
+  assert.equal(localizedHref("/en/about", "en"), "/en/about");
+  assert.equal(localizedHref("/", "en"), "/en/");
 });

@@ -1,4 +1,5 @@
 ---
+import { localeFromUrl, translate, localizedHref } from '../../lib/i18n';
 import LocalizedText from '../LocalizedText.astro';
 import LocalizedDate from '../LocalizedDate.astro';
 import type { CollectionEntry } from 'astro:content';
@@ -12,6 +13,7 @@ const { pubs } = Astro.props;
 const stats = computeAreaStats(pubs);
 const tagTranslations = Object.assign({}, ...pubs.map((p) => p.data.ru?.tags ?? {})) as Record<string, string>;
 
+const locale = localeFromUrl(Astro.url);
 ---
 
 <ul class="areas-grid">
@@ -23,13 +25,13 @@ const tagTranslations = Object.assign({}, ...pubs.map((p) => p.data.ru?.tags ?? 
       <li>
       <a
         class={`area-card${active ? '' : ' is-nascent'}`}
-        href={active ? `/publications?area=${area.id}` : '/publications'}
+        href={localizedHref(active ? `/publications?area=${area.id}` : '/publications', locale)}
       >
         <div class="area-card-head">
-          <h3 data-i18n={area.name}>{area.name}</h3>
+          <h3>{translate(area.name, locale)}</h3>
           <span class="area-card-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M5 12H19M12 19L19 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></span>
         </div>
-        <p class="area-card-blurb" data-i18n={area.blurb}>{area.blurb}</p>
+        <p class="area-card-blurb">{translate(area.blurb, locale)}</p>
 
         {s.topTags.length > 0 && (
           <div class="area-card-tags">
@@ -40,16 +42,16 @@ const tagTranslations = Object.assign({}, ...pubs.map((p) => p.data.ru?.tags ?? 
         <div class="area-card-foot">
           {active ? (
             <>
-              <span class="area-count"><span data-i18n="Papers:">Papers:</span> {s.count}</span>
+              <span class="area-count"><span>{translate('Papers:', locale)}</span> {s.count}</span>
               {s.latest && (
                 <>
                   <span class="area-dot" aria-hidden="true">·</span>
-                  <span class="area-latest mono"><span data-i18n="latest">latest</span> <LocalizedDate date={s.latest} precision="month" /></span>
+                  <span class="area-latest mono"><span>{translate('latest', locale)}</span> <LocalizedDate date={s.latest} precision="month" /></span>
                 </>
               )}
             </>
           ) : (
-            <span class="area-count area-nascent-label" data-i18n="In development">In development</span>
+            <span class="area-count area-nascent-label">{translate('In development', locale)}</span>
           )}
         </div>
       </a>

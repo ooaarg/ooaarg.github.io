@@ -1,3 +1,4 @@
+import { localizedHref, type Locale } from "../lib/i18n";
 import { useLocale } from "../lib/use-locale";
 import { useEffect, useRef, useState } from "preact/hooks";
 
@@ -14,6 +15,7 @@ const LINKS: NavLink[] = [
 ];
 
 interface Props {
+  initialLocale: Locale;
   active?: string;
 }
 
@@ -45,8 +47,8 @@ const CloseIcon = () => (
   </svg>
 );
 
-export default function MobileNav({ active }: Props) {
-  const { t } = useLocale();
+export default function MobileNav({ initialLocale, active }: Props) {
+  const { t } = useLocale(initialLocale);
   const [open, setOpen] = useState(false);
   const sheetRef = useRef<HTMLDialogElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -78,7 +80,7 @@ export default function MobileNav({ active }: Props) {
       <header>
         <a
           className="ooaarg-mark"
-          href="/"
+          href={localizedHref("/", initialLocale)}
           style={{ "--ooaarg-size": "28px" }}
           aria-label={t("OOAARG home")}
           onClick={() => setOpen(false)}
@@ -100,7 +102,7 @@ export default function MobileNav({ active }: Props) {
         {LINKS.map((l) => (
           <a
             key={l.href}
-            href={l.href}
+            href={localizedHref(l.href, initialLocale)}
             className={active === l.href ? "active" : ""}
             onClick={() => setOpen(false)}
           >

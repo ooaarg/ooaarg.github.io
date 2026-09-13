@@ -1,4 +1,6 @@
 ---
+import { localeFromUrl, translate, localizedHref } from '../../lib/i18n';
+import { contentText } from '../../lib/content-language';
 import LocalizedBody from '../LocalizedBody.astro';
 import LocalizedText from '../LocalizedText.astro';
 import type { CollectionEntry } from 'astro:content';
@@ -12,28 +14,29 @@ interface Props {
 const { person } = Astro.props;
 const { data } = person;
 const { Content } = await render(person);
+const locale = localeFromUrl(Astro.url);
 ---
 
 <div class="person-lead" style="margin-top: 24px;">
-  <a class="person-lead-avatar" href={`/about/${person.id}`} aria-label={`View ${data.name}'s profile`} data-content-aria-label-en={`View ${data.name}'s profile`} data-content-aria-label-ru={`Профиль: ${data.ru?.name ?? data.name}`}>
+  <a class="person-lead-avatar" href={localizedHref(`/about/${person.id}`, locale)} aria-label={contentText(`View ${data.name}'s profile`, `Профиль: ${data.ru?.name ?? data.name}`, locale)}>
     <Avatar person={person} />
   </a>
   <div>
     <div class="role"><LocalizedText en={data.role} ru={data.ru?.role} /></div>
     <h2 style="font-size: 48px; margin-top: 8px;">
-      <a class="person-lead-name" href={`/about/${person.id}`}><LocalizedText en={data.name} ru={data.ru?.name} /></a>
+      <a class="person-lead-name" href={localizedHref(`/about/${person.id}`, locale)}><LocalizedText en={data.name} ru={data.ru?.name} /></a>
     </h2>
     <div style="font-size: 18px; color: var(--fg-muted); max-width: 56ch; margin-top: 16px;">
       <LocalizedBody ru={data.ru?.body}><Content /></LocalizedBody>
     </div>
     <div style="display: flex; gap: 8px; margin-top: 24px; flex-wrap: wrap;">
-      <a class="btn btn-accent" href={`/about/${person.id}`}><span data-i18n="View profile">View profile</span><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M5 12H19M12 19L19 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></a>
-      {data.links.website && <a class="btn" href={data.links.website} target="_blank" rel="noopener" data-i18n="Website">Website</a>}
-      {data.links.cv && <a class="btn" href={data.links.cv} target="_blank" rel="noopener">CV (PDF)</a>}
-      {data.links.scholar && <a class="btn" href={data.links.scholar} target="_blank" rel="noopener">Google Scholar</a>}
-      {data.links.dblp && <a class="btn" href={data.links.dblp} target="_blank" rel="noopener">DBLP</a>}
-      {data.links.researchgate && <a class="btn" href={data.links.researchgate} target="_blank" rel="noopener">ResearchGate</a>}
-      {data.email && <a class="btn btn-ghost" href={`mailto:${data.email}`}>{data.email}</a>}
+      <a class="btn btn-accent" href={localizedHref(`/about/${person.id}`, locale)}><span>{translate('View profile', locale)}</span><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M5 12H19M12 19L19 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></a>
+      {data.links.website && <a class="btn" href={data.links.website} target="_blank" rel="noopener">{translate('Website', locale)}</a>}
+      {data.links.cv && <a class="btn" href={localizedHref(data.links.cv, locale)} target="_blank" rel="noopener">CV (PDF)</a>}
+      {data.links.scholar && <a class="btn" href={localizedHref(data.links.scholar, locale)} target="_blank" rel="noopener">Google Scholar</a>}
+      {data.links.dblp && <a class="btn" href={localizedHref(data.links.dblp, locale)} target="_blank" rel="noopener">DBLP</a>}
+      {data.links.researchgate && <a class="btn" href={localizedHref(data.links.researchgate, locale)} target="_blank" rel="noopener">ResearchGate</a>}
+      {data.email && <a class="btn btn-ghost" href={localizedHref(`mailto:${data.email}`, locale)}>{data.email}</a>}
     </div>
   </div>
 </div>

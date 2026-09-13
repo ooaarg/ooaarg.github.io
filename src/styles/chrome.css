@@ -234,6 +234,8 @@
 }
 
 .language-trigger {
+  list-style: none;
+  cursor: pointer;
   gap: 6px;
 }
 
@@ -253,7 +255,7 @@
   display: none;
 }
 
-.language-options button {
+.language-options a {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -274,21 +276,21 @@
   visibility: hidden;
 }
 
-.language-options button[aria-pressed="true"] {
+.language-options a[aria-current="page"] {
   font-weight: 600;
 }
 
-.language-options button[aria-pressed="true"] .language-check {
+.language-options a[aria-current="page"] .language-check {
   visibility: visible;
 }
 
-.language-options button:hover,
-.language-options button:focus-visible {
+.language-options a:hover,
+.language-options a:focus-visible {
   background: var(--fg);
   color: var(--bg);
 }
 
-.language-options button:focus-visible {
+.language-options a:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: -2px;
 }
@@ -314,6 +316,12 @@
     gap: 0;
   }
   .language-trigger {
+    list-style: none;
+    cursor: pointer;
     padding-inline: 8px;
   }
+}
+
+.language-trigger::-webkit-details-marker {
+  display: none;
 }

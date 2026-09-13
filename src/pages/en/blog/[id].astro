@@ -1,0 +1,5 @@
+---
+import Page from '../../blog/[id].astro';
+export { getStaticPaths } from '../../blog/[id].astro';
+---
+<Page {...Astro.props} />

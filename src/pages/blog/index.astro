@@ -1,4 +1,5 @@
 ---
+import { localeFromUrl, translate, localizedHref } from '../../lib/i18n';
 import { getCollection } from 'astro:content';
 import Site from '../../layouts/Site.astro';
 import NewsTile from '../../components/publications/cards/NewsTile.astro';
@@ -16,6 +17,7 @@ const allYears = [...new Set(items.map((i) => i.data.date.getFullYear()))].sort(
 );
 
 const tiles = packBento(items, (i) => i.data.span);
+const locale = localeFromUrl(Astro.url);
 ---
 
 <Site titleRu="Блог · OOAARG" descriptionRu="Новости исследовательской группы OOAARG."
@@ -25,18 +27,16 @@ const tiles = packBento(items, (i) => i.data.span);
 >
   <section class="pubs-hero">
     <div class="container">
-      <h1 data-i18n="Latest news">Latest news</h1>
-      <p data-i18n="News and updates from our research group.">
-        News and updates from our research group.
-      </p>
+      <h1>{translate('Latest news', locale)}</h1>
+      <p>{translate('News and updates from our research group.', locale)}</p>
     </div>
   </section>
 
   <div class="container">
     <div class="pubs-toolbar">
-      <h2 class="kicker" style="margin-right: 4px;" data-i18n="Filter">Filter</h2>
-      <YearFilter client:load years={allYears} total={items.length} />
-      <a class="btn btn-sm" href="/publications"><span data-i18n="Publications">Publications</span><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M5 12H19M12 19L19 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></a>
+      <h2 class="kicker" style="margin-right: 4px;">{translate('Filter', locale)}</h2>
+      <YearFilter initialLocale={locale} client:load years={allYears} total={items.length} />
+      <a class="btn btn-sm" href={localizedHref('/publications', locale)}><span>{translate('Publications', locale)}</span><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M5 12H19M12 19L19 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></a>
     </div>
 
     <div class="bento">

@@ -1,11 +1,11 @@
 ---
+import { localeFromUrl } from '../lib/i18n';
 import { renderTranslation } from '../lib/render-translation';
 
 interface Props {
   ru?: string;
 }
 const { ru } = Astro.props;
-const html = ru?.trim() ? await renderTranslation(ru) : undefined;
+const html = localeFromUrl(Astro.url) === 'ru' && ru?.trim() ? await renderTranslation(ru) : undefined;
 ---
-<div lang="en" data-content-body={html ? 'en' : undefined}><slot /></div>
-{html && <div lang="ru" data-content-body="ru" hidden set:html={html} />}
+{html ? <div lang="ru" set:html={html} /> : <div lang="en"><slot /></div>}

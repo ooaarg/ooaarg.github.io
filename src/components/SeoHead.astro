@@ -1,4 +1,6 @@
 ---
+import { localeFromUrl, languageUrl } from '../lib/i18n';
+import { contentText } from '../lib/content-language';
 interface Props {
   title?: string;
   titleRu?: string;
@@ -15,18 +17,27 @@ const {
   descriptionRu,
 } = Astro.props;
 
-const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site ?? 'https://ooaarg.github.io').href;
+const locale = localeFromUrl(Astro.url);
+const canonicalUrl = canonical ?? languageUrl(new URL(Astro.url.pathname, Astro.site ?? 'https://ooaarg.github.io'), locale).href;
+const localizedTitle = contentText(title, titleRu, locale);
+const localizedDescription = contentText(description, descriptionRu, locale);
+const canonicalBase = new URL(canonicalUrl);
+
 ---
 
-<title data-content-en={title} data-content-ru={titleRu} lang="en">{title}</title>
-<meta name="description" content={description} data-content-content-en={description} data-content-content-ru={descriptionRu} />
+<title>{localizedTitle}</title>
+<meta name="description" content={localizedDescription} />
 <link rel="canonical" href={canonicalUrl} />
 
 <meta property="og:type" content="website" />
-<meta property="og:title" content={title} data-content-content-en={title} data-content-content-ru={titleRu} />
-<meta property="og:description" content={description} data-content-content-en={description} data-content-content-ru={descriptionRu} />
+<meta property="og:title" content={localizedTitle} />
+<meta property="og:description" content={localizedDescription} />
 <meta property="og:url" content={canonicalUrl} />
 
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content={title} data-content-content-en={title} data-content-content-ru={titleRu} />
-<meta name="twitter:description" content={description} data-content-content-en={description} data-content-content-ru={descriptionRu} />
+<meta name="twitter:title" content={localizedTitle} />
+<meta name="twitter:description" content={localizedDescription} />
+
+<link rel="alternate" hreflang="en" href={languageUrl(canonicalBase, 'en').href} />
+<link rel="alternate" hreflang="ru" href={languageUrl(canonicalBase, 'ru').href} />
+<link rel="alternate" hreflang="x-default" href={languageUrl(canonicalBase, 'en').href} />

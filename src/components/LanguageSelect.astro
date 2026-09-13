@@ -1,122 +1,49 @@
-<div class="language-select">
-  <button id="language-select" class="btn btn-sm language-trigger" type="button"
-    aria-label="Language / Язык" aria-expanded="false" aria-controls="language-options" disabled>
-    <span data-language-label>EN</span>
+---
+import { languageUrl, localeFromUrl } from '../lib/i18n';
+const locale = localeFromUrl(Astro.url);
+---
+<details class="language-select">
+  <summary id="language-select" class="btn btn-sm language-trigger" aria-label="Language / Язык">
+    <span>{locale === 'ru' ? 'РУ' : 'EN'}</span>
     <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
-  </button>
-  <div id="language-options" class="language-options" role="group" aria-label="Language / Язык" hidden>
-    <button type="button" data-locale="en" lang="en" aria-pressed="true">English <svg class="language-check" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></button>
-    <button type="button" data-locale="ru" lang="ru" aria-pressed="false">Русский <svg class="language-check" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></button>
-  </div>
-</div>
+  </summary>
+  <nav class="language-options" aria-label="Language / Язык">
+    {(['en', 'ru'] as const).map((language) => (
+      <a href={languageUrl(Astro.url, language).pathname} data-locale={language} lang={language} hreflang={language} aria-current={language === locale ? 'page' : undefined}>
+        {language === 'ru' ? 'Русский' : 'English'}
+        <svg class="language-check" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
+      </a>
+    ))}
+  </nav>
+</details>
 
 <script>
-  import { contentText, contentLanguage } from '../lib/content-language';
-  import { formatDate } from '../lib/dates';
-  import { languageUrl, readLocale, translate, type Locale } from '../lib/i18n';
-
-  const root = document.querySelector<HTMLElement>('.language-select')!;
-  const trigger = root.querySelector<HTMLButtonElement>('#language-select')!;
-  const label = trigger.querySelector<HTMLElement>('[data-language-label]')!;
-  const menu = root.querySelector<HTMLElement>('#language-options')!;
-  const options = Array.from(menu.querySelectorAll<HTMLButtonElement>('[data-locale]'));
-
-  function close(restoreFocus = false) {
-    menu.hidden = true;
-    trigger.setAttribute('aria-expanded', 'false');
-    if (restoreFocus) trigger.focus();
+  import { languageUrl } from '../lib/i18n';
+  const root = document.querySelector<HTMLDetailsElement>('.language-select')!;
+  const trigger = root.querySelector<HTMLElement>('summary')!;
+  const options = Array.from(root.querySelectorAll<HTMLAnchorElement>('[data-locale]'));
+  function refreshLinks() {
+    options.forEach((option) => {
+      option.href = languageUrl(new URL(location.href), option.dataset.locale === 'ru' ? 'ru' : 'en').href;
+    });
   }
-  function open() {
-    menu.hidden = false;
-    trigger.setAttribute('aria-expanded', 'true');
-    options.find((option) => option.getAttribute('aria-pressed') === 'true')?.focus();
-  }
-  function apply(locale: Locale) {
-    // Keep sharing available without blocking translation if history is unavailable.
-    try {
-      const url = languageUrl(new URL(window.location.href), locale);
-      if (url.href !== window.location.href) history.replaceState(history.state, "", url);
-    } catch {}
-    document.documentElement.lang = locale;
-    label.textContent = locale === 'ru' ? 'РУ' : 'EN';
-    options.forEach((option) => option.setAttribute('aria-pressed', String(option.dataset.locale === locale)));
-    document.querySelectorAll<HTMLElement>('[data-i18n]').forEach((element) => {
-      element.textContent = translate(element.dataset.i18n!, locale);
-    });
-    for (const attribute of ['aria-label', 'title']) {
-      document.querySelectorAll<HTMLElement>(`[data-i18n-${attribute}]`).forEach((element) => {
-        element.setAttribute(attribute, translate(element.getAttribute(`data-i18n-${attribute}`)!, locale));
-      });
-    }
-    document.querySelectorAll<HTMLTimeElement>('time[data-localized-date]').forEach((element) => {
-      element.textContent = formatDate(element.dateTime, locale, element.dataset.localizedDate === 'month' ? 'month' : 'day');
-    });
-    document.querySelectorAll<HTMLElement>('[data-content-en]').forEach((element) => {
-      element.textContent = contentText(element.dataset.contentEn!, element.dataset.contentRu, locale);
-      element.lang = contentLanguage(element.dataset.contentRu, locale);
-    });
-    document.querySelectorAll<HTMLElement>('[data-content-body]').forEach((element) => {
-      element.hidden = element.dataset.contentBody !== locale;
-    });
-    for (const attribute of ['alt', 'aria-label', 'content']) {
-      document.querySelectorAll<HTMLElement>(`[data-content-${attribute}-en]`).forEach((element) => {
-        element.setAttribute(attribute, contentText(element.getAttribute(`data-content-${attribute}-en`)!, element.getAttribute(`data-content-${attribute}-ru`) ?? undefined, locale));
-        if (attribute === 'alt') element.lang = contentLanguage(element.getAttribute('data-content-alt-ru') ?? undefined, locale);
-      });
-    }
-    window.dispatchEvent(new Event('ooaarg:language'));
-    document.documentElement.setAttribute('data-language-ready', '');
-    // The Cyrillic font can be requested only after translation changes the text.
-    // Keep the first Russian frame hidden until its font metrics are settled.
-    if (document.documentElement.hasAttribute('data-language-pending')) {
-      document.fonts.ready.then(() => document.documentElement.removeAttribute('data-language-pending'));
-    }
-  }
-  trigger.disabled = false;
-  const initialLocale = readLocale();
-  try { localStorage.setItem("ooaarg-language", initialLocale); } catch {}
-  apply(initialLocale);
-  trigger.addEventListener('click', () => menu.hidden ? open() : close());
-  trigger.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-      event.preventDefault();
-      event.stopPropagation();
-      open();
-    }
-  });
-  options.forEach((option) => {
-    option.addEventListener('click', () => {
-      const locale = option.dataset.locale === 'ru' ? 'ru' : 'en';
-      try { localStorage.setItem('ooaarg-language', locale); } catch {}
-      apply(locale);
-      close(true);
-    });
-  });
+  refreshLinks();
+  root.addEventListener('toggle', refreshLinks);
+  root.addEventListener('pointerdown', refreshLinks);
+  root.addEventListener('focusin', refreshLinks);
+  window.addEventListener('popstate', refreshLinks);
+  window.addEventListener('pageshow', () => { root.open = false; refreshLinks(); });
   root.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && !menu.hidden) {
+    if (event.key === 'Escape' && root.open) {
       event.preventDefault();
-      close(true);
-    } else if (!menu.hidden && ['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
-      event.preventDefault();
-      const current = options.indexOf(document.activeElement as HTMLButtonElement);
-      const next = event.key === 'Home' ? 0 : event.key === 'End' ? options.length - 1
-        : (current + (event.key === 'ArrowDown' ? 1 : -1) + options.length) % options.length;
-      options[next]?.focus();
+      root.open = false;
+      trigger.focus();
     }
   });
   root.addEventListener('focusout', (event) => {
-    // Safari can blur the focused option before a tap delivers its click.
-    // Only close for a known focus destination; outside taps close below.
-    if (event.relatedTarget && !root.contains(event.relatedTarget as Node)) close();
+    if (event.relatedTarget && !root.contains(event.relatedTarget as Node)) root.open = false;
   });
   document.addEventListener('click', (event) => {
-    if (!root.contains(event.target as Node)) close();
-  });
-  window.addEventListener('popstate', () => { close(); apply(readLocale()); });
-  window.addEventListener('pageshow', (event) => {
-    if (event.persisted) { close(); apply(readLocale()); }
-  });
-  window.addEventListener('storage', (event) => {
-    if (event.key === 'ooaarg-language' || event.key === null) apply(readLocale());
+    if (!root.contains(event.target as Node)) root.open = false;
   });
 </script>

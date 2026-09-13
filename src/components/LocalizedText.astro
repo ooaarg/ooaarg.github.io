@@ -1,8 +1,11 @@
 ---
+import { localeFromUrl } from '../lib/i18n';
+import { contentText, contentLanguage } from '../lib/content-language';
 interface Props {
   en: string;
   ru?: string;
 }
 const { en, ru } = Astro.props;
+const locale = localeFromUrl(Astro.url);
 ---
-<span lang="en" data-content-en={en} data-content-ru={ru}>{en}</span>
+<span lang={contentLanguage(ru, locale)}>{contentText(en, ru, locale)}</span>

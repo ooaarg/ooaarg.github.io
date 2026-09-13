@@ -3,64 +3,64 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
 
-// Execute the actual head bootstrap before any body or language module exists.
 const site = readFileSync(new URL("../layouts/Site.astro", import.meta.url), "utf8");
 const bootstrap = site.match(/<script is:inline>([\s\S]*?)<\/script>/)![1];
 
-function start(search: string, saved: string | null, blocked = false) {
+function start(href: string, blocked = false) {
+  const url = new URL(href);
+  let redirected: string | undefined;
   const attributes = new Map<string, string>();
-  const html = {
-    lang: "en",
-    setAttribute: (key: string, value: string) => attributes.set(key, value),
-    hasAttribute: (key: string) => attributes.has(key),
-    removeAttribute: (key: string) => attributes.delete(key),
-  };
-  let fallback = () => {};
   runInNewContext(bootstrap, {
-    document: { documentElement: html },
-    location: { search, hash: "" },
+    document: {
+      documentElement: { setAttribute: (key: string, value: string) => attributes.set(key, value) },
+    },
+    location: {
+      href,
+      search: url.search,
+      pathname: url.pathname,
+      hash: url.hash,
+      replace: (value: string) => {
+        redirected = value;
+      },
+    },
+    URL,
     URLSearchParams,
     localStorage: {
-      getItem(key: string) {
+      getItem() {
         if (blocked) throw new Error("Storage unavailable");
-        return key === "ooaarg-language" ? saved : null;
+        return "dark";
       },
     },
-    window: {
-      addEventListener() {},
-      setTimeout(callback: () => void) {
-        fallback = callback;
-      },
-    },
+    window: { addEventListener() {} },
   });
-  return { html, fallback: () => fallback() };
+  return { redirected, attributes };
 }
 
-test("Russian preference gates the initial document; explicit English stays immediately readable", () => {
-  for (const search of ["", "?lang=ru", "?lang=invalid"]) {
-    const { html } = start(search, "ru");
-    assert.equal(html.lang, "ru");
-    assert.equal(html.hasAttribute("data-language-pending"), true);
+test("legacy shared URLs redirect to static pages preserving filters and fragments", () => {
+  assert.equal(
+    start("https://example.com/publications?year=2025&year=2026&lang=ru#results").redirected,
+    "https://example.com/ru/publications?year=2025&year=2026#results",
+  );
+  assert.equal(start("https://example.com/ru/about?lang=en").redirected, "https://example.com/en/about");
+});
+
+test("ordinary static language pages render immediately without redirects or storage", () => {
+  for (const path of ["/en/", "/ru/", "/ru/about", "/en/?lang=invalid"]) {
+    const result = start("https://example.com" + path, true);
+    assert.equal(result.redirected, undefined);
+    assert.equal(result.attributes.get("data-theme"), "dark");
+    assert.equal(result.attributes.has("data-language-pending"), false);
   }
-  const { html } = start("?lang=en", "ru");
-  assert.equal(html.lang, "en");
-  assert.equal(html.hasAttribute("data-language-pending"), false);
+  assert.ok(!site.includes("visibility: hidden"));
+  assert.ok(!site.includes("document.fonts.ready"));
 });
 
-test("failed language scripts reveal English, while slow fonts preserve completed Russian translation", () => {
-  const failed = start("?lang=ru", null);
-  failed.fallback();
-  assert.equal(failed.html.lang, "en");
-  assert.equal(failed.html.hasAttribute("data-language-pending"), false);
-
-  const translated = start("?lang=ru", null);
-  translated.html.setAttribute("data-language-ready", "");
-  translated.fallback();
-  assert.equal(translated.html.lang, "ru");
-  assert.equal(translated.html.hasAttribute("data-language-pending"), false);
-});
-
-test("blocked storage does not prevent explicit Russian links or the default English page", () => {
-  assert.equal(start("?lang=ru", null, true).html.lang, "ru");
-  assert.equal(start("", null, true).html.lang, "en");
+test("old unprefixed URLs redirect to English with query and hash preserved", () => {
+  assert.equal(start("https://example.com/").redirected, "https://example.com/en/");
+  assert.equal(
+    start("https://example.com/about?x=1#main").redirected,
+    "https://example.com/en/about?x=1#main",
+  );
+  assert.equal(start("https://example.com/en/about?lang=ru").redirected, "https://example.com/ru/about");
+  assert.equal(start("https://example.com/404.html").redirected, undefined);
 });

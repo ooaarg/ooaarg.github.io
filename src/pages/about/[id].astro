@@ -1,4 +1,5 @@
 ---
+import { localeFromUrl, translate, localizedHref } from '../../lib/i18n';
 import LocalizedBody from '../../components/LocalizedBody.astro';
 import LocalizedText from '../../components/LocalizedText.astro';
 import { getCollection, render } from 'astro:content';
@@ -48,6 +49,7 @@ const linkRow = [
   data.email && { label: data.email, href: `mailto:${data.email}` },
 ].filter(Boolean) as Array<{ label: string; href: string }>;
 
+const locale = localeFromUrl(Astro.url);
 ---
 
 <Site
@@ -60,7 +62,7 @@ const linkRow = [
   <section class="person-detail">
     <div class="container">
       <div class="breadcrumb">
-        <a href="/about" data-i18n="About">About</a> <span>/</span> <LocalizedText en={data.name} ru={data.ru?.name} />
+        <a href={localizedHref('/about', locale)}>{translate('About', locale)}</a> <span>/</span> <LocalizedText en={data.name} ru={data.ru?.name} />
       </div>
 
       <div class="person-detail-hero">
@@ -81,7 +83,7 @@ const linkRow = [
               {linkRow.map((l, i) => (
                 <a
                   class={i === 0 ? 'btn' : 'btn btn-ghost'}
-                  href={l.href}
+                  href={localizedHref(l.href, locale)}
                   target={l.href.startsWith('http') ? '_blank' : undefined}
                   rel={l.href.startsWith('http') ? 'noopener' : undefined}
                 >
@@ -94,17 +96,17 @@ const linkRow = [
       </div>
 
       <section class="person-section">
-        <h2 class="kicker" data-i18n="About the researcher">About the researcher</h2>
+        <h2 class="kicker">{translate('About the researcher', locale)}</h2>
         <div class="person-bio">
-          {hasBio || data.ru?.body ? <LocalizedBody ru={data.ru?.body}><Content /></LocalizedBody> : <p><span data-i18n="Bio coming soon.">Bio coming soon.</span></p>}
+          {hasBio || data.ru?.body ? <LocalizedBody ru={data.ru?.body}><Content /></LocalizedBody> : <p><span>{translate('Bio coming soon.', locale)}</span></p>}
         </div>
       </section>
 
       {showPubs && (
       <section class="person-section">
-        <h2 class="kicker" data-i18n="Publications">Publications</h2>
+        <h2 class="kicker">{translate('Publications', locale)}</h2>
         {yearGroups.length === 0 ? (
-          <p class="person-pubs-empty"><span data-i18n="No publications listed yet.">No publications listed yet.</span></p>
+          <p class="person-pubs-empty"><span>{translate('No publications listed yet.', locale)}</span></p>
         ) : (
           <div class="person-pubs">
             {yearGroups.map(([year, pubs]) => (

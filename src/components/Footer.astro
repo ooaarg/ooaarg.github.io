@@ -1,8 +1,10 @@
 ---
+import { localeFromUrl, translate, localizedHref } from '../lib/i18n';
 import LocalizedDate from './LocalizedDate.astro';
 import KineticLogo from './KineticLogo.astro';
 
 const buildDate = new Date().toISOString().slice(0, 10);
+const locale = localeFromUrl(Astro.url);
 ---
 
 <footer class="site-footer" id="contact">
@@ -12,34 +14,32 @@ const buildDate = new Date().toISOString().slice(0, 10);
         <div style="margin-bottom: 14px;">
           <KineticLogo size="28px" />
         </div>
-        <p style="max-width: 32ch; color: var(--fg-muted);" data-i18n="Online Optimization And Applications Research Group.">
-          Online Optimization And Applications Research Group.
-        </p>
+        <p style="max-width: 32ch; color: var(--fg-muted);">{translate('Online Optimization And Applications Research Group.', locale)}</p>
       </div>
       <div>
-        <h2 class="foot-label" data-i18n="Research">Research</h2>
+        <h2 class="foot-label">{translate('Research', locale)}</h2>
         <ul>
-          <li><a href="/blog" data-i18n="Blog">Blog</a></li>
-          <li><a href="/publications" data-i18n="Publications">Publications</a></li>
+          <li><a href={localizedHref('/blog', locale)}>{translate('Blog', locale)}</a></li>
+          <li><a href={localizedHref('/publications', locale)}>{translate('Publications', locale)}</a></li>
         </ul>
       </div>
       <div>
-        <h2 class="foot-label" data-i18n="Group">Group</h2>
+        <h2 class="foot-label">{translate('Group', locale)}</h2>
         <ul>
-          <li><a href="/about" data-i18n="About">About</a></li>
-          <li><a href="/#join" data-i18n="Join us">Join us</a></li>
+          <li><a href={localizedHref('/about', locale)}>{translate('About', locale)}</a></li>
+          <li><a href={localizedHref('/#join', locale)}>{translate('Join us', locale)}</a></li>
         </ul>
       </div>
       <div>
-        <h2 class="foot-label" data-i18n="Elsewhere">Elsewhere</h2>
+        <h2 class="foot-label">{translate('Elsewhere', locale)}</h2>
         <ul>
           <li><a href="https://github.com/ooaarg">GitHub</a></li>
         </ul>
       </div>
     </div>
     <div class="foot-bottom">
-      <span>© {new Date().getFullYear()} <span>OOAARG</span> · <span data-i18n="CC BY 4.0 unless noted">CC BY 4.0 unless noted</span></span>
-      <span><span data-i18n="Last build:">Last build:</span> <LocalizedDate date={buildDate} /></span>
+      <span>© {new Date().getFullYear()} <span>OOAARG</span> · <span>{translate('CC BY 4.0 unless noted', locale)}</span></span>
+      <span><span>{translate('Last build:', locale)}</span> <LocalizedDate date={buildDate} /></span>
     </div>
   </div>
 </footer>

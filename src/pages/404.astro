@@ -1,6 +1,8 @@
 ---
+import { localeFromUrl, translate, localizedHref } from '../lib/i18n';
 import Site from '../layouts/Site.astro';
 import KineticLogo from '../components/KineticLogo.astro';
+const locale = localeFromUrl(Astro.url);
 ---
 
 <Site titleRu="Страница не найдена · OOAARG" descriptionRu="Такой страницы на сайте нет." title="Not found · OOAARG" description="That page doesn't exist on this site.">
@@ -8,17 +10,15 @@ import KineticLogo from '../components/KineticLogo.astro';
     <div class="container" style="display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; gap: 32px; text-align: center; padding: 96px var(--gutter);">
       <KineticLogo size="120px" hero />
       <div>
-        <div class="kicker" data-i18n="404 · not found">404 · not found</div>
-        <h1 style="margin-top: 16px;" data-i18n="No regret bound at this URL.">No regret bound at this URL.</h1>
-        <p style="color: var(--fg-muted); margin-top: 16px; max-width: 48ch; margin-left: auto; margin-right: auto;" data-i18n="The page you were looking for doesn't exist. Try one of the destinations below.">
-          The page you were looking for doesn't exist. Try one of the destinations below.
-        </p>
+        <div class="kicker">{translate('404 · not found', locale)}</div>
+        <h1 style="margin-top: 16px;">{translate('No regret bound at this URL.', locale)}</h1>
+        <p style="color: var(--fg-muted); margin-top: 16px; max-width: 48ch; margin-left: auto; margin-right: auto;">{translate("The page you were looking for doesn't exist. Try one of the destinations below.", locale)}</p>
       </div>
       <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-        <a class="btn btn-accent" href="/"><span data-i18n="Home">Home</span><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M5 12H19M12 19L19 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></a>
-        <a class="btn" href="/blog" data-i18n="Blog">Blog</a>
-        <a class="btn" href="/publications" data-i18n="Publications">Publications</a>
-        <a class="btn" href="/about" data-i18n="About">About</a>
+        <a class="btn btn-accent" href={localizedHref('/', locale)}><span>{translate('Home', locale)}</span><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M5 12H19M12 19L19 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></a>
+        <a class="btn" href={localizedHref('/blog', locale)}>{translate('Blog', locale)}</a>
+        <a class="btn" href={localizedHref('/publications', locale)}>{translate('Publications', locale)}</a>
+        <a class="btn" href={localizedHref('/about', locale)}>{translate('About', locale)}</a>
       </div>
     </div>
   </section>

@@ -1,4 +1,6 @@
 ---
+import { localeFromUrl, translate, localizedHref } from '../../../lib/i18n';
+import { contentText } from '../../../lib/content-language';
 import LocalizedText from '../../LocalizedText.astro';
 import LocalizedDate from '../../LocalizedDate.astro';
 import type { CollectionEntry } from 'astro:content';
@@ -12,13 +14,14 @@ interface Props {
   selfName?: string;
 }
 const { publication: p, authors, selfName } = Astro.props;
+const locale = localeFromUrl(Astro.url);
 ---
 
           <li>
             <div class="pub-quick-meta">
               <span class="pub-meta-item pub-type">
                 <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M14 2H6C5.46957 2 4.96086 2.21072 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8M14 2C14.3166 1.99949 14.6301 2.06161 14.9225 2.18277C15.215 2.30394 15.4806 2.48176 15.704 2.706L19.292 6.294C19.5168 6.51751 19.6952 6.78335 19.8167 7.07616C19.9382 7.36898 20.0005 7.68297 20 8M14 2V7C14 7.26522 14.1054 7.51957 14.2929 7.70711C14.4804 7.89464 14.7348 8 15 8L20 8M10 9H8M16 13H8M16 17H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
-                <span data-i18n={p.data.type}>{p.data.type}</span>
+                <span>{translate(p.data.type, locale)}</span>
               </span>
               <span class="pub-meta-item">
                 <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M8 2V6M16 2V6M3 10H21M5 4H19C20.1046 4 21 4.89543 21 6V20C21 21.1046 20.1046 22 19 22H5C3.89543 22 3 21.1046 3 20V6C3 4.89543 3.89543 4 5 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
@@ -31,13 +34,13 @@ const { publication: p, authors, selfName } = Astro.props;
             </div>
             <div class="pub-body">
               <h3 class="pub-title">
-                <a class="pub-title-link" href={`/publications/${p.id}`}><LocalizedText en={p.data.title} ru={p.data.ru?.title} /></a>
+                <a class="pub-title-link" href={localizedHref(`/publications/${p.id}`, locale)}><LocalizedText en={p.data.title} ru={p.data.ru?.title} /></a>
               </h3>
               <p class="pub-meta">
                 {authors.map((a, i, arr) => (
                   <>
                     {a.name === selfName ? <strong><LocalizedText en={a.name} ru={a.ru} /></strong> : a.id ? (
-                      <a class="author-link" href={`/about/${a.id}`}><LocalizedText en={a.name} ru={a.ru} /></a>
+                      <a class="author-link" href={localizedHref(`/about/${a.id}`, locale)}><LocalizedText en={a.name} ru={a.ru} /></a>
                     ) : <LocalizedText en={a.name} ru={a.ru} />}
                     {i < arr.length - 1 ? ', ' : ''}
                   </>
@@ -46,14 +49,12 @@ const { publication: p, authors, selfName } = Astro.props;
             </div>
             <div class="pub-actions">
               {paperUrl(p.data) ? (
-                <a class="btn btn-sm" href={paperUrl(p.data)} target="_blank" rel="noopener" data-i18n="Paper">
-                  Paper
-                </a>
+                <a class="btn btn-sm" href={paperUrl(p.data)} target="_blank" rel="noopener">{translate('Paper', locale)}</a>
               ) : p.data.arxiv && (
                 <a class="btn btn-sm" href={`https://arxiv.org/abs/${p.data.arxiv}`} target="_blank" rel="noopener">
                   arXiv
                 </a>
               )}
-              <a class="btn btn-sm btn-ghost" href={`/publications/${p.id}`} aria-label={`Read ${p.data.title}`} data-content-aria-label-en={`Read ${p.data.title}`} data-content-aria-label-ru={`Читать: ${p.data.ru?.title ?? p.data.title}`}><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M5 12H19M12 19L19 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></a>
+              <a class="btn btn-sm btn-ghost" href={localizedHref(`/publications/${p.id}`, locale)} aria-label={contentText(`Read ${p.data.title}`, `Читать: ${p.data.ru?.title ?? p.data.title}`, locale)}><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M5 12H19M12 19L19 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></a>
             </div>
           </li>

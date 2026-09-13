@@ -1,15 +1,17 @@
+import { type Locale } from "../../lib/i18n";
 import { useLocale } from "../../lib/use-locale";
 import { useLayoutEffect, useRef, useState } from "preact/hooks";
 import { buildBibtex, buildApa, type CitablePublication } from "../../lib/bibtex";
 
 interface Props {
+  initialLocale: Locale;
   pub: CitablePublication;
   open: boolean;
   onClose: () => void;
 }
 
-export default function CiteModal({ pub, open, onClose }: Props) {
-  const { t } = useLocale();
+export default function CiteModal({ initialLocale, pub, open, onClose }: Props) {
+  const { t } = useLocale(initialLocale);
   const [tab, setTab] = useState<"bibtex" | "apa">("bibtex");
   const [copyStatus, setCopyStatus] = useState("");
   const dialogRef = useRef<HTMLDialogElement>(null);
