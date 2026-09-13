@@ -2,13 +2,11 @@
   <button id="language-select" class="btn btn-sm language-trigger" type="button"
     aria-label="Language / Язык" aria-expanded="false" aria-controls="language-options" disabled>
     <span data-language-label>EN</span>
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
-      <path d="m3 4.5 3 3 3-3" />
-    </svg>
+    <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
   </button>
   <div id="language-options" class="language-options" role="group" aria-label="Language / Язык" hidden>
-    <button type="button" data-locale="en" lang="en" aria-pressed="true">English <svg class="language-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m3 8 3 3 7-7" /></svg></button>
-    <button type="button" data-locale="ru" lang="ru" aria-pressed="false">Русский <svg class="language-check" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m3 8 3 3 7-7" /></svg></button>
+    <button type="button" data-locale="en" lang="en" aria-pressed="true">English <svg class="language-check" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></button>
+    <button type="button" data-locale="ru" lang="ru" aria-pressed="false">Русский <svg class="language-check" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></button>
   </div>
 </div>
 
@@ -67,6 +65,12 @@
       });
     }
     window.dispatchEvent(new Event('ooaarg:language'));
+    document.documentElement.setAttribute('data-language-ready', '');
+    // The Cyrillic font can be requested only after translation changes the text.
+    // Keep the first Russian frame hidden until its font metrics are settled.
+    if (document.documentElement.hasAttribute('data-language-pending')) {
+      document.fonts.ready.then(() => document.documentElement.removeAttribute('data-language-pending'));
+    }
   }
   trigger.disabled = false;
   const initialLocale = readLocale();
@@ -101,7 +105,9 @@
     }
   });
   root.addEventListener('focusout', (event) => {
-    if (!root.contains(event.relatedTarget as Node | null)) close();
+    // Safari can blur the focused option before a tap delivers its click.
+    // Only close for a known focus destination; outside taps close below.
+    if (event.relatedTarget && !root.contains(event.relatedTarget as Node)) close();
   });
   document.addEventListener('click', (event) => {
     if (!root.contains(event.target as Node)) close();

@@ -42,6 +42,25 @@ const { title, description, active, titleRu, descriptionRu } = Astro.props;
     {/* Inline theme init — runs BEFORE paint to avoid dark↔light flash. */}
     <script is:inline>
       (function () {
+        // Resolve the language before any body content can paint. Translation
+        // runs in the bundled language controller once the document is parsed.
+        var locale = new URLSearchParams(location.search).get('lang');
+        if (locale !== 'en' && locale !== 'ru') {
+          try { locale = localStorage.getItem('ooaarg-language'); } catch (_) {}
+        }
+        if (locale === 'ru') {
+          document.documentElement.lang = 'ru';
+          document.documentElement.setAttribute('data-language-pending', '');
+          // A failed module request must never leave the static page blank.
+          window.setTimeout(function () {
+            if (document.documentElement.hasAttribute('data-language-pending')) {
+              document.documentElement.removeAttribute('data-language-pending');
+              if (!document.documentElement.hasAttribute('data-language-ready')) {
+                document.documentElement.lang = 'en';
+              }
+            }
+          }, 3000);
+        }
         function applyTheme() {
           try {
             var stored = localStorage.getItem('ooaarg-theme');
@@ -62,6 +81,10 @@ const { title, description, active, titleRu, descriptionRu } = Astro.props;
         }
       })();
     </script>
+    <style is:inline>
+      html[data-language-pending] body { visibility: hidden; }
+      html[lang="ru"][data-language-ready] astro-island[ssr] { visibility: hidden; }
+    </style>
   </head>
   <body>
     <Header active={active} />

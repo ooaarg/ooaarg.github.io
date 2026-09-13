@@ -1,10 +1,11 @@
-import { useEffect, useState } from "preact/hooks";
+import { useLayoutEffect, useState } from "preact/hooks";
 import { translate, type Locale } from "./i18n";
 
 export function useLocale() {
   // Match the English static HTML during hydration.
   const [locale, setLocale] = useState<Locale>("en");
-  useEffect(() => {
+  // Hydrate against the English HTML, then synchronize before the browser paints.
+  useLayoutEffect(() => {
     const update = () => setLocale(document.documentElement.lang === "ru" ? "ru" : "en");
     update();
     window.addEventListener("ooaarg:language", update);
