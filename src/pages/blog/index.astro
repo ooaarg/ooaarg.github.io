@@ -36,7 +36,7 @@ const tiles = packBento(items, (i) => i.data.span);
     <div class="pubs-toolbar">
       <h2 class="kicker" style="margin-right: 4px;" data-i18n="Filter">Filter</h2>
       <YearFilter client:load years={allYears} total={items.length} />
-      <a class="btn btn-sm" href="/publications" data-i18n="Publications →">Publications →</a>
+      <a class="btn btn-sm" href="/publications"><span data-i18n="Publications">Publications</span><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M5 12H19M12 19L19 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></a>
     </div>
 
     <div class="bento">

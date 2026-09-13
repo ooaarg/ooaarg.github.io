@@ -18,14 +18,30 @@ interface Props {
 }
 
 const MenuIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-    <path d="M4 7h16M4 12h16M4 17h16" />
+  <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <g fill="none">
+      <path
+        d="M4 5H20M4 12H20M4 19H20"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </g>
   </svg>
 );
 
 const CloseIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-    <path d="M6 6l12 12M6 18L18 6" />
+  <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <g fill="none">
+      <path
+        d="M18 6L6 18M6 6L18 18"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </g>
   </svg>
 );
 
@@ -63,7 +79,7 @@ export default function MobileNav({ active }: Props) {
         <a
           className="ooaarg-mark"
           href="/"
-          style={{ "--ooaarg-size": "32px" }}
+          style={{ "--ooaarg-size": "28px" }}
           aria-label={t("OOAARG home")}
           onClick={() => setOpen(false)}
         >

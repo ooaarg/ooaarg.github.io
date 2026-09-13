@@ -33,11 +33,32 @@ function desktopSummary(title: string, summary: string, locale: string): string 
   );
 }
 
-const Chevron = ({ dir }: { dir: "left" | "right" }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-    {dir === "left" ? <path d="M15 6l-6 6 6 6" /> : <path d="M9 6l6 6-6 6" />}
-  </svg>
-);
+const Chevron = ({ dir }: { dir: "left" | "right" }) =>
+  dir === "left" ? (
+    <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <g fill="none">
+        <path
+          d="M15 18L9 12L15 6"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </g>
+    </svg>
+  ) : (
+    <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <g fill="none">
+        <path
+          d="M9 18L15 12L9 6"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </g>
+    </svg>
+  );
 
 export default function FeaturedHero({ slides: sourceSlides }: Props) {
   const { t, locale } = useLocale();
@@ -251,8 +272,23 @@ export default function FeaturedHero({ slides: sourceSlides }: Props) {
         <div className="hero-cta-stack">
           {slides.map((slide, i) => (
             <div key={slide.id} className="hero-cta" aria-hidden={i !== index} inert={i !== index}>
-              <a className="btn btn-accent" href={`/publications/${slide.id}`}>
-                {t("Read more \u2192")}
+              <a
+                className="btn btn-accent"
+                href={`/publications/${slide.id}`}
+                aria-label={`${t("Read")}: ${slide.title}`}
+              >
+                {t("Publication details")}
+                <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <g fill="none">
+                    <path
+                      d="M5 12H19M12 19L19 12L12 5"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </g>
+                </svg>
               </a>
               {slide.paper && (
                 <a className="btn" href={slide.paper} target="_blank" rel="noopener">

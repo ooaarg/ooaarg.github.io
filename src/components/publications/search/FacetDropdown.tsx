@@ -48,15 +48,21 @@ export default function FacetDropdown({
           </span>
           <svg
             className="facet-dd-chev"
-            viewBox="0 0 24 24"
             width="14"
             height="14"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.6"
+            viewBox="0 0 24 24"
             aria-hidden="true"
+            focusable="false"
           >
-            <path d="M6 9l6 6 6-6" />
+            <g fill="none">
+              <path
+                d="M6 9L12 15L18 9"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </g>
           </svg>
         </summary>
         <div className="facet-dd-body">

@@ -27,7 +27,7 @@ const { Content } = await render(person);
       <LocalizedBody ru={data.ru?.body}><Content /></LocalizedBody>
     </div>
     <div style="display: flex; gap: 8px; margin-top: 24px; flex-wrap: wrap;">
-      <a class="btn btn-accent" href={`/about/${person.id}`} data-i18n="View profile →">View profile →</a>
+      <a class="btn btn-accent" href={`/about/${person.id}`}><span data-i18n="View profile">View profile</span><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M5 12H19M12 19L19 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></a>
       {data.links.website && <a class="btn" href={data.links.website} target="_blank" rel="noopener" data-i18n="Website">Website</a>}
       {data.links.cv && <a class="btn" href={data.links.cv} target="_blank" rel="noopener">CV (PDF)</a>}
       {data.links.scholar && <a class="btn" href={data.links.scholar} target="_blank" rel="noopener">Google Scholar</a>}

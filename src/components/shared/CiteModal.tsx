@@ -35,7 +35,7 @@ export default function CiteModal({ pub, open, onClose }: Props) {
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(text);
-      setCopyStatus("Copied ✓");
+      setCopyStatus("Copied");
     } catch {
       setCopyStatus("Copy failed. Select and copy the citation manually.");
     }
@@ -83,6 +83,19 @@ export default function CiteModal({ pub, open, onClose }: Props) {
         </pre>
         <p className="cite-status" role="status">
           {t(copyStatus)}
+          {copyStatus === "Copied" && (
+            <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <g fill="none">
+                <path
+                  d="M20 6L9 17L4 12"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </g>
+            </svg>
+          )}
         </p>
         <div className="modal-actions">
           <a className="btn" href={`/publications/${pub.id}.bib`} download={`${pub.id}.bib`}>
