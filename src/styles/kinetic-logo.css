@@ -63,7 +63,7 @@
   }
 }
 
-/* Hero size cap to prevent overflow on narrow viewports */
+/* Cap explicit sizes too, leaving room for the wordmark's animated stretch. */
 .ooaarg-mark.hero {
-  --ooaarg-size: min(160px, 36vw);
+  font-size: min(var(--ooaarg-size), 14vw);
 }

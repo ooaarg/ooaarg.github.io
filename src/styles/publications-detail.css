@@ -176,6 +176,28 @@
   width: 16px;
   height: 16px;
 }
+
+.pub-detail:not(.is-news) .authors {
+  margin-top: 20px;
+}
+.pub-detail:not(.is-news) .actions {
+  margin-top: 20px;
+}
+.pub-detail:not(.is-news) .pub-content {
+  margin-top: 32px;
+}
+
+@media (max-width: 640px) {
+  .pub-detail:not(.is-news) .authors {
+    margin-top: 16px;
+  }
+  .pub-detail:not(.is-news) .actions {
+    margin-top: 16px;
+  }
+  .pub-detail:not(.is-news) .pub-content {
+    margin-top: 24px;
+  }
+}
 .venue-link,
 .publication-keywords a {
   color: inherit;

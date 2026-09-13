@@ -110,8 +110,7 @@
   background: var(--bg);
   display: flex;
   flex-direction: column;
-  padding: 16px var(--gutter) calc(16px + env(safe-area-inset-bottom));
-  padding-top: calc(16px + env(safe-area-inset-top));
+  padding: 0 var(--gutter) calc(16px + env(safe-area-inset-bottom));
   overflow-y: auto;
 }
 
@@ -123,7 +122,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-height: 48px;
+  /* Match .nav so the logo and close button replace the header controls in place. */
+  height: 64px;
   margin-bottom: 32px;
   flex-shrink: 0;
 }
@@ -297,7 +297,23 @@
   .nav {
     gap: 8px;
   }
+  .nav-spacer {
+    display: none;
+  }
   .nav-tools {
     gap: 4px;
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 360px) {
+  .nav {
+    gap: 4px;
+  }
+  .nav-tools {
+    gap: 0;
+  }
+  .language-trigger {
+    padding-inline: 8px;
   }
 }
