@@ -286,9 +286,16 @@ export default function SearchIndex({ pubs }: Props) {
   return (
     <>
       <div className="search-bar" style={{ marginTop: 8 }}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-          <circle cx="11" cy="11" r="7" />
-          <path d="m20 20-3.5-3.5" />
+        <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <g fill="none">
+            <path
+              d="M20.9999 21.0002L16.6599 16.6602M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </g>
         </svg>
         <input
           ref={inputRef}
@@ -301,20 +308,18 @@ export default function SearchIndex({ pubs }: Props) {
         <kbd>⌘K</kbd>
       </div>
 
-      <div style={{ marginTop: 12 }}>
-        <button
-          ref={triggerRef}
-          type="button"
-          className="btn filters-trigger"
-          onClick={() => setSheetOpen(true)}
-          aria-haspopup="dialog"
-          aria-expanded={sheetOpen}
-          aria-controls="publication-filters"
-        >
-          {t("Filters")}
-          {totalActive > 0 ? ` (${totalActive})` : ""}
-        </button>
-      </div>
+      <button
+        ref={triggerRef}
+        type="button"
+        className="btn filters-trigger"
+        onClick={() => setSheetOpen(true)}
+        aria-haspopup="dialog"
+        aria-expanded={sheetOpen}
+        aria-controls="publication-filters"
+      >
+        {t("Filters")}
+        {totalActive > 0 ? ` (${totalActive})` : ""}
+      </button>
 
       <div className="ri-grid">
         <aside className="ri-side" aria-label={t("Filters")}>
@@ -354,44 +359,45 @@ export default function SearchIndex({ pubs }: Props) {
                 <div className="ri-meta-col">
                   <span className="ri-type ri-meta-item">
                     {(p.type === "paper" || p.type === "preprint") && (
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.6"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true"
-                      >
-                        <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Z" />
-                        <path d="M14 3v6h6M8 13h8M8 17h5" />
+                      <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <g fill="none">
+                          <path
+                            d="M14 2H6C5.46957 2 4.96086 2.21072 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8M14 2C14.3166 1.99949 14.6301 2.06161 14.9225 2.18277C15.215 2.30394 15.4806 2.48176 15.704 2.706L19.292 6.294C19.5168 6.51751 19.6952 6.78335 19.8167 7.07616C19.9382 7.36898 20.0005 7.68297 20 8M14 2V7C14 7.26522 14.1054 7.51957 14.2929 7.70711C14.4804 7.89464 14.7348 8 15 8L20 8M10 9H8M16 13H8M16 17H8"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </g>
                       </svg>
                     )}
                     <span>{t(p.type)}</span>
                   </span>
                   <span className="ri-meta-item">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.6"
-                      aria-hidden="true"
-                    >
-                      <rect x="3" y="5" width="18" height="16" rx="2" />
-                      <path d="M7 3v4m10-4v4M3 11h18" />
+                    <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <g fill="none">
+                        <path
+                          d="M8 2V6M16 2V6M3 10H21M5 4H19C20.1046 4 21 4.89543 21 6V20C21 21.1046 20.1046 22 19 22H5C3.89543 22 3 21.1046 3 20V6C3 4.89543 3.89543 4 5 4Z"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </g>
                     </svg>
                     <time dateTime={p.dateISO}>{formatDate(p.dateISO, locale)}</time>
                   </span>
                   <span className="ri-meta-item">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.6"
-                      aria-hidden="true"
-                    >
-                      <circle cx="12" cy="7" r="3" />
-                      <path d="M6 21v-3a6 6 0 0 1 12 0v3M5 4a3 3 0 0 0 0 6m14-6a3 3 0 0 1 0 6M3 20v-3a5 5 0 0 1 3-4m15 7v-3a5 5 0 0 0-3-4" />
+                    <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <g fill="none">
+                        <path
+                          d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H6C4.93913 15 3.92172 15.4214 3.17157 16.1716C2.42143 16.9217 2 17.9391 2 19V21M16 3.12793C16.8578 3.3503 17.6174 3.85119 18.1597 4.55199C18.702 5.25279 18.9962 6.11382 18.9962 6.99993C18.9962 7.88604 18.702 8.74707 18.1597 9.44787C17.6174 10.1487 16.8578 10.6496 16 10.8719M22 20.9999V18.9999C21.9993 18.1136 21.7044 17.2527 21.1614 16.5522C20.6184 15.8517 19.8581 15.3515 19 15.1299M13 7C13 9.20914 11.2091 11 9 11C6.79086 11 5 9.20914 5 7C5 4.79086 6.79086 3 9 3C11.2091 3 13 4.79086 13 7Z"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </g>
                     </svg>
                     <span lang={contentLanguage(p.ru?.venue, locale)}>
                       {contentText(p.venue, p.ru?.venue, locale)}
@@ -469,13 +475,13 @@ export default function SearchIndex({ pubs }: Props) {
             <button
               ref={doneRef}
               type="button"
-              className="btn btn-ghost btn-sm"
+              className="btn btn-primary"
               onClick={() => sheetRef.current?.close()}
             >
               {t("Done")}
             </button>
           </header>
-          {facetGroups}
+          <div className="facet-sheet-content">{facetGroups}</div>
         </div>
       </dialog>
     </>
