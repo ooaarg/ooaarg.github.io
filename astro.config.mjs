@@ -17,6 +17,15 @@ export default defineConfig({
   },
   prefetch: true,
   vite: {
+    optimizeDeps: {
+      rolldownOptions: {
+        transform: {
+          // The dependency scanner transforms TSX containing import.meta.glob
+          // separately from the Preact plugin and does not read tsconfig here.
+          jsx: { runtime: "automatic", importSource: "preact" },
+        },
+      },
+    },
     server: {
       allowedHosts: [".trycloudflare.com"],
     },
