@@ -36,6 +36,11 @@ html.theme-switching *::after {
   display: none;
 }
 
+/* A locale change replaces labels, rather than morphing between different text. */
+html[data-language-switch]::view-transition-group(*) {
+  animation: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   @view-transition {
     navigation: none;

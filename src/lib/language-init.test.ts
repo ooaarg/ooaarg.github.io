@@ -6,7 +6,7 @@ import { runInNewContext } from "node:vm";
 const site = readFileSync(new URL("../layouts/Site.astro", import.meta.url), "utf8");
 const bootstrap = site.match(/<script is:inline>([\s\S]*?)<\/script>/)![1];
 
-function start(href: string, blocked = false, notFound = false) {
+function start(href: string, blocked = false, notFound = false, previousUrl?: string) {
   const url = new URL(href);
   let redirected: string | undefined;
   const attributes = new Map<string, string>();
@@ -17,6 +17,7 @@ function start(href: string, blocked = false, notFound = false) {
       documentElement: {
         setAttribute: (key: string, value: string) => attributes.set(key, value),
         hasAttribute: (key: string) => attributes.has(key),
+        removeAttribute: (key: string) => attributes.delete(key),
       },
     },
     location: {
@@ -37,6 +38,7 @@ function start(href: string, blocked = false, notFound = false) {
       },
     },
     window: {
+      navigation: previousUrl ? { activation: { from: { url: previousUrl } } } : undefined,
       addEventListener: (name: string, handler: (event: unknown) => void) => events.set(name, handler),
     },
   });
@@ -101,4 +103,29 @@ test("fragment navigation skips both snapshots while ordinary page transitions r
   source.events.get("pageswap")!({});
   source.events.get("pagereveal")!({});
   assert.equal(skipped, 2);
+});
+
+test("language changes suppress geometry animation while retaining the transition for search restoration", () => {
+  let skipped = 0;
+  const viewTransition = { skipTransition: () => skipped++ };
+  const source = start("https://example.com/en/publications?sort=oldest");
+  source.events.get("pageswap")!({
+    viewTransition,
+    activation: { entry: { url: "https://example.com/ru/publications?sort=oldest" } },
+  });
+  assert.equal(source.attributes.has("data-language-switch"), true);
+  const destination = start(
+    "https://example.com/ru/publications?sort=oldest",
+    false,
+    false,
+    "https://example.com/en/publications?sort=oldest",
+  );
+  destination.events.get("pagereveal")!({ viewTransition });
+  assert.equal(destination.attributes.has("data-language-switch"), true);
+  assert.equal(skipped, 0);
+  source.events.get("pageswap")!({
+    viewTransition,
+    activation: { entry: { url: "https://example.com/en/blog" } },
+  });
+  assert.equal(source.attributes.has("data-language-switch"), false);
 });

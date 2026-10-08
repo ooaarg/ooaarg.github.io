@@ -81,11 +81,22 @@ const { title, description, active, titleRu, descriptionRu } = Astro.props;
         // Fragment destinations should appear at their final scroll position,
         // without blending a page snapshot captured before anchor scrolling.
         window.addEventListener('pageswap', function (event) {
+          document.documentElement.removeAttribute('data-language-switch');
+          if (event.viewTransition && event.activation &&
+              new URL(event.activation.entry.url).pathname.split('/')[1] !== location.pathname.split('/')[1]) {
+            document.documentElement.setAttribute('data-language-switch', '');
+          }
           if (event.viewTransition && event.activation && new URL(event.activation.entry.url).hash && !/^\/(?:en|ru)\/publications\/?$/.test(new URL(event.activation.entry.url).pathname)) {
             event.viewTransition.skipTransition();
           }
         });
         window.addEventListener('pagereveal', function (event) {
+          document.documentElement.removeAttribute('data-language-switch');
+          var previousEntry = window.navigation && window.navigation.activation && window.navigation.activation.from;
+          if (event.viewTransition && previousEntry &&
+              new URL(previousEntry.url).pathname.split('/')[1] !== location.pathname.split('/')[1]) {
+            document.documentElement.setAttribute('data-language-switch', '');
+          }
           if (event.viewTransition && location.hash && !document.documentElement.hasAttribute('data-publication-search-pending')) event.viewTransition.skipTransition();
         });
         // A cached document may predate a theme change on another page.
