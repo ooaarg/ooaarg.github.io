@@ -13,7 +13,7 @@ tags:
   ["Real Estate Dataset", "Price Prediction", "Geo-temporal Modeling", "Urban Computing"]
 doi: "10.1145/3805712.3808616"
 summary: "We introduce RRE-GTC (Ru-Real-Estate Geo-Temporal Clusters), an open resource designed to benchmark ranking, pricing, and recommendation algorithms in dynamic spatial contexts."
-heroSummary: "Search and recommender systems have produced highly relevant search results. A natural next step in the development of such systems in e-commerce is to rerank these results to increase the platform's revenue from paid promotion products."
+heroSummary: "Мы представляем RRE-GTC (Ru-Real-Estate Geo-Temporal Clusters) — открытый ресурс для сравнения алгоритмов ранжирования, ценообразования и рекомендаций в динамических пространственных контекстах."
 links:
   - { label: "Dataset", url: "https://huggingface.co/datasets/cianml/ru-real-estate-geo-temporal-clusters" }
 ru:
