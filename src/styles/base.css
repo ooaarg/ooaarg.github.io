@@ -19,6 +19,23 @@ html.theme-switching *::after {
   navigation: auto;
 }
 
+/* Keep the page canvas steady; named logo and title transitions still animate. */
+::view-transition-old(root),
+::view-transition-new(root),
+::view-transition-old(brand-title),
+::view-transition-new(brand-title),
+::view-transition-old(hero-title),
+::view-transition-new(hero-title) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root),
+::view-transition-old(brand-title),
+::view-transition-old(hero-title) {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   @view-transition {
     navigation: none;

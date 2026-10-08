@@ -101,6 +101,10 @@
   }
 }
 
+:root[data-focus-input="pointer"] :is(button, a.btn, summary):focus-visible {
+  outline: none;
+}
+
 .btn:focus-visible,
 .input:focus-visible,
 a:focus-visible {

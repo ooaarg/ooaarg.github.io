@@ -19,7 +19,7 @@ const locale = localeFromUrl(Astro.url);
 
 <div class="person-lead">
   <a class="person-lead-avatar" href={localizedHref(`/about/${person.id}`, locale)} aria-label={contentText(`View ${data.name}'s profile`, `Профиль: ${data.ru?.name ?? data.name}`, locale)}>
-    <Avatar person={person} />
+    <Avatar person={person} loading="eager" />
   </a>
   <div>
     <div class="role"><LocalizedText en={data.role} ru={data.ru?.role} /></div>

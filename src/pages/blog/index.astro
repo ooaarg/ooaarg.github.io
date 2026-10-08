@@ -40,7 +40,7 @@ const locale = localeFromUrl(Astro.url);
 
     <h2 class="blog-list-heading">{translate('News', locale)}</h2>
     <div class="bento">
-      {tiles.map(({ item, span }) => <NewsTile item={item} span={span} />)}
+      {tiles.map(({ item, span }, index) => <NewsTile item={item} span={span} loading={index === 0 ? 'eager' : 'lazy'} />)}
     </div>
   </div>
 </Site>

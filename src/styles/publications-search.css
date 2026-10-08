@@ -719,6 +719,7 @@ html[data-publication-search-pending] .publication-search:not([data-search-ready
 html[data-publication-search-pending]:has(
     .publication-search:not([data-search-ready="true"])
   )::view-transition-old(*) {
+  display: block;
   animation: retain-search-page 10s linear both;
 }
 html[data-publication-search-pending]:has(

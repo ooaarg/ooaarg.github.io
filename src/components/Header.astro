@@ -39,3 +39,17 @@ const locale = localeFromUrl(Astro.url);
     </div>
   </div>
 </header>
+
+<script>
+  document.addEventListener('pointerdown', () => {
+    document.documentElement.dataset.focusInput = 'pointer';
+  }, { capture: true });
+  // Escape closes a surface without changing how focus should be shown.
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') return;
+    document.documentElement.dataset.focusInput = 'keyboard';
+    document.querySelectorAll<HTMLElement>('.nav-tools [data-pointer-focus]').forEach((control) => {
+      delete control.dataset.pointerFocus;
+    });
+  }, { capture: true });
+</script>

@@ -111,7 +111,6 @@ export default function MobileNav({ initialLocale, active }: Props) {
           </a>
         ))}
       </nav>
-      <p className="sheet-tagline">{t("Online Optimization & Applications Research Group")}</p>
     </dialog>
   );
 
@@ -120,11 +119,14 @@ export default function MobileNav({ initialLocale, active }: Props) {
       <button
         ref={triggerRef}
         type="button"
-        className="btn btn-ghost btn-icon mobile-only"
+        className="btn btn-ghost btn-icon mobile-only mobile-nav-trigger"
         aria-label={t("Open menu")}
         aria-expanded={open}
         aria-controls="mobile-nav-sheet"
-        onClick={() => setOpen(true)}
+        onClick={(event) => {
+          event.currentTarget.dataset.pointerFocus = String(event.detail > 0);
+          setOpen(true);
+        }}
       >
         <MenuIcon />
       </button>

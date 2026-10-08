@@ -9,9 +9,10 @@ import { Image } from 'astro:assets';
 interface Props {
   item: CollectionEntry<'news'>;
   span?: 2 | 3 | 4 | 6;
+  loading?: 'eager' | 'lazy';
 }
 
-const { item, span: spanOverride } = Astro.props;
+const { item, span: spanOverride, loading = 'lazy' } = Astro.props;
 const { data, id } = item;
 const year = data.date.getFullYear();
 const span = spanOverride ?? data.span ?? 3;
@@ -22,7 +23,7 @@ const locale = localeFromUrl(Astro.url);
 <article class={`bento-tile span-${span} news-tile${data.image ? ' news-tile-with-image' : ''}`} data-year={year}>
   {data.image && (
     <div class="figure news-figure">
-      <Image src={data.image} alt={contentText(data.imageAlt, data.ru?.imageAlt, locale)} width={720} height={480} format="webp" sizes="(max-width: 900px) calc(100vw - 72px), 360px" loading="lazy" decoding="async" />
+      <Image src={data.image} alt={contentText(data.imageAlt, data.ru?.imageAlt, locale)} width={720} height={480} format="webp" sizes="(max-width: 900px) calc(100vw - 72px), 360px" loading={loading} decoding="async" />
     </div>
   )}
   <div class="news-copy">

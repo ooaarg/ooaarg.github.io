@@ -34,6 +34,11 @@ const { title, description, active, titleRu, descriptionRu } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    {/* Keep the browser canvas themed before the shared stylesheet arrives. */}
+    <style is:inline>
+      html { background: #0a0a0a; color-scheme: dark; }
+      html[data-theme="light"] { background: #fafaf9; color-scheme: light; }
+    </style>
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
