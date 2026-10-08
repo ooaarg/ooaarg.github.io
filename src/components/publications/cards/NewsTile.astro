@@ -35,9 +35,9 @@ const locale = localeFromUrl(Astro.url);
   </h3>
   <p class="news-summary"><LocalizedText en={data.summary} ru={data.ru?.summary} /></p>
   <div class="actions news-actions">
-    <a class="news-read" href={localizedHref(detailHref, locale)}><span>{translate('Read', locale)}</span><span class="news-read-arrow" aria-hidden="true">→</span></a>
+    <a class="news-read" href={localizedHref(detailHref, locale)}><span>{translate('Read', locale)}</span><svg class="news-read-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M5 12H19M12 19L19 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></a>
     {data.href && (
-      <a class="news-external" href={data.href} target="_blank" rel="noopener" aria-label={`${translate('Conference', locale)} — ${translate('Opens in new tab', locale)}`}><span>{translate('Conference', locale)}</span><span aria-hidden="true">↗</span></a>
+      <a class="news-external" href={data.href} target="_blank" rel="noopener" aria-label={`${translate('Conference', locale)} — ${translate('Opens in new tab', locale)}`}><span>{translate('Conference', locale)}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M17 17V7H7M17 7L7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></a>
     )}
   </div>
   </div>
@@ -57,11 +57,15 @@ const locale = localeFromUrl(Astro.url);
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(240px, 32%);
     gap: 24px;
-    align-items: center;
+    align-items: stretch;
   }
   .news-tile-with-image.span-6 .news-copy {
     grid-column: 1;
     grid-row: 1;
+  }
+  .news-tile-with-image.span-6 .news-actions {
+    margin-top: auto;
+    transform: translateY(12px);
   }
   .news-tile .news-figure {
     width: 100%;
@@ -84,6 +88,10 @@ const locale = localeFromUrl(Astro.url);
     .news-tile-with-image.span-6 {
       display: flex;
       gap: 20px;
+    }
+    .news-tile-with-image.span-6 .news-actions {
+      margin-top: 8px;
+      transform: none;
     }
   }
 </style>

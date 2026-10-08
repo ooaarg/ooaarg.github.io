@@ -112,9 +112,9 @@
 .person-lead {
   margin-top: 24px;
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 320px minmax(0, 1fr);
   gap: 48px;
-  align-items: start;
+  align-items: end;
 }
 
 .person-lead .avatar {
@@ -205,6 +205,7 @@
   .person-lead {
     grid-template-columns: 1fr;
     gap: 24px;
+    align-items: start;
   }
   .person-lead-avatar {
     max-width: 240px;
@@ -232,6 +233,10 @@
 }
 
 @media (max-width: 640px) {
+  .person .avatar {
+    width: min(240px, 100%);
+    aspect-ratio: 1;
+  }
   .people-section {
     padding: 20px 0;
   }

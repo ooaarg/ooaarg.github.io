@@ -16,7 +16,7 @@ const locale = localeFromUrl(Astro.url);
         <p class="not-found-description">{translate('This page may have moved, or the link may be incorrect.', locale)}</p>
         <div class="not-found-actions">
           <a class="btn btn-primary" href={localizedHref('/', locale)}>{translate('Back to home', locale)}</a>
-          <a class="not-found-search" href={localizedHref('/publications', locale)}>{translate('Find a publication', locale)} <span aria-hidden="true">→</span></a>
+          <a class="not-found-search" href={localizedHref('/publications', locale)}>{translate('Find a publication', locale)} <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M5 12H19M12 19L19 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></a>
         </div>
       </div>
     </div>
@@ -33,13 +33,13 @@ const locale = localeFromUrl(Astro.url);
   .not-found-search:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
   @media (hover: hover) and (pointer: fine) {
     .not-found-search:hover { color: var(--accent); }
-    .not-found-search span { transition: transform 160ms var(--ease-out); }
-    .not-found-search:hover:not(:focus-visible) span { transform: translateX(3px); }
-    .not-found-search:focus-visible span { transform: none; transition: none; }
+    .not-found-search svg { transition: transform 160ms var(--ease-out); }
+    .not-found-search:hover:not(:focus-visible) svg { transform: translateX(3px); }
+    .not-found-search:focus-visible svg { transform: none; transition: none; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .not-found-search span,
-    .not-found-search:hover:not(:focus-visible) span { transform: none; transition: none; }
+    .not-found-search svg,
+    .not-found-search:hover:not(:focus-visible) svg { transform: none; transition: none; }
   }
   @media (max-width: 640px) { .not-found-actions { flex-direction: column; align-items: flex-start; gap: 8px; } }
 </style>

@@ -1,8 +1,8 @@
 import { localizedHref, type Locale } from "../../lib/i18n";
 import { contentText, contentLanguage } from "../../lib/content-language";
 import { useLocale } from "../../lib/use-locale";
-import { useMemo, useState } from "preact/hooks";
-import type { TargetedKeyboardEvent } from "preact";
+import { useMemo, useRef, useState } from "preact/hooks";
+import type { TargetedKeyboardEvent, TargetedTouchEvent } from "preact";
 
 export interface HeroSlide {
   id: string;
@@ -34,6 +34,7 @@ export default function FeaturedHero({ initialLocale, slides: sourceSlides }: Pr
   );
   const [index, setIndex] = useState(0);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const swipeStart = useRef<{ id: number; x: number; y: number } | null>(null);
   const n = slides.length;
   const go = (next: number) => {
     if (n === 0) return;
@@ -41,12 +42,48 @@ export default function FeaturedHero({ initialLocale, slides: sourceSlides }: Pr
     setHasInteracted(true);
   };
   const onKeyDown = (event: TargetedKeyboardEvent<HTMLElement>) => {
+    const button = event.target;
+    if (button instanceof HTMLButtonElement) {
+      const pointerFocus = button.dataset.pointerFocus === "true";
+      delete button.dataset.pointerFocus;
+      if (event.key === "Escape" && pointerFocus) {
+        button.blur();
+        return;
+      }
+    }
     if (event.key === "ArrowRight") {
       event.preventDefault();
       go(index + 1);
     } else if (event.key === "ArrowLeft") {
       event.preventDefault();
       go(index - 1);
+    }
+  };
+  const clearSwipe = () => {
+    // Preact refs are mutable; this rule only recognizes React's useRef.
+    // oxlint-disable-next-line react/immutability
+    swipeStart.current = null;
+  };
+  const onTouchStart = (event: TargetedTouchEvent<HTMLDivElement>) => {
+    if (event.touches.length !== 1) {
+      clearSwipe();
+      return;
+    }
+    const touch = event.touches[0];
+    // Preact refs are mutable; this rule only recognizes React's useRef.
+    // oxlint-disable-next-line react/immutability
+    swipeStart.current = { id: touch.identifier, x: touch.clientX, y: touch.clientY };
+  };
+  const onTouchEnd = (event: TargetedTouchEvent<HTMLDivElement>) => {
+    const start = swipeStart.current;
+    clearSwipe();
+    if (!start || event.touches.length) return;
+    const touch = Array.from(event.changedTouches).find((touch) => touch.identifier === start.id);
+    if (!touch) return;
+    const dx = touch.clientX - start.x;
+    const dy = touch.clientY - start.y;
+    if (Math.abs(dx) >= 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      go(index + (dx < 0 ? 1 : -1));
     }
   };
   if (n === 0) return null;
@@ -57,7 +94,12 @@ export default function FeaturedHero({ initialLocale, slides: sourceSlides }: Pr
   return (
     <section className="hero hero-featured" aria-roledescription="carousel" aria-label={t("Featured papers")}>
       <div className="container">
-        <div className="hero-slides">
+        <div
+          className="hero-slides"
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+          onTouchCancel={clearSwipe}
+        >
           {slides.map((slide, i) => (
             <article
               key={slide.id}
@@ -89,11 +131,42 @@ export default function FeaturedHero({ initialLocale, slides: sourceSlides }: Pr
               rel={paper ? "noopener" : undefined}
             >
               {paper ? t("Read paper") : t("Publication details")}{" "}
-              <span aria-hidden="true">{paper ? "↗" : "→"}</span>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path
+                  d={paper ? "M17 17V7H7M17 7L7 17" : "M5 12H19M12 19L19 12L12 5"}
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
             </a>
             {current.github && (
               <a className="hero-link hero-secondary" href={current.github} target="_blank" rel="noopener">
-                {t("Code")} <span aria-hidden="true">↗</span>
+                {t("Code")}{" "}
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path
+                    d="M17 17V7H7M17 7L7 17"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
               </a>
             )}
           </div>
@@ -107,9 +180,28 @@ export default function FeaturedHero({ initialLocale, slides: sourceSlides }: Pr
               type="button"
               className="btn btn-ghost btn-icon"
               aria-label={t("Previous featured paper")}
-              onClick={() => go(index - 1)}
+              onClick={(event) => {
+                event.currentTarget.dataset.pointerFocus = String(event.detail > 0);
+                go(index - 1);
+              }}
+              onBlur={(event) => delete event.currentTarget.dataset.pointerFocus}
             >
-              ←
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path
+                  d="M5 12H19M12 19L19 12L12 5"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
             </button>
             <span className="hero-counter">
               {String(index + 1).padStart(2, "0")} <span>/ {String(n).padStart(2, "0")}</span>
@@ -118,9 +210,28 @@ export default function FeaturedHero({ initialLocale, slides: sourceSlides }: Pr
               type="button"
               className="btn btn-ghost btn-icon"
               aria-label={t("Next featured paper")}
-              onClick={() => go(index + 1)}
+              onClick={(event) => {
+                event.currentTarget.dataset.pointerFocus = String(event.detail > 0);
+                go(index + 1);
+              }}
+              onBlur={(event) => delete event.currentTarget.dataset.pointerFocus}
             >
-              →
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path
+                  d="M5 12H19M12 19L19 12L12 5"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
             </button>
           </div>
         </div>

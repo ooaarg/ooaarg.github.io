@@ -1,16 +1,18 @@
 Rune Icons outline assets
 ========================
 
-Source: https://github.com/Nexvyn/runeicons
+Source: https://github.com/Runeicons/runeicons
 Revision: f649e467d1bc9f272aae3f8daa329d4c924e7340
 License: [Apache 2.0](../../public/licenses/rune-icons.txt)
 
 Adapted from public/sprites/normal.svg: colors use currentColor, dimensions fit
 our controls, and decorative SVGs are hidden from assistive technology. Arrows
-and checkbox marks in CSS are embedded SVG masks. No runtime dependency.
+are inline SVGs; external-button arrows and checkbox marks in CSS use embedded
+SVG masks. No runtime dependency.
 
 Included symbols:
 - arrows-arrow-down-to-line
+- arrows-arrow-left
 - arrows-arrow-right
 - arrows-arrow-up-right
 - arrows-chevron-down

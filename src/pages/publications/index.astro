@@ -61,7 +61,7 @@ const locale = localeFromUrl(Astro.url);
   </section>
 
   <div class="container">
-    <h2 class="kicker" style="margin-bottom: 8px;">{translate('Search the corpus', locale)}</h2>
+    <h2 class="search-heading">{translate('Search publications', locale)}</h2>
     <SearchIndex initialLocale={locale} client:load pubs={pubs} />
   </div>
 </Site>

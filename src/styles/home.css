@@ -10,6 +10,7 @@
    in layout, while inert and aria-hidden keep their links out of navigation. */
 .hero-slides {
   display: grid;
+  touch-action: pan-y pinch-zoom;
 }
 .hero-slide {
   grid-area: 1 / 1;
@@ -53,6 +54,7 @@
 }
 .hero-footer {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem 1rem;
@@ -63,6 +65,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 0.5rem 1.25rem;
+  min-width: 0;
 }
 .hero-link {
   display: inline-flex;
@@ -91,19 +94,27 @@
   align-items: center;
   gap: 0.25rem;
   flex: none;
+  margin-left: auto;
 }
 .hero-controls .btn-icon {
   width: 44px;
   height: 44px;
+}
+.hero-controls .btn-icon svg {
+  transform: translateY(-1px);
+}
+.hero-controls .btn-icon:first-child svg {
+  transform: translateY(-1px) scaleX(-1);
 }
 .hero-controls .btn-icon:hover {
   background: transparent;
   border-color: transparent;
 }
 .hero-counter {
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.75rem;
   font-variant-numeric: tabular-nums;
+  transform: translateY(-1px);
   white-space: nowrap;
   color: var(--fg-muted);
 }
@@ -303,13 +314,6 @@
   }
   .hero-slide h1[data-long="true"] {
     font-size: 1.5rem;
-  }
-  .hero-footer {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .hero-controls {
-    margin-left: auto;
   }
   .section-head {
     grid-template-columns: minmax(0, 1fr);

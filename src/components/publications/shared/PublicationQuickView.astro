@@ -50,10 +50,10 @@ const locale = localeFromUrl(Astro.url);
             </div>
             <div class="pub-actions">
               {paperUrl(p.data) ? (
-                <a class={minimalActions ? "pub-paper-link" : "btn btn-sm"} href={paperUrl(p.data)} target="_blank" rel="noopener">{translate('Paper', locale)}{minimalActions && <span aria-hidden="true">↗</span>}</a>
+                <a class={minimalActions ? "pub-paper-link" : "btn btn-sm"} href={paperUrl(p.data)} target="_blank" rel="noopener">{translate('Paper', locale)}{minimalActions && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M17 17V7H7M17 7L7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>}</a>
               ) : p.data.arxiv && (
                 <a class={minimalActions ? "pub-paper-link" : "btn btn-sm"} href={`https://arxiv.org/abs/${p.data.arxiv}`} target="_blank" rel="noopener">
-                  arXiv {minimalActions && <span aria-hidden="true">↗</span>}
+                  arXiv {minimalActions && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M17 17V7H7M17 7L7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>}
                 </a>
               )}
               {!minimalActions && <a class="btn btn-sm btn-ghost" href={localizedHref(`/publications/${p.id}`, locale)} aria-label={contentText(`Read ${p.data.title}`, `Читать: ${p.data.ru?.title ?? p.data.title}`, locale)}><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M5 12H19M12 19L19 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></a>}

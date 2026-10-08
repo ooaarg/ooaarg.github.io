@@ -62,6 +62,7 @@ export default function SearchIndex({ initialLocale, pubs }: Props) {
   const { t, locale } = useLocale(initialLocale);
   const [search, setSearch] = useState(() => readSearch());
   const [ready, setReady] = useState(false);
+  const [sortMotion, setSortMotion] = useState(false);
   const { q, filters, sort } = search;
   const [sheetOpen, setSheetOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -196,7 +197,10 @@ export default function SearchIndex({ initialLocale, pubs }: Props) {
   useLayoutEffect(() => {
     // Static HTML has no query string. Restore after hydration and on Back/Forward;
     // URL writes happen only in user event handlers, never during initialization.
-    const restore = () => setSearch(readSearch(new URLSearchParams(window.location.search)));
+    const restore = () => {
+      setSortMotion(false);
+      setSearch(readSearch(new URLSearchParams(window.location.search)));
+    };
     restore();
     setReady(true);
     window.addEventListener("popstate", restore);
@@ -209,10 +213,25 @@ export default function SearchIndex({ initialLocale, pubs }: Props) {
 
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-        e.preventDefault();
-        inputRef.current?.focus();
-      }
+      if (
+        e.key !== "/" ||
+        e.metaKey ||
+        e.ctrlKey ||
+        e.altKey ||
+        e.isComposing ||
+        e.repeat ||
+        e.defaultPrevented
+      )
+        return;
+      const target = e.target;
+      if (
+        target instanceof HTMLElement &&
+        (target.isContentEditable || target.closest("input, textarea, select, [role='textbox']"))
+      )
+        return;
+      if (document.querySelector("dialog[open]")) return;
+      e.preventDefault();
+      inputRef.current?.focus();
     };
     window.addEventListener("keydown", h);
     return () => window.removeEventListener("keydown", h);
@@ -296,55 +315,98 @@ export default function SearchIndex({ initialLocale, pubs }: Props) {
         onClear={() => clearKey("tag")}
         searchable
       />
-      {totalActive > 0 && (
-        <button type="button" className="btn btn-ghost btn-sm" style={{ marginTop: 16 }} onClick={clearAll}>
-          {t("Clear all filters")} ({totalActive})
-        </button>
-      )}
+      <button
+        type="button"
+        className="btn btn-ghost btn-sm"
+        style={{ marginTop: 16, visibility: totalActive > 0 ? "visible" : "hidden" }}
+        disabled={totalActive === 0}
+        onClick={clearAll}
+      >
+        {t("Clear all filters")} ({totalActive})
+      </button>
     </>
   );
 
   return (
     <div className="publication-search" data-search-ready={ready ? "true" : undefined}>
-      <div className="search-bar" style={{ marginTop: 8 }}>
-        <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <g fill="none">
-            <path
-              d="M20.9999 21.0002L16.6599 16.6602M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </g>
-        </svg>
-        <input
-          ref={inputRef}
-          id="ri-search"
-          autoComplete="off"
-          placeholder={t("Search titles, abstracts, authors, tags\u2026")}
-          value={q}
-          onInput={(e) => updateSearch({ ...search, q: e.currentTarget.value }, "replaceState")}
-          aria-label={t("Search publications")}
-        />
-        <kbd>⌘K</kbd>
+      <div className="ri-summary">
+        <span role="status" aria-live="polite" aria-atomic="true">
+          {filtered.length > 0 ? (
+            <>
+              <strong className="ri-count">{filtered.length}</strong>{" "}
+              {publicationNoun(filtered.length, locale)}
+            </>
+          ) : (
+            t("No publications found")
+          )}
+        </span>
       </div>
+      <div className="search-toolbar">
+        <div className="search-bar">
+          <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <g fill="none">
+              <path
+                d="M20.9999 21.0002L16.6599 16.6602M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </g>
+          </svg>
+          <input
+            ref={inputRef}
+            id="ri-search"
+            autoComplete="off"
+            placeholder={`${t("Search publications")}…`}
+            value={q}
+            onInput={(e) => updateSearch({ ...search, q: e.currentTarget.value }, "replaceState")}
+            aria-label={t("Search publications")}
+            aria-keyshortcuts="/"
+          />
+          <kbd aria-hidden="true">/</kbd>
+        </div>
 
-      <button
-        ref={triggerRef}
-        type="button"
-        className="btn filters-trigger"
-        onClick={(e) => {
-          if (sheetRef.current) sheetRef.current.dataset.motion = String(e.detail > 0);
-          setSheetOpen(true);
-        }}
-        aria-haspopup="dialog"
-        aria-expanded={sheetOpen}
-        aria-controls="publication-filters"
-      >
-        {t("Filters")}
-        {totalActive > 0 ? ` (${totalActive})` : ""}
-      </button>
+        <button
+          ref={triggerRef}
+          type="button"
+          className="btn filters-trigger"
+          onClick={(e) => {
+            if (sheetRef.current) sheetRef.current.dataset.motion = String(e.detail > 0);
+            setSheetOpen(true);
+          }}
+          aria-haspopup="dialog"
+          aria-expanded={sheetOpen}
+          aria-controls="publication-filters"
+        >
+          {t("Filters")}
+          {totalActive > 0 ? ` (${totalActive})` : ""}
+        </button>
+
+        <div
+          className="ri-sort"
+          data-sort={sort}
+          data-motion={sortMotion ? "true" : undefined}
+          role="group"
+          aria-label={t("Sort by date")}
+        >
+          {(["newest", "oldest"] as const).map((order) => (
+            <button
+              key={order}
+              type="button"
+              aria-pressed={sort === order}
+              onClick={(event) => {
+                if (sort !== order) {
+                  setSortMotion(event.detail > 0);
+                  updateSearch({ ...search, sort: order });
+                }
+              }}
+            >
+              {order === "newest" ? t("Newest") : t("Oldest")}
+            </button>
+          ))}
+        </div>
+      </div>
 
       <div className="ri-grid">
         <aside className="ri-side" aria-label={t("Filters")}>
@@ -352,33 +414,6 @@ export default function SearchIndex({ initialLocale, pubs }: Props) {
         </aside>
 
         <div>
-          <div className="ri-summary">
-            <span role="status" aria-live="polite" aria-atomic="true">
-              {filtered.length > 0 ? (
-                <>
-                  <strong className="ri-count">{filtered.length}</strong>{" "}
-                  {publicationNoun(filtered.length, locale)}
-                </>
-              ) : (
-                t("No publications found")
-              )}
-            </span>
-            <div className="ri-sort" role="group" aria-label={t("Sort by date")}>
-              {(["newest", "oldest"] as const).map((order) => (
-                <button
-                  key={order}
-                  type="button"
-                  aria-pressed={sort === order}
-                  onClick={() => {
-                    if (sort !== order) updateSearch({ ...search, sort: order });
-                  }}
-                >
-                  {order === "newest" ? t("Newest") : t("Oldest")}
-                </button>
-              ))}
-            </div>
-          </div>
-
           <ul className="ri-results">
             {filtered.map((p) => (
               <li key={p.id}>
