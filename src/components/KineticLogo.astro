@@ -8,9 +8,10 @@ interface Props {
   hero?: boolean;
   /** Native view-transition name to morph between pages. */
   transitionName?: string;
+  descriptionId?: string;
 }
 
-const { href = '/', size, hero = false, className = '', transitionName } = Astro.props;
+const { href = '/', size, hero = false, className = '', transitionName, descriptionId } = Astro.props;
 const sizeStyle = size ? `--ooaarg-size: ${typeof size === 'number' ? `${size}px` : size};` : '';
 const transitionStyle = transitionName ? `view-transition-name: ${transitionName};` : '';
 const style = [sizeStyle, transitionStyle].filter(Boolean).join(' ');
@@ -18,6 +19,6 @@ const classes = ['ooaarg-mark', hero ? 'hero' : '', className].filter(Boolean).j
 const locale = localeFromUrl(Astro.url);
 ---
 
-<a class={classes} href={localizedHref(href, locale)} aria-label={translate('OOAARG home', locale)} style={style}>
+<a class={classes} href={localizedHref(href, locale)} aria-label={translate('OOAARG home', locale)} aria-describedby={descriptionId} style={style}>
   <span>OO</span><span class="ooaarg-stretch">AARG</span>
 </a>

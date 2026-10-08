@@ -20,7 +20,12 @@ const locale = localeFromUrl(Astro.url);
 
 <header class="site-header">
   <div class="container nav">
-    <KineticLogo size="clamp(28px, calc(10vw - 4px), 32px)" className="brand" transitionName="brand-title" />
+    <div class="brand-disclosure">
+      <KineticLogo size="clamp(28px, calc(10vw - 4px), 32px)" className="brand" transitionName="brand-title" descriptionId="brand-expansion" />
+      <div class="brand-tooltip" id="brand-expansion" role="tooltip" lang="en">
+        Online Optimization and Applications Research Group
+      </div>
+    </div>
     <div class="nav-spacer"></div>
     <nav class="nav-links" aria-label={translate('Primary', locale)}>
       <a href={localizedHref('/', locale)} data-astro-prefetch class={isActive('/') ? 'active' : ''} aria-current={isActive('/') ? 'page' : undefined}>{translate('Home', locale)}</a>
@@ -41,6 +46,20 @@ const locale = localeFromUrl(Astro.url);
 </header>
 
 <script>
+  const brand = document.querySelector<HTMLElement>('.brand-disclosure');
+  const updateBrandPosition = () => {
+    brand?.toggleAttribute('data-at-top', window.scrollY <= 0);
+  };
+  updateBrandPosition();
+  window.addEventListener('scroll', updateBrandPosition, { passive: true });
+  window.addEventListener('pageshow', updateBrandPosition);
+  brand?.addEventListener('pointerleave', () => { delete brand.dataset.dismissed; });
+  brand?.addEventListener('focusout', () => { delete brand.dataset.dismissed; });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && brand && (brand.matches(':hover') || brand.contains(document.activeElement))) {
+      brand.dataset.dismissed = 'true';
+    }
+  });
   document.addEventListener('pointerdown', () => {
     document.documentElement.dataset.focusInput = 'pointer';
   }, { capture: true });

@@ -48,6 +48,61 @@
   font-size: 14px;
 }
 
+.brand-disclosure {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.brand-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: max-content;
+  padding-top: 14px;
+  color: inherit;
+  font-size: clamp(10px, 2.4vw, 14px);
+  line-height: 1.5;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition:
+    opacity 160ms var(--ease-out),
+    transform 160ms var(--ease-out),
+    visibility 0s 160ms;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .brand-disclosure[data-at-top]:not([data-dismissed]):hover .brand-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition-delay: 250ms;
+  }
+}
+
+.brand-disclosure[data-at-top]:not([data-dismissed]):has(.brand:focus-visible) .brand-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: none;
+}
+
+.brand-disclosure:not([data-at-top]) .brand-tooltip {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-tooltip {
+    transform: none;
+    transition:
+      opacity 125ms var(--ease-out),
+      visibility 0s 125ms;
+  }
+}
+
 .nav-links a {
   display: inline-flex;
   align-items: center;
