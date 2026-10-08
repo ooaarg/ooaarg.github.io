@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { languageUrl, localeFromUrl, localizedHref, translate } from "./i18n";
+import { publicationNoun, languageUrl, localeFromUrl, localizedHref, translate } from "./i18n";
 
 test("the path determines the rendered locale, independently of legacy queries", () => {
   for (const path of ["/ru", "/ru/", "/ru/publications/pub-25?lang=en"]) {
@@ -56,4 +56,13 @@ test("English prefixes are replaced rather than nested", () => {
   );
   assert.equal(localizedHref("/en/about", "en"), "/en/about");
   assert.equal(localizedHref("/", "en"), "/en/");
+});
+
+test("publication counts use English singular and Russian plural forms", () => {
+  assert.equal(publicationNoun(1, "en"), "publication");
+  assert.equal(publicationNoun(27, "en"), "publications");
+  for (const count of [1, 21, 101]) assert.equal(publicationNoun(count, "ru"), "публикация");
+  for (const count of [2, 4, 22]) assert.equal(publicationNoun(count, "ru"), "публикации");
+  for (const count of [0, 5, 11, 12, 14, 27, 111]) assert.equal(publicationNoun(count, "ru"), "публикаций");
+  assert.equal(translate("No publications found", "ru"), "Публикации не найдены");
 });

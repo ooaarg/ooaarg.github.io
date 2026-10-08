@@ -1,5 +1,5 @@
 ---
-import { localeFromUrl, translate, localizedHref } from '../../lib/i18n';
+import { localeFromUrl, translate } from '../../lib/i18n';
 import { getCollection } from 'astro:content';
 import Site from '../../layouts/Site.astro';
 import NewsTile from '../../components/publications/cards/NewsTile.astro';
@@ -33,12 +33,12 @@ const locale = localeFromUrl(Astro.url);
   </section>
 
   <div class="container">
-    <div class="pubs-toolbar">
-      <h2 class="kicker" style="margin-right: 4px;">{translate('Filter', locale)}</h2>
+    {allYears.length > 1 && <div class="pubs-toolbar blog-toolbar">
+      <h2 class="kicker">{translate('Filter', locale)}</h2>
       <YearFilter initialLocale={locale} client:load years={allYears} total={items.length} />
-      <a class="btn btn-sm" href={localizedHref('/publications', locale)}><span>{translate('Publications', locale)}</span><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M5 12H19M12 19L19 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></a>
-    </div>
+    </div>}
 
+    <h2 class="blog-list-heading">{translate('News', locale)}</h2>
     <div class="bento">
       {tiles.map(({ item, span }) => <NewsTile item={item} span={span} />)}
     </div>

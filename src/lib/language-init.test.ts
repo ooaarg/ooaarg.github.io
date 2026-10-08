@@ -6,13 +6,18 @@ import { runInNewContext } from "node:vm";
 const site = readFileSync(new URL("../layouts/Site.astro", import.meta.url), "utf8");
 const bootstrap = site.match(/<script is:inline>([\s\S]*?)<\/script>/)![1];
 
-function start(href: string, blocked = false) {
+function start(href: string, blocked = false, notFound = false) {
   const url = new URL(href);
   let redirected: string | undefined;
   const attributes = new Map<string, string>();
+  const events = new Map<string, (event: unknown) => void>();
   runInNewContext(bootstrap, {
     document: {
-      documentElement: { setAttribute: (key: string, value: string) => attributes.set(key, value) },
+      querySelector: () => (notFound ? {} : null),
+      documentElement: {
+        setAttribute: (key: string, value: string) => attributes.set(key, value),
+        hasAttribute: (key: string) => attributes.has(key),
+      },
     },
     location: {
       href,
@@ -31,9 +36,11 @@ function start(href: string, blocked = false) {
         return "dark";
       },
     },
-    window: { addEventListener() {} },
+    window: {
+      addEventListener: (name: string, handler: (event: unknown) => void) => events.set(name, handler),
+    },
   });
-  return { redirected, attributes };
+  return { redirected, attributes, events };
 }
 
 test("legacy shared URLs redirect to static pages preserving filters and fragments", () => {
@@ -63,4 +70,35 @@ test("old unprefixed URLs redirect to English with query and hash preserved", ()
   );
   assert.equal(start("https://example.com/en/about?lang=ru").redirected, "https://example.com/ru/about");
   assert.equal(start("https://example.com/404.html").redirected, undefined);
+});
+
+test("generic 404 documents recover in the language of the missing URL without redirect loops", () => {
+  assert.equal(start("https://example.com/ru/missing", false, true).redirected, "/ru/404/");
+  assert.equal(start("https://example.com/en/missing", false, true).redirected, "/en/404/");
+  assert.equal(start("https://example.com/missing?lang=ru", false, true).redirected, "/ru/404/");
+  assert.equal(start("https://example.com/404.html", false, true).redirected, "/en/404/");
+  for (const path of ["/ru/404/", "/en/404/"]) {
+    assert.equal(start("https://example.com" + path, true, true).redirected, undefined);
+  }
+});
+
+test("fragment navigation skips both snapshots while ordinary page transitions remain enabled", () => {
+  let skipped = 0;
+  const viewTransition = { skipTransition: () => skipped++ };
+  const source = start("https://example.com/ru/about");
+  source.events.get("pageswap")!({
+    viewTransition,
+    activation: { entry: { url: "https://example.com/ru/#join" } },
+  });
+  assert.equal(skipped, 1);
+  start("https://example.com/ru/#join").events.get("pagereveal")!({ viewTransition });
+  assert.equal(skipped, 2);
+  source.events.get("pageswap")!({
+    viewTransition,
+    activation: { entry: { url: "https://example.com/ru/" } },
+  });
+  source.events.get("pagereveal")!({ viewTransition });
+  source.events.get("pageswap")!({});
+  source.events.get("pagereveal")!({});
+  assert.equal(skipped, 2);
 });

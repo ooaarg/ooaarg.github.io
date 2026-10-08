@@ -12,7 +12,11 @@
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: all var(--t-fast);
+  transition:
+    background-color var(--t-fast),
+    border-color var(--t-fast),
+    color var(--t-fast),
+    transform 0s;
   white-space: nowrap;
   text-decoration: none;
 }
@@ -206,6 +210,8 @@ a.pill:hover {
 }
 
 .cite-modal {
+  display: grid;
+  place-items: center;
   position: fixed;
   inset: 0;
   width: 100%;
@@ -219,9 +225,8 @@ a.pill:hover {
   padding: 24px;
 }
 
-.cite-modal[open] {
-  display: grid;
-  place-items: center;
+.cite-modal:not([open]) {
+  display: none;
 }
 
 .cite-modal::backdrop {
@@ -263,6 +268,7 @@ a.pill:hover {
 }
 
 .cite-tabs button {
+  min-height: 44px;
   background: transparent;
   border: 1px solid var(--border);
   padding: 6px 12px;
@@ -314,33 +320,38 @@ a.pill:hover {
   display: none;
 }
 
+.cite-modal .modal-actions .btn {
+  min-height: 44px;
+}
+
 .cite-modal .modal-actions {
   margin-top: 16px;
   display: flex;
   justify-content: flex-end;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
 @media (max-width: 640px) {
   .cite-modal {
-    padding: 0;
-    background: var(--bg);
+    padding: 12px;
+    height: 100dvh;
   }
   .cite-modal .panel {
-    border: 0;
-    border-radius: 0;
     max-width: none;
-    height: 100%;
+    height: auto;
+    max-height: 100%;
     overflow-y: auto;
     padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
   }
   .cite-modal .modal-actions {
-    position: sticky;
-    bottom: 0;
-    background: var(--bg-elev);
-    margin: 16px -20px calc(-20px - env(safe-area-inset-bottom));
-    padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
-    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 16px;
+    flex-shrink: 0;
+  }
+  .cite-modal .modal-actions a {
+    grid-column: 1 / -1;
   }
 }
 
@@ -356,4 +367,91 @@ a.pill:hover {
 .author-link:hover {
   color: var(--accent);
   border-bottom-color: var(--accent);
+}
+
+.btn:active:not(:focus-visible) {
+  transform: scale(0.97);
+  transition:
+    background-color var(--t-fast),
+    border-color var(--t-fast),
+    color var(--t-fast),
+    transform 100ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .btn:active:not(:focus-visible) {
+    transition: none;
+  }
+  .btn:active:not(:focus-visible) {
+    transform: none;
+  }
+}
+
+.copy-announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.cite-copy {
+  display: grid;
+}
+.cite-copy .copy-label,
+.cite-copy .copy-success {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.cite-copy .copy-success,
+.cite-copy[data-copied="true"] .copy-label {
+  opacity: 0;
+  filter: blur(2px);
+}
+.cite-copy[data-copied="true"] .copy-success {
+  opacity: 1;
+  filter: blur(0);
+}
+.cite-copy[data-animate="true"] .copy-label,
+.cite-copy[data-animate="true"] .copy-success {
+  transition:
+    opacity 150ms var(--ease-out),
+    filter 150ms var(--ease-out);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cite-copy[data-animate="true"] .copy-label,
+  .cite-copy[data-animate="true"] .copy-success {
+    transition: none;
+    filter: none;
+  }
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--fg-muted);
+  font-size: 14px;
+  line-height: 1.5;
+  text-decoration: none;
+  border-radius: 4px;
+}
+.back-link svg {
+  flex: none;
+  transform: translateY(-1px);
+}
+.back-link:focus-visible {
+  color: var(--fg);
+}
+@media (hover: hover) and (pointer: fine) {
+  .back-link:hover {
+    color: var(--fg);
+  }
 }

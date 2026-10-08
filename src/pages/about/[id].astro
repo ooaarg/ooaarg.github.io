@@ -5,6 +5,7 @@ import LocalizedText from '../../components/LocalizedText.astro';
 import { getCollection, render } from 'astro:content';
 import Site from '../../layouts/Site.astro';
 import Avatar from '../../components/people/Avatar.astro';
+import BackLink from '../../components/shared/BackLink.astro';
 import PublicationQuickView from '../../components/publications/shared/PublicationQuickView.astro';
 import {
   getAuthorMap,
@@ -61,9 +62,7 @@ const locale = localeFromUrl(Astro.url);
 >
   <section class="person-detail">
     <div class="container">
-      <div class="breadcrumb">
-        <a href={localizedHref('/about', locale)}>{translate('About', locale)}</a> <span>/</span> <LocalizedText en={data.name} ru={data.ru?.name} />
-      </div>
+      <BackLink href="/about" label="About" />
 
       <div class="person-detail-hero">
         <Avatar person={person} />
@@ -73,6 +72,7 @@ const locale = localeFromUrl(Astro.url);
           <p class="topic" style="margin-top: 12px; font-size: 18px; max-width: 56ch;">
             <LocalizedText en={data.topic} ru={data.ru?.topic} />
           </p>
+          {data.org && <p class="person-organization"><LocalizedText en={data.org} ru={data.ru?.org} /></p>}
           {data.office && (
             <p class="mono" style="margin-top: 12px; font-size: 13px; color: var(--fg-muted);">
               <LocalizedText en={data.office} ru={data.ru?.office} />
@@ -80,14 +80,20 @@ const locale = localeFromUrl(Astro.url);
           )}
           {linkRow.length > 0 && (
             <div class="person-links">
-              {linkRow.map((l, i) => (
+              {linkRow.map((l) => (
                 <a
-                  class={i === 0 ? 'btn' : 'btn btn-ghost'}
+                  class="person-resource-link"
                   href={localizedHref(l.href, locale)}
                   target={l.href.startsWith('http') ? '_blank' : undefined}
                   rel={l.href.startsWith('http') ? 'noopener' : undefined}
                 >
+                  {l.href.startsWith('mailto:') && (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+<path d="M22 7L13.009 12.727C12.7039 12.9042 12.3573 12.9976 12.0045 12.9976C11.6517 12.9976 11.3051 12.9042 11 12.727L2 7M4 4H20C21.1046 4 22 4.89543 22 6V18C22 19.1046 21.1046 20 20 20H4C2.89543 20 2 19.1046 2 18V6C2 4.89543 2.89543 4 4 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>)}
                   <LocalizedText en={l.label} ru={data.ru?.links?.[l.label]} />
+                  {l.href.startsWith('http') && (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+<path d="M17 17V7H7M17 7L7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>)}
                 </a>
               ))}
             </div>
@@ -95,8 +101,8 @@ const locale = localeFromUrl(Astro.url);
         </div>
       </div>
 
-      <section class="person-section">
-        <h2 class="kicker">{translate('About the researcher', locale)}</h2>
+      <section class="person-section person-bio-section">
+        <h2 class="people-section-title">{translate('About the researcher', locale)}</h2>
         <div class="person-bio">
           {hasBio || data.ru?.body ? <LocalizedBody ru={data.ru?.body}><Content /></LocalizedBody> : <p><span>{translate('Bio coming soon.', locale)}</span></p>}
         </div>
@@ -104,7 +110,7 @@ const locale = localeFromUrl(Astro.url);
 
       {showPubs && (
       <section class="person-section">
-        <h2 class="kicker">{translate('Publications', locale)}</h2>
+        <h2 class="people-section-title">{translate('Publications', locale)}</h2>
         {yearGroups.length === 0 ? (
           <p class="person-pubs-empty"><span>{translate('No publications listed yet.', locale)}</span></p>
         ) : (
@@ -115,6 +121,7 @@ const locale = localeFromUrl(Astro.url);
                 <ul class="pub-list">
                   {pubs.map((p) => (
                     <PublicationQuickView
+                      minimalActions
                       publication={p}
                       authors={resolveAuthors(p.data.authors, authorMap, p.data.ru?.authors)}
                       selfName={data.name}

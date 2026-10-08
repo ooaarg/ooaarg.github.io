@@ -81,7 +81,7 @@ export default function MobileNav({ initialLocale, active }: Props) {
         <a
           className="ooaarg-mark"
           href={localizedHref("/", initialLocale)}
-          style={{ "--ooaarg-size": "28px" }}
+          style={{ "--ooaarg-size": "clamp(28px, calc(10vw - 4px), 32px)" }}
           aria-label={t("OOAARG home")}
           onClick={() => setOpen(false)}
         >
@@ -104,6 +104,7 @@ export default function MobileNav({ initialLocale, active }: Props) {
             key={l.href}
             href={localizedHref(l.href, initialLocale)}
             className={active === l.href ? "active" : ""}
+            aria-current={active === l.href ? "page" : undefined}
             onClick={() => setOpen(false)}
           >
             {t(l.label)}

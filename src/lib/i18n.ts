@@ -5,7 +5,7 @@ const russian: Record<string, string> = {
   "Online Optimization And Applications Research Group":
     "Исследовательская Группа Онлайн Оптимизация И Приложения",
   "Online Optimization And Applications Research Group.":
-    "Исследовательская Группа Онлайн Оптимизация И Приложения.",
+    "Исследовательская группа по онлайн-оптимизации и её приложениям.",
   "Online Optimization & Applications Research Group":
     "Исследовательская Группа Онлайн Оптимизация И Приложения",
   "et al.": "и др.",
@@ -14,6 +14,7 @@ const russian: Record<string, string> = {
   Journal: "Журнальная статья",
   Read: "Читать",
   Conference: "Конференция",
+  "Opens in new tab": "Открывается в новой вкладке",
   "View profile": "Открыть профиль",
   Website: "Сайт",
   paper: "статья",
@@ -54,10 +55,11 @@ const russian: Record<string, string> = {
   "Search the corpus": "Поиск публикаций",
   "Filter by area, type, author, year, or venue — or just type a few words.":
     "Выберите направление, тип, автора, год или издание — или просто введите несколько слов.",
-  "404 · not found": "404 · страница не найдена",
-  "No regret bound at this URL.": "По этому адресу ничего не найдено.",
-  "The page you were looking for doesn't exist. Try one of the destinations below.":
-    "Такой страницы нет. Перейдите в один из разделов ниже.",
+  "Page not found": "Страница не найдена",
+  "This page may have moved, or the link may be incorrect.":
+    "Возможно, страница переместилась или в ссылке есть ошибка.",
+  "Back to home": "На главную",
+  "Find a publication": "Найти публикацию",
   "Site navigation": "Навигация по сайту",
   "Mobile navigation": "Мобильная навигация",
   "OOAARG home": "OOAARG — главная",
@@ -68,6 +70,7 @@ const russian: Record<string, string> = {
   "Venue and keywords": "Издание и ключевые слова",
   "Publication details": "О публикации",
   "View paper": "Читать статью",
+  "Read paper": "Читать статью",
   "View code": "Смотреть код",
   "Carousel controls": "Управление каруселью",
   "Previous featured paper": "Предыдущая публикация",
@@ -96,13 +99,15 @@ const russian: Record<string, string> = {
   "Sort by date": "Сортировка по дате",
   Newest: "Сначала новые",
   Oldest: "Сначала старые",
+  "No publications match this search.": "По этому запросу публикаций не найдено.",
+  "Reset search and filters": "Сбросить поиск и фильтры",
   "No papers match these filters.": "По выбранным фильтрам ничего не найдено.",
   Done: "Готово",
   "No matches.": "Совпадений нет.",
   Clear: "Сбросить",
   Any: "Все",
   selected: "выбрано",
-  Results: "Результаты",
+  "No publications found": "Публикации не найдены",
   for: "по запросу",
   "Cite this publication": "Цитировать публикацию",
   "Citation format": "Формат цитирования",
@@ -129,14 +134,14 @@ const russian: Record<string, string> = {
   "Papers:": "Статей:",
   latest: "последняя",
   "Cite this paper": "Цитировать статью",
-  "Sequential decision-making under partial information: multi-armed bandits, contextual bandits, and adversarial online learning with provable regret guarantees.":
-    "Последовательное принятие решений при неполной информации: многорукие и контекстные бандиты, онлайн-обучение с противником и доказуемыми гарантиями регрета.",
-  "Auction-time bidding, ad pacing, and online ranking under budget and ROI constraints. Bringing online learning to the systems that decide what users see.":
-    "Ставки на аукционах, распределение рекламного бюджета и онлайн-ранжирование с ограничениями по бюджету и окупаемости. Онлайн-обучение в системах, определяющих, что увидят пользователи.",
-  "Online query optimization, adaptive buffer management and more: pushing online learning into the heart of modern database systems.":
-    "Онлайн-оптимизация запросов, адаптивное управление буферами и другие применения онлайн-обучения в современных СУБД.",
-  "Convex and non-convex optimization theory, lower bounds, and parameter-free methods. The structural foundations under everything else we build.":
-    "Теория выпуклой и невыпуклой оптимизации, нижние оценки и методы без настройки параметров. Математическая основа наших исследований.",
+  "Sequential decisions under partial information, with provable regret guarantees.":
+    "Последовательные решения при неполной информации — с доказуемыми гарантиями регрета.",
+  "Learning to bid, pace budgets, and rank recommendations under budget and ROI constraints.":
+    "Обучение стратегиям ставок, распределению бюджета и ранжированию с ограничениями по расходам и окупаемости.",
+  "Online learning for query optimization and adaptive buffer management in databases.":
+    "Онлайн-обучение для оптимизации запросов и адаптивного управления буферами в базах данных.",
+  "Convex and non-convex optimization, lower bounds, and parameter-free methods.":
+    "Выпуклая и невыпуклая оптимизация, нижние оценки и методы без настройки параметров.",
 };
 
 export function translate(text: string, locale: Locale): string {
@@ -160,4 +165,10 @@ export function localizedHref(href: string, locale: Locale): string {
   if (!href.startsWith("/") || href.startsWith("//") || /\.[a-z0-9]+(?:[?#]|$)/i.test(href)) return href;
   const url = languageUrl(new URL(href, "https://ooaarg.github.io"), locale);
   return url.pathname + url.search + url.hash;
+}
+
+export function publicationNoun(count: number, locale: Locale): string {
+  if (locale === "en") return count === 1 ? "publication" : "publications";
+  const category = new Intl.PluralRules("ru").select(count);
+  return category === "one" ? "публикация" : category === "few" ? "публикации" : "публикаций";
 }

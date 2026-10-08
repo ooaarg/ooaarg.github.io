@@ -33,7 +33,7 @@ export default function YearFilter({ initialLocale, years, total }: Props) {
           <button
             key={String(y)}
             type="button"
-            className={`btn btn-sm${active === y ? " btn-primary" : ""}`}
+            className={`btn btn-sm year-filter-button${active === y ? " btn-primary" : ""}`}
             onClick={() => selectYear(y)}
             aria-pressed={active === y}
           >
@@ -42,7 +42,7 @@ export default function YearFilter({ initialLocale, years, total }: Props) {
         ))}
       </div>
       <div className="toolbar-spacer" />
-      <span className="mono" style={{ fontSize: 12, color: "var(--fg-muted)" }}>
+      <span className="mono year-filter-count" role="status" aria-atomic="true">
         {locale === "ru" ? `Записи: ${visibleCount} из ${total}` : `${visibleCount} of ${total} posts`}
       </span>
     </>

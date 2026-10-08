@@ -1,6 +1,7 @@
-import { localizedHref, type Locale } from "../../../lib/i18n";
+import { localizedHref, publicationNoun, type Locale } from "../../../lib/i18n";
 import { contentText, contentLanguage } from "../../../lib/content-language";
 import { formatDate } from "../../../lib/dates";
+import { enterSurface } from "../../../lib/surface-motion";
 import { useLocale } from "../../../lib/use-locale";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "preact/hooks";
 import {
@@ -60,6 +61,7 @@ interface Props {
 export default function SearchIndex({ initialLocale, pubs }: Props) {
   const { t, locale } = useLocale(initialLocale);
   const [search, setSearch] = useState(() => readSearch());
+  const [ready, setReady] = useState(false);
   const { q, filters, sort } = search;
   const [sheetOpen, setSheetOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -196,9 +198,14 @@ export default function SearchIndex({ initialLocale, pubs }: Props) {
     // URL writes happen only in user event handlers, never during initialization.
     const restore = () => setSearch(readSearch(new URLSearchParams(window.location.search)));
     restore();
+    setReady(true);
     window.addEventListener("popstate", restore);
     return () => window.removeEventListener("popstate", restore);
   }, []);
+
+  useLayoutEffect(() => {
+    if (ready) document.dispatchEvent(new Event("publication-search-ready"));
+  }, [ready]);
 
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
@@ -217,9 +224,15 @@ export default function SearchIndex({ initialLocale, pubs }: Props) {
     const trigger = triggerRef.current;
     const previousOverflow = document.body.style.overflow;
     sheet.showModal();
+    const entrance = enterSurface(
+      sheet.querySelector<HTMLElement>(".panel"),
+      "sheet",
+      sheet.dataset.motion === "true",
+    );
     document.body.style.overflow = "hidden";
     doneRef.current?.focus();
     return () => {
+      entrance?.cancel();
       sheet.close();
       document.body.style.overflow = previousOverflow;
       trigger?.focus();
@@ -292,7 +305,7 @@ export default function SearchIndex({ initialLocale, pubs }: Props) {
   );
 
   return (
-    <>
+    <div className="publication-search" data-search-ready={ready ? "true" : undefined}>
       <div className="search-bar" style={{ marginTop: 8 }}>
         <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <g fill="none">
@@ -308,6 +321,7 @@ export default function SearchIndex({ initialLocale, pubs }: Props) {
         <input
           ref={inputRef}
           id="ri-search"
+          autoComplete="off"
           placeholder={t("Search titles, abstracts, authors, tags\u2026")}
           value={q}
           onInput={(e) => updateSearch({ ...search, q: e.currentTarget.value }, "replaceState")}
@@ -320,7 +334,10 @@ export default function SearchIndex({ initialLocale, pubs }: Props) {
         ref={triggerRef}
         type="button"
         className="btn filters-trigger"
-        onClick={() => setSheetOpen(true)}
+        onClick={(e) => {
+          if (sheetRef.current) sheetRef.current.dataset.motion = String(e.detail > 0);
+          setSheetOpen(true);
+        }}
         aria-haspopup="dialog"
         aria-expanded={sheetOpen}
         aria-controls="publication-filters"
@@ -337,12 +354,13 @@ export default function SearchIndex({ initialLocale, pubs }: Props) {
         <div>
           <div className="ri-summary">
             <span role="status" aria-live="polite" aria-atomic="true">
-              {t("Results")}: <strong style={{ color: "var(--fg)" }}>{filtered.length}</strong>
-              {q && (
+              {filtered.length > 0 ? (
                 <>
-                  {" "}
-                  {t("for")} <em>"{q}"</em>
+                  <strong className="ri-count">{filtered.length}</strong>{" "}
+                  {publicationNoun(filtered.length, locale)}
                 </>
+              ) : (
+                t("No publications found")
               )}
             </span>
             <div className="ri-sort" role="group" aria-label={t("Sort by date")}>
@@ -412,7 +430,7 @@ export default function SearchIndex({ initialLocale, pubs }: Props) {
                     </span>
                   </span>
                 </div>
-                <div>
+                <div className="ri-result-copy">
                   <h3 lang={contentLanguage(p.ru?.title, locale)}>
                     <a
                       className="ri-result-link"
@@ -454,15 +472,18 @@ export default function SearchIndex({ initialLocale, pubs }: Props) {
               </li>
             ))}
             {filtered.length === 0 && (
-              <li
-                style={{
-                  display: "block",
-                  padding: "48px 0",
-                  textAlign: "center",
-                  color: "var(--fg-muted)",
-                }}
-              >
-                {t("No papers match these filters.")}
+              <li className="ri-empty">
+                <p>{q ? t("No publications match this search.") : t("No papers match these filters.")}</p>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => {
+                    updateSearch({ ...search, q: "", filters: readSearch().filters });
+                    inputRef.current?.focus();
+                  }}
+                >
+                  {t("Reset search and filters")}
+                </button>
               </li>
             )}
           </ul>
@@ -495,6 +516,6 @@ export default function SearchIndex({ initialLocale, pubs }: Props) {
           <div className="facet-sheet-content">{facetGroups}</div>
         </div>
       </dialog>
-    </>
+    </div>
   );
 }

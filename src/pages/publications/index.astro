@@ -39,6 +39,20 @@ const locale = localeFromUrl(Astro.url);
   title="Publications · OOAARG"
   description="Search and filter every OOAARG publication by topic, venue, year, author, or type."
 >
+  <script slot="head" is:inline>
+    const searchParams = new URLSearchParams(location.search);
+    if (searchParams.get('sort') === 'oldest' || ['q', 'type', 'area', 'venue', 'year', 'author', 'tag'].some((key) => searchParams.getAll(key).some(Boolean))) {
+      document.documentElement.setAttribute('data-publication-search-pending', '');
+      let pendingTransition;
+      window.addEventListener('pagereveal', (event) => {
+        pendingTransition = event.viewTransition;
+        if (document.querySelector('.publication-search[data-search-ready="true"]')) pendingTransition?.skipTransition();
+      });
+      document.addEventListener('publication-search-ready', () => {
+        pendingTransition?.skipTransition();
+      });
+    }
+  </script>
   <section class="pubs-hero">
     <div class="container">
       <h1>{translate('Publications', locale)}</h1>

@@ -14,8 +14,8 @@ const { data } = person;
 <div class="person">
   <Avatar person={person} />
   <div>
-    <div class="role"><LocalizedText en={data.role} ru={data.ru?.role} /></div>
-    <h3 style="margin-top: 4px; font-family: var(--font-sans); font-size: 20px; font-weight: 550;"><LocalizedText en={data.name} ru={data.ru?.name} /></h3>
+    <h3><LocalizedText en={data.name} ru={data.ru?.name} /></h3>
+    <div class="role" style="margin-top: 6px;"><LocalizedText en={data.role} ru={data.ru?.role} /></div>
     <p class="topic" style="margin-top: 6px;"><LocalizedText en={data.topic} ru={data.ru?.topic} /></p>
   </div>
 </div>

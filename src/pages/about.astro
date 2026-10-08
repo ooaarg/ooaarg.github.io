@@ -8,7 +8,14 @@ import PersonLead from '../components/people/PersonLead.astro';
 
 import '../styles/people.css';
 
+interface Props {
+  topicExamples?: string[];
+}
+const { topicExamples } = Astro.props;
 const all = await getCollection('people');
+const previewPerson = (person: typeof all[number], index: number) => topicExamples?.length
+  ? { ...person, data: { ...person.data, topic: topicExamples[index % topicExamples.length], ru: person.data.ru ? { ...person.data.ru, topic: undefined } : undefined } }
+  : person;
 const byOrder = (a: typeof all[number], b: typeof all[number]) =>
   a.data.order - b.data.order;
 
@@ -38,14 +45,15 @@ const alumni = all.filter((p) => p.data.group === 'alumni').sort(byOrder);
 const locale = localeFromUrl(Astro.url);
 ---
 
-<Site titleRu="О группе · OOAARG" descriptionRu="Исследовательская Группа Онлайн Оптимизация И Приложения: руководитель, команда и выпускники."
+<Site titleRu="О группе · OOAARG" descriptionRu="Исследовательская группа по онлайн-оптимизации и её приложениям: руководитель, команда и выпускники."
   active="about"
   title="About · OOAARG"
-  description="Online Optimization And Applications Research Group: lead, staff, and alumni."
+  description="Online Optimization and Applications Research Group: lead, staff, and alumni."
 >
+  <slot name="preview-controls" />
   <section class="people-hero">
     <div class="container">
-      <h1 class="about-title">{translate('Online Optimization And Applications Research Group', locale)}</h1>
+      <h1 class="about-title"><LocalizedText en="Online Optimization and Applications Research Group" ru="Исследовательская группа по онлайн-оптимизации и её приложениям" /></h1>
       <p style="margin-top: 24px; color: var(--fg-muted); max-width: 80ch; font-size: 18px;">{translate('A research group studying decisions under uncertainty. Theory, algorithms, and the messy real-world problems that motivate both.', locale)}</p>
     </div>
   </section>
@@ -53,20 +61,20 @@ const locale = localeFromUrl(Astro.url);
   {lead && (
     <section class="people-section">
       <div class="container">
-        <h2 class="kicker">{translate('Lead', locale)}</h2>
+        <h2 class="people-section-title">{translate('Lead', locale)}</h2>
         <PersonLead person={lead} />
       </div>
     </section>
   )}
 
   {staff.length > 0 && (
-    <section class="people-section">
+    <section class="people-section" id="people">
       <div class="container">
-        <h2 class="kicker">{translate('Staff', locale)}</h2>
+        <h2 class="people-section-title">{translate('Staff', locale)}</h2>
         <div class="people-grid">
-          {staff.map((p) => (
+          {staff.map((p, index) => (
             <a class="person-card-link" href={localizedHref(`/about/${p.id}`, locale)}>
-              <PersonCard person={p} />
+              <PersonCard person={previewPerson(p, index)} />
             </a>
           ))}
         </div>
@@ -77,18 +85,17 @@ const locale = localeFromUrl(Astro.url);
   {partners.length > 0 && (
     <section class="people-section">
       <div class="container">
-        <h2 class="kicker">{translate('Partners', locale)}</h2>
+        <h2 class="people-section-title">{translate('Partners', locale)}</h2>
         <div class="partner-orgs">
           {partnersByOrg.map(([org, members]) => (
             <div class="partner-org">
               <div class="partner-org-label">
-                <span class="partner-org-marker" aria-hidden="true"></span>
                 <span class="partner-org-name"><LocalizedText en={org} ru={members.find((p) => p.data.ru?.org)?.data.ru?.org} /></span>
               </div>
               <div class="people-grid">
-                {members.map((p) => (
+                {members.map((p, index) => (
                   <a class="person-card-link" href={localizedHref(`/about/${p.id}`, locale)}>
-                    <PersonCard person={p} />
+                    <PersonCard person={previewPerson(p, index)} />
                   </a>
                 ))}
               </div>
@@ -102,11 +109,11 @@ const locale = localeFromUrl(Astro.url);
   {alumni.length > 0 && (
     <section class="people-section">
       <div class="container">
-        <h2 class="kicker">{translate('Alumni', locale)}</h2>
+        <h2 class="people-section-title">{translate('Alumni', locale)}</h2>
         <div class="people-grid">
-          {alumni.map((p) => (
+          {alumni.map((p, index) => (
             <a class="person-card-link" href={localizedHref(`/about/${p.id}`, locale)}>
-              <PersonCard person={p} />
+              <PersonCard person={previewPerson(p, index)} />
             </a>
           ))}
         </div>

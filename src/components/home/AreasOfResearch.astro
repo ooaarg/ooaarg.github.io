@@ -1,61 +1,22 @@
 ---
 import { localeFromUrl, translate, localizedHref } from '../../lib/i18n';
-import LocalizedText from '../LocalizedText.astro';
-import LocalizedDate from '../LocalizedDate.astro';
 import type { CollectionEntry } from 'astro:content';
 import { AREAS, computeAreaStats } from '../../data/areas';
-
-interface Props {
-  pubs: CollectionEntry<'publications'>[];
-}
-
+interface Props { pubs: CollectionEntry<'publications'>[]; }
 const { pubs } = Astro.props;
 const stats = computeAreaStats(pubs);
-const tagTranslations = Object.assign({}, ...pubs.map((p) => p.data.ru?.tags ?? {})) as Record<string, string>;
-
 const locale = localeFromUrl(Astro.url);
 ---
-
 <ul class="areas-grid">
-  {AREAS.filter((area) => area.showOnHome !== false).map((area) => {
-    const s = stats[area.id];
-    const active = s.count > 0;
-
-    return (
-      <li>
-      <a
-        class={`area-card${active ? '' : ' is-nascent'}`}
-        href={localizedHref(active ? `/publications?area=${area.id}` : '/publications', locale)}
-      >
-        <div class="area-card-head">
-          <h3>{translate(area.name, locale)}</h3>
-          <span class="area-card-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M5 12H19M12 19L19 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></span>
-        </div>
-        <p class="area-card-blurb">{translate(area.blurb, locale)}</p>
-
-        {s.topTags.length > 0 && (
-          <div class="area-card-tags">
-            {s.topTags.map((t) => <span class="pill"><LocalizedText en={t} ru={tagTranslations[t]} /></span>)}
-          </div>
-        )}
-
-        <div class="area-card-foot">
-          {active ? (
-            <>
-              <span class="area-count"><span>{translate('Papers:', locale)}</span> {s.count}</span>
-              {s.latest && (
-                <>
-                  <span class="area-dot" aria-hidden="true">·</span>
-                  <span class="area-latest mono"><span>{translate('latest', locale)}</span> <LocalizedDate date={s.latest} precision="month" /></span>
-                </>
-              )}
-            </>
-          ) : (
-            <span class="area-count area-nascent-label">{translate('In development', locale)}</span>
-          )}
-        </div>
-      </a>
-      </li>
-    );
+  {AREAS.filter(area => area.showOnHome !== false).map(area => {
+    const count = stats[area.id].count;
+    return <li><a class="area-card" href={localizedHref(count ? `/publications?area=${area.id}` : '/publications', locale)}>
+      <h3>{translate(area.name, locale)}</h3>
+      <p class="area-card-blurb">{translate(area.blurb, locale)}</p>
+      <span class="area-card-action">
+        {count ? `${translate('Publications', locale)}: ${count}` : translate('In development', locale)}
+        <svg class="area-card-arrow" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12H19M12 5L19 12L12 19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </span>
+    </a></li>;
   })}
 </ul>

@@ -1,25 +1,45 @@
 ---
 import { localeFromUrl, translate, localizedHref } from '../lib/i18n';
 import Site from '../layouts/Site.astro';
-import KineticLogo from '../components/KineticLogo.astro';
 const locale = localeFromUrl(Astro.url);
 ---
-
-<Site titleRu="Страница не найдена · OOAARG" descriptionRu="Такой страницы на сайте нет." title="Not found · OOAARG" description="That page doesn't exist on this site.">
-  <section class="hero">
-    <div class="container" style="display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; gap: 32px; text-align: center; padding: 96px var(--gutter);">
-      <KineticLogo size="120px" hero />
-      <div>
-        <div class="kicker">{translate('404 · not found', locale)}</div>
-        <h1 style="margin-top: 16px;">{translate('No regret bound at this URL.', locale)}</h1>
-        <p style="color: var(--fg-muted); margin-top: 16px; max-width: 48ch; margin-left: auto; margin-right: auto;">{translate("The page you were looking for doesn't exist. Try one of the destinations below.", locale)}</p>
-      </div>
-      <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-        <a class="btn btn-accent" href={localizedHref('/', locale)}><span>{translate('Home', locale)}</span><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M5 12H19M12 19L19 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></a>
-        <a class="btn" href={localizedHref('/blog', locale)}>{translate('Blog', locale)}</a>
-        <a class="btn" href={localizedHref('/publications', locale)}>{translate('Publications', locale)}</a>
-        <a class="btn" href={localizedHref('/about', locale)}>{translate('About', locale)}</a>
+<Site titleRu="Страница не найдена · OOAARG" descriptionRu="Такой страницы на сайте нет." title="Page not found · OOAARG" description="That page doesn't exist on this site.">
+  <Fragment slot="head">
+    <meta name="robots" content="noindex" />
+    <meta name="ooaarg-not-found" content="true" />
+  </Fragment>
+  <section class="not-found">
+    <div class="container">
+      <div class="not-found-content">
+        <p class="kicker">404</p>
+        <h1>{translate('Page not found', locale)}</h1>
+        <p class="not-found-description">{translate('This page may have moved, or the link may be incorrect.', locale)}</p>
+        <div class="not-found-actions">
+          <a class="btn btn-primary" href={localizedHref('/', locale)}>{translate('Back to home', locale)}</a>
+          <a class="not-found-search" href={localizedHref('/publications', locale)}>{translate('Find a publication', locale)} <span aria-hidden="true">→</span></a>
+        </div>
       </div>
     </div>
   </section>
 </Site>
+<style>
+  .not-found { padding: clamp(3rem, 8vw, 6rem) 0; }
+  .not-found-content { max-width: 38rem; margin-inline: auto; }
+  h1 { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.15; margin-top: 16px; }
+  .not-found-description { color: var(--fg-muted); margin-top: 16px; max-width: 44ch; font-size: 1rem; line-height: 1.6; }
+  .not-found-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 24px; margin-top: 28px; }
+  .not-found-actions .btn { height: auto; min-height: 44px; font-size: .875rem; padding: 10px 16px; }
+  .not-found-search { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; font-size: .875rem; }
+  .not-found-search:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  @media (hover: hover) and (pointer: fine) {
+    .not-found-search:hover { color: var(--accent); }
+    .not-found-search span { transition: transform 160ms var(--ease-out); }
+    .not-found-search:hover:not(:focus-visible) span { transform: translateX(3px); }
+    .not-found-search:focus-visible span { transform: none; transition: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .not-found-search span,
+    .not-found-search:hover:not(:focus-visible) span { transform: none; transition: none; }
+  }
+  @media (max-width: 640px) { .not-found-actions { flex-direction: column; align-items: flex-start; gap: 8px; } }
+</style>

@@ -14,26 +14,22 @@ export const AREAS: Area[] = [
   {
     id: "bandits",
     name: "Bandits and Online Learning",
-    blurb:
-      "Sequential decision-making under partial information: multi-armed bandits, contextual bandits, and adversarial online learning with provable regret guarantees.",
+    blurb: "Sequential decisions under partial information, with provable regret guarantees.",
   },
   {
     id: "autobidding",
     name: "Autobidding, Ranking and Recommender Systems",
-    blurb:
-      "Auction-time bidding, ad pacing, and online ranking under budget and ROI constraints. Bringing online learning to the systems that decide what users see.",
+    blurb: "Learning to bid, pace budgets, and rank recommendations under budget and ROI constraints.",
   },
   {
     id: "dbms",
     name: "DBMS Optimization",
-    blurb:
-      "Online query optimization, adaptive buffer management and more: pushing online learning into the heart of modern database systems.",
+    blurb: "Online learning for query optimization and adaptive buffer management in databases.",
   },
   {
     id: "optimization",
     name: "Optimization",
-    blurb:
-      "Convex and non-convex optimization theory, lower bounds, and parameter-free methods. The structural foundations under everything else we build.",
+    blurb: "Convex and non-convex optimization, lower bounds, and parameter-free methods.",
   },
   {
     id: "misc",

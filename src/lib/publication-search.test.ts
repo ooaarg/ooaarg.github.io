@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { runInNewContext } from "node:vm";
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { FILTER_KEYS, readSearch, searchUrl } from "./publication-search";
@@ -45,4 +47,58 @@ describe("publication search URLs", () => {
     const b = readSearch(new URLSearchParams("tag=a&tag=z"));
     assert.equal(searchUrl(current, a).href, searchUrl(current, b).href);
   });
+});
+
+const searchPage = readFileSync(new URL("../pages/publications/index.astro", import.meta.url), "utf8");
+const searchBootstrap = searchPage.match(/<script slot="head" is:inline>([\s\S]*?)<\/script>/)![1];
+function pendingSearch(query: string) {
+  let pending = false;
+  runInNewContext(searchBootstrap, {
+    location: { search: query },
+    URLSearchParams,
+    window: { addEventListener() {} },
+    document: {
+      addEventListener() {},
+      documentElement: {
+        setAttribute: () => {
+          pending = true;
+        },
+      },
+    },
+  });
+  return pending;
+}
+
+it("query-dependent publication pages wait for URL restoration before showing results", () => {
+  for (const query of ["?sort=oldest", "?q=regret", ...FILTER_KEYS.map((key) => `?${key}=value`)]) {
+    assert.equal(pendingSearch(query), true, query);
+  }
+  assert.equal(pendingSearch("?tag=&tag=ranking"), true);
+});
+
+it("default publication pages and unrelated query parameters show static results immediately", () => {
+  for (const query of ["", "?sort=newest", "?sort=invalid", "?q=&tag=", "?utm_source=example"]) {
+    assert.equal(pendingSearch(query), false, query);
+  }
+});
+
+it("keeps the outgoing snapshot until URL-dependent results have committed", () => {
+  const events = new Map<string, (event?: unknown) => void>();
+  let skipped = 0;
+  runInNewContext(searchBootstrap, {
+    location: { search: "?sort=oldest" },
+    URLSearchParams,
+    window: {
+      addEventListener: (name: string, handler: (event?: unknown) => void) => events.set(name, handler),
+    },
+    document: {
+      documentElement: { setAttribute() {} },
+      querySelector: () => null,
+      addEventListener: (name: string, handler: () => void) => events.set(name, handler),
+    },
+  });
+  events.get("pagereveal")!({ viewTransition: { skipTransition: () => skipped++ } });
+  assert.equal(skipped, 0);
+  events.get("publication-search-ready")!();
+  assert.equal(skipped, 1);
 });

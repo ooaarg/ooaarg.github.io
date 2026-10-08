@@ -19,25 +19,27 @@ const detailHref = `/blog/${id}`;
 const locale = localeFromUrl(Astro.url);
 ---
 
-<article class={`bento-tile span-${span} news-tile`} data-year={year}>
+<article class={`bento-tile span-${span} news-tile${data.image ? ' news-tile-with-image' : ''}`} data-year={year}>
   {data.image && (
     <div class="figure news-figure">
-      <Image src={data.image} alt={contentText(data.imageAlt, data.ru?.imageAlt, locale)} loading="lazy" decoding="async" />
+      <Image src={data.image} alt={contentText(data.imageAlt, data.ru?.imageAlt, locale)} width={720} height={480} format="webp" sizes="(max-width: 900px) calc(100vw - 72px), 360px" loading="lazy" decoding="async" />
     </div>
   )}
+  <div class="news-copy">
   <div class="meta">
     <span class="pill accent"><span>{translate('News', locale)}</span></span>
     <span style="margin-left: 8px;"><LocalizedDate date={data.date} /></span>
   </div>
   <h3>
-    <a href={localizedHref(detailHref, locale)} style="color: inherit; text-decoration: none;"><LocalizedText en={data.title} ru={data.ru?.title} /></a>
+    <a href={localizedHref(detailHref, locale)}><LocalizedText en={data.title} ru={data.ru?.title} /></a>
   </h3>
-  <p style="color: var(--fg-muted); font-size: 14px;"><LocalizedText en={data.summary} ru={data.ru?.summary} /></p>
-  <div class="actions">
+  <p class="news-summary"><LocalizedText en={data.summary} ru={data.ru?.summary} /></p>
+  <div class="actions news-actions">
+    <a class="news-read" href={localizedHref(detailHref, locale)}><span>{translate('Read', locale)}</span><span class="news-read-arrow" aria-hidden="true">→</span></a>
     {data.href && (
-      <a class="btn btn-sm" href={data.href} target="_blank" rel="noopener">{translate('Conference', locale)}</a>
+      <a class="news-external" href={data.href} target="_blank" rel="noopener" aria-label={`${translate('Conference', locale)} — ${translate('Opens in new tab', locale)}`}><span>{translate('Conference', locale)}</span><span aria-hidden="true">↗</span></a>
     )}
-    <a class="btn btn-sm btn-ghost" href={localizedHref(detailHref, locale)}><span>{translate('Read', locale)}</span><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M5 12H19M12 19L19 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></a>
+  </div>
   </div>
 </article>
 
@@ -45,19 +47,43 @@ const locale = localeFromUrl(Astro.url);
   .news-figure {
     background: var(--bg-sunken);
   }
-  .news-tile .figure {
-    height: 300px;
+  .news-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+  }
+  .news-tile-with-image.span-6 {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 32%);
+    gap: 24px;
+    align-items: center;
+  }
+  .news-tile-with-image.span-6 .news-copy {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .news-tile .news-figure {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    margin: 0;
+  }
+  .news-tile-with-image.span-6 .news-figure {
+    grid-column: 2;
+    grid-row: 1;
   }
   .news-figure img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 60%;
+    object-position: center;
     display: block;
   }
-  @media (max-width: 640px) {
-    .news-tile .figure {
-      height: 220px;
+  @media (max-width: 900px) {
+    .news-tile-with-image.span-6 {
+      display: flex;
+      gap: 20px;
     }
   }
 </style>

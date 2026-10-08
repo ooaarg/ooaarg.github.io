@@ -48,6 +48,14 @@ const { title, description, active, titleRu, descriptionRu } = Astro.props;
       (function () {
         // Compatibility for old shared links. Normal navigation uses static paths.
         var legacy = new URLSearchParams(location.search).get('lang');
+        // Static hosts serve the generic 404 document at the missing URL.
+        // Resolve its language before rendering the shared header and recovery links.
+        if (document.querySelector('meta[name="ooaarg-not-found"]') &&
+            !/^\/(?:en|ru)\/404\/?$/.test(location.pathname)) {
+          var errorLocale = legacy === 'ru' || legacy !== 'en' && /^\/ru(?:\/|$)/.test(location.pathname) ? 'ru' : 'en';
+          location.replace('/' + errorLocale + '/404/');
+          return;
+        }
         if (legacy === 'en' || legacy === 'ru' || !/^\/(?:en|ru)(?:\/|$)/.test(location.pathname) && location.pathname !== '/404.html') {
           var url = new URL(location.href);
           var path = url.pathname.replace(/^\/(?:en|ru)(?=\/|$)/, '') || '/';
@@ -65,6 +73,16 @@ const { title, description, active, titleRu, descriptionRu } = Astro.props;
           }
         }
         applyTheme();
+        // Fragment destinations should appear at their final scroll position,
+        // without blending a page snapshot captured before anchor scrolling.
+        window.addEventListener('pageswap', function (event) {
+          if (event.viewTransition && event.activation && new URL(event.activation.entry.url).hash && !/^\/(?:en|ru)\/publications\/?$/.test(new URL(event.activation.entry.url).pathname)) {
+            event.viewTransition.skipTransition();
+          }
+        });
+        window.addEventListener('pagereveal', function (event) {
+          if (event.viewTransition && location.hash && !document.documentElement.hasAttribute('data-publication-search-pending')) event.viewTransition.skipTransition();
+        });
         // A cached document may predate a theme change on another page.
         window.addEventListener('pageshow', function (event) {
           if (event.persisted) applyTheme();

@@ -21,13 +21,22 @@ export default function CiteButton({
 }: Props) {
   const { t } = useLocale(initialLocale);
   const [open, setOpen] = useState(false);
+  const [pointerOpened, setPointerOpened] = useState(false);
   const className = ["btn", size === "sm" ? "btn-sm" : "", variant === "accent" ? "btn-accent" : ""]
     .filter(Boolean)
     .join(" ");
 
   return (
     <>
-      <button type="button" className={className} onClick={() => setOpen(true)} aria-haspopup="dialog">
+      <button
+        type="button"
+        className={className}
+        onClick={(e) => {
+          setPointerOpened(e.detail > 0);
+          setOpen(true);
+        }}
+        aria-haspopup="dialog"
+      >
         {size === "md" && (
           <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <g fill="none">
@@ -47,6 +56,7 @@ export default function CiteButton({
         initialLocale={initialLocale}
         pub={{ ...pub, date: new Date(pub.dateISO) }}
         open={open}
+        pointerOpened={pointerOpened}
         onClose={() => setOpen(false)}
       />
     </>

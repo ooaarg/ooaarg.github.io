@@ -2,7 +2,6 @@
   --ooaarg-size: 96px;
   --ooaarg-ink: currentColor;
   --ooaarg-accent: var(--accent, oklch(62% 0.18 35));
-  --ooaarg-duration: 3.2s;
 
   display: inline-flex;
   align-items: baseline;
@@ -21,45 +20,26 @@
 .ooaarg-mark .ooaarg-stretch {
   display: inline-block;
   transform-origin: left center;
-  /* Animation is always defined but paused; .is-bouncing toggles play-state.
-     A small inline script (KineticLogo.astro) waits for the next animationiteration
-     after the user un-hovers, so the stretch always finishes at scaleX(1) instead
-     of freezing mid-cycle. */
-  animation: ooaargStretch var(--ooaarg-duration) cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  animation-play-state: paused;
+  transition: transform 160ms var(--ease-out);
 }
 
-.ooaarg-mark.is-bouncing .ooaarg-stretch {
-  animation-play-state: running;
+@media (hover: hover) and (pointer: fine) {
+  .ooaarg-mark:hover:not(:focus-visible) .ooaarg-stretch {
+    transform: scaleX(1.06);
+    transition-duration: 200ms;
+  }
 }
 
-@keyframes ooaargStretch {
-  0% {
-    transform: scaleX(1);
-  }
-  15% {
-    transform: scaleX(1.35);
-  }
-  25% {
-    transform: scaleX(1.35);
-  }
-  45% {
-    transform: scaleX(0.92);
-  }
-  60% {
-    transform: scaleX(1.05);
-  }
-  75% {
-    transform: scaleX(0.98);
-  }
-  100% {
-    transform: scaleX(1);
-  }
+.ooaarg-mark:focus-visible .ooaarg-stretch {
+  transform: none;
+  transition: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ooaarg-mark .ooaarg-stretch {
-    animation: none;
+  .ooaarg-mark .ooaarg-stretch,
+  .ooaarg-mark:hover:not(:focus-visible) .ooaarg-stretch {
+    transform: none;
+    transition: none;
   }
 }
 
