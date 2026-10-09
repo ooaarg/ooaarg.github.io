@@ -5,6 +5,7 @@ import { getCollection } from 'astro:content';
 import Site from '../layouts/Site.astro';
 import PersonCard from '../components/people/PersonCard.astro';
 import PersonLead from '../components/people/PersonLead.astro';
+import groupSymbol from '../assets/ooaarg-symbol.svg?raw';
 
 import '../styles/people.css';
 
@@ -52,9 +53,12 @@ const locale = localeFromUrl(Astro.url);
 >
   <slot name="preview-controls" />
   <section class="people-hero">
-    <div class="container">
-      <h1 class="about-title"><LocalizedText en="Online Optimization and Applications Research Group" ru="Исследовательская группа по онлайн-оптимизации и её приложениям" /></h1>
-      <p style="margin-top: 24px; color: var(--fg-muted); max-width: 80ch; font-size: 18px;">{translate('A research group studying decisions under uncertainty. Theory, algorithms, and the messy real-world problems that motivate both.', locale)}</p>
+    <div class="container about-intro">
+      <div class="about-symbol" data-symbol-spin aria-hidden="true" set:html={groupSymbol} />
+      <div>
+        <h1 class="about-title"><LocalizedText en="Online Optimization and Applications Research Group" ru="Исследовательская группа по онлайн-оптимизации и её приложениям" /></h1>
+        <p class="about-summary">{translate('A research group studying decisions under uncertainty. Theory, algorithms, and the messy real-world problems that motivate both.', locale)}</p>
+      </div>
     </div>
   </section>
 

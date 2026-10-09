@@ -235,6 +235,24 @@
   min-width: 0;
 }
 
+.foot-wordmark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.foot-symbol {
+  width: 32px;
+  flex-shrink: 0;
+}
+
+.foot-symbol svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 .foot-grid {
   display: grid;
   grid-template-columns: 1.5fr 1fr 1fr 1fr;

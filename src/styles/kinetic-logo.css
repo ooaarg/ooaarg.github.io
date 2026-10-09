@@ -17,6 +17,11 @@
   user-select: none;
 }
 
+[data-symbol-spin] svg {
+  transform-box: view-box;
+  transform-origin: center;
+}
+
 .ooaarg-mark .ooaarg-stretch {
   display: inline-block;
   transform-origin: left center;

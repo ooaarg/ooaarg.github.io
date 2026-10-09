@@ -1,15 +1,18 @@
 ---
 import { localeFromUrl, translate, localizedHref } from '../lib/i18n';
 import KineticLogo from './KineticLogo.astro';
+import groupSymbol from '../assets/ooaarg-symbol.svg?raw';
 
 const locale = localeFromUrl(Astro.url);
+const footerSymbol = groupSymbol.replaceAll('id="mark-sweep-', 'id="footer-mark-sweep-');
 ---
 
 <footer class="site-footer" id="contact">
   <div class="container">
     <div class="foot-grid">
       <div class="foot-brand">
-        <div style="margin-bottom: 14px;">
+        <div class="foot-wordmark">
+          <span class="foot-symbol" data-symbol-spin aria-hidden="true" set:html={footerSymbol} />
           <KineticLogo size="28px" />
         </div>
         <p style="max-width: 32ch; color: var(--fg-muted);">{translate('Online Optimization And Applications Research Group.', locale)}</p>
@@ -40,3 +43,25 @@ const locale = localeFromUrl(Astro.url);
     </div>
   </div>
 </footer>
+
+<script>
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const easing = getComputedStyle(document.documentElement).getPropertyValue('--ease-in-out').trim();
+
+  document.querySelectorAll<HTMLElement>('[data-symbol-spin]').forEach((symbol) => {
+    const svg = symbol.querySelector('svg');
+    if (!svg) return;
+    let rotation: Animation | undefined;
+    symbol.addEventListener('pointerenter', (event) => {
+      if (event.pointerType === 'touch' || !finePointer.matches || reducedMotion.matches || rotation?.playState === 'running') return;
+      rotation = svg.animate(
+        [{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }],
+        { duration: 700, easing },
+      );
+    });
+    reducedMotion.addEventListener('change', () => {
+      if (reducedMotion.matches) rotation?.cancel();
+    });
+  });
+</script>

@@ -2,6 +2,49 @@
   padding: clamp(32px, 4vw, 48px) 0 24px;
 }
 
+.about-intro {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  align-items: start;
+  gap: 40px;
+}
+
+.about-symbol {
+  padding-top: 3px;
+  color: var(--fg);
+}
+
+.about-symbol svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.about-summary {
+  margin-top: 24px;
+  color: var(--fg-muted);
+  max-width: 80ch;
+  font-size: 18px;
+}
+
+@media (max-width: 900px) {
+  .about-intro {
+    grid-template-columns: 104px minmax(0, 1fr);
+    gap: 28px;
+  }
+}
+
+@media (max-width: 640px) {
+  .about-intro {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  .about-symbol {
+    width: 72px;
+    padding-top: 0;
+  }
+}
+
 .about-title {
   font-size: clamp(32px, 4vw, 56px);
   line-height: 1.02;
