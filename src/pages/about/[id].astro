@@ -37,6 +37,8 @@ const yearGroups = groupPubsByYear(personPubs);
 const authorMap = await getAuthorMap();
 
 const hasBio = (person.body ?? '').trim().length > 0;
+const isGroupMember = ['faculty', 'postdoc', 'phd'].includes(data.group);
+const organization = data.org ?? (isGroupMember ? 'OOAARG' : undefined);
 
 const linkRow = [
   data.links.website && { label: 'Website', href: data.links.website },
@@ -72,7 +74,7 @@ const locale = localeFromUrl(Astro.url);
           <p class="topic" style="margin-top: 12px; font-size: 18px; max-width: 56ch;">
             <LocalizedText en={data.topic} ru={data.ru?.topic} />
           </p>
-          {data.org && <p class="person-organization"><LocalizedText en={data.org} ru={data.ru?.org} /></p>}
+          {organization && <p class="person-organization"><LocalizedText en={organization} ru={data.ru?.org} /></p>}
           {data.office && (
             <p class="mono" style="margin-top: 12px; font-size: 13px; color: var(--fg-muted);">
               <LocalizedText en={data.office} ru={data.ru?.office} />
