@@ -369,16 +369,14 @@ html[data-publication-search-pending] .publication-search:not([data-search-ready
   background: transparent;
   color: var(--fg-muted);
   font: inherit;
+  /* Same weight in both states so the label width, and the row, stays put. */
+  font-weight: 500;
   cursor: pointer;
 }
 
-.ri-sort button:hover {
-  color: var(--fg);
-}
-
+.ri-sort button:hover,
 .ri-sort button[aria-pressed="true"] {
   color: var(--fg);
-  font-weight: 500;
 }
 
 .ri-results {

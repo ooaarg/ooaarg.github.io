@@ -10,12 +10,19 @@ function start(href: string, blocked = false, notFound = false, previousUrl?: st
   const url = new URL(href);
   let redirected: string | undefined;
   const attributes = new Map<string, string>();
+  let storedTheme = "dark";
   const events = new Map<string, (event: unknown) => void>();
   runInNewContext(bootstrap, {
     document: {
-      querySelector: () => (notFound ? {} : null),
+      querySelector: (selector: string) =>
+        selector === 'meta[name="theme-color"]'
+          ? { setAttribute: (_key: string, value: string) => attributes.set("theme-color", value) }
+          : notFound
+            ? {}
+            : null,
       documentElement: {
         setAttribute: (key: string, value: string) => attributes.set(key, value),
+        getAttribute: (key: string) => attributes.get(key),
         hasAttribute: (key: string) => attributes.has(key),
         removeAttribute: (key: string) => attributes.delete(key),
       },
@@ -34,7 +41,7 @@ function start(href: string, blocked = false, notFound = false, previousUrl?: st
     localStorage: {
       getItem() {
         if (blocked) throw new Error("Storage unavailable");
-        return "dark";
+        return storedTheme;
       },
     },
     window: {
@@ -42,7 +49,14 @@ function start(href: string, blocked = false, notFound = false, previousUrl?: st
       addEventListener: (name: string, handler: (event: unknown) => void) => events.set(name, handler),
     },
   });
-  return { redirected, attributes, events };
+  return {
+    redirected,
+    attributes,
+    events,
+    storeTheme: (theme: string) => {
+      storedTheme = theme;
+    },
+  };
 }
 
 test("legacy shared URLs redirect to static pages preserving filters and fragments", () => {
@@ -128,4 +142,18 @@ test("language changes suppress geometry animation while retaining the transitio
     activation: { entry: { url: "https://example.com/en/blog" } },
   });
   assert.equal(source.attributes.has("data-language-switch"), false);
+});
+
+test("browser chrome matches the default theme and a preference changed before bfcache restore", () => {
+  const page = start("https://example.com/ru/about");
+  assert.equal(page.attributes.get("theme-color"), "#0a0a0a");
+  page.storeTheme("light");
+  page.events.get("pageshow")!({ persisted: true });
+  assert.equal(page.attributes.get("data-theme"), "light");
+  assert.equal(page.attributes.get("theme-color"), "#fafaf9");
+  assert.equal(start("https://example.com/en/", true).attributes.get("theme-color"), "#0a0a0a");
+});
+
+test("obsolete prototype fragments cannot redirect visitors out of their language", () => {
+  assert.equal(start("https://example.com/ru/#/about").redirected, undefined);
 });

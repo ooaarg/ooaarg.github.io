@@ -6,18 +6,6 @@
   backdrop-filter: saturate(140%) blur(10px);
 }
 
-.site-footer::before {
-  content: "";
-  position: absolute;
-  inset-inline: calc(max(0px, (100% - var(--max-w)) / 2) + var(--gutter));
-  border-top: 1px solid var(--border);
-  pointer-events: none;
-}
-
-.site-footer::before {
-  top: 0;
-}
-
 .nav {
   height: 64px;
   display: flex;
@@ -151,9 +139,37 @@
   display: none !important;
 }
 
-.nav-tools .mobile-nav-trigger:hover {
+.nav-icon-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
   background: transparent;
-  border-color: transparent;
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition: color var(--t-fast);
+}
+
+.nav-icon-control svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+.nav-icon-control:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nav-icon-control:hover {
+    color: var(--fg);
+  }
 }
 
 @media (max-width: 900px) {
@@ -225,10 +241,15 @@
 
 .site-footer {
   position: relative;
+  isolation: isolate;
   margin-top: 16px;
   padding: 40px 0 32px;
   font-size: 0.875rem;
   color: var(--fg-muted);
+}
+
+.site-footer > .container {
+  position: relative;
 }
 
 .foot-brand {
@@ -368,6 +389,10 @@
 }
 
 @media (max-width: 900px) {
+  /* Reserve all three controls before the mobile island markup arrives. */
+  .nav-tools {
+    min-width: 140px;
+  }
   .header-actions {
     gap: 0;
   }
@@ -439,6 +464,7 @@
   .nav-tools {
     gap: 0;
     margin-left: auto;
+    min-width: 132px;
   }
 }
 

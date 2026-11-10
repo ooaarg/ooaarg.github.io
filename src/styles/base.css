@@ -68,15 +68,6 @@ a {
   text-decoration: none;
 }
 
-a.link {
-  border-bottom: 1px solid currentColor;
-  padding-bottom: 1px;
-}
-
-a.link:hover {
-  color: var(--accent);
-}
-
 h1,
 h2,
 h3,
@@ -125,14 +116,6 @@ pre,
   font-size: 0.9em;
 }
 
-.eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--fg-muted);
-}
-
 .kicker {
   font-family: var(--font-mono);
   font-size: 0.6875rem;
@@ -154,39 +137,6 @@ pre,
   padding: 40px 0;
 }
 
-.section-tight {
-  padding: 56px 0;
-}
-
-.divider {
-  height: 1px;
-  background: var(--border);
-  border: 0;
-}
-
 ::selection {
   background: color-mix(in oklab, var(--accent) 25%, transparent);
-}
-
-.fig-placeholder {
-  position: relative;
-  background: repeating-linear-gradient(
-    135deg,
-    transparent 0 8px,
-    color-mix(in oklab, var(--fg) 4%, transparent) 8px 9px
-  );
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  display: grid;
-  place-items: center;
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--fg-subtle);
-  overflow: hidden;
-}
-
-.mono {
-  font-family: var(--font-mono);
 }

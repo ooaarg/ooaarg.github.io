@@ -23,7 +23,6 @@ export interface IndexedPub {
   ru?: { title?: string; summary?: string; venue?: string; tags?: Record<string, string> };
   authors: string[];
   authorLinks: Array<{ name: string; id?: string; staff?: boolean; ru?: string }>;
-  date: string; // Display label, e.g. 17 Aug 2026
   dateISO: string;
   year: number;
   venue: string;
@@ -124,7 +123,7 @@ export default function SearchIndex({ initialLocale, pubs }: Props) {
       }))
       .sort((x, y) => {
         if (x.member !== y.member) return x.member ? -1 : 1;
-        return x.label.localeCompare(y.label);
+        return x.label.localeCompare(y.label, locale);
       });
   }, [pubs, locale]);
 

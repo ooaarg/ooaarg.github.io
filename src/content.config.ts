@@ -27,10 +27,11 @@ const publications = defineCollection({
     tag: z.enum(["Oral", "Spotlight", "Paper", "Preprint", "Journal", "Code", "Talk"]),
     type: z.enum(["paper", "preprint", "code", "talk"]),
     area: z.enum(["bandits", "autobidding", "dbms", "optimization", "misc"]),
-    /** Emphasizes the blog tile; the home carousel is selected by date. */
+    /** Legacy tile metadata, accepted for existing entries but no longer displayed. */
     featured: z.boolean().default(false),
     /** Legacy metadata retained for existing entries; no longer affects order. */
     featuredOrder: z.number().int().optional(),
+    /** Legacy publication tile width; unused by the news-only blog. */
     span: z.union([z.literal(2), z.literal(3), z.literal(4), z.literal(6)]).default(2),
     tags: z.array(z.string()).default([]),
     arxiv: z.string().optional(),
@@ -53,7 +54,7 @@ const publications = defineCollection({
     summary: z.string().max(320),
     /** Optional plain-language description shown only in the home featured
      *  carousel. Broader and more reader-friendly than `summary` (which stays
-     *  terse for bento tiles and the index). Falls back to `summary` if unset. */
+     *  terse for the publication index). Falls back to `summary` if unset. */
     heroSummary: z.string().max(500).optional(),
     cited_by: z.number().int().nonnegative().optional(),
   }),

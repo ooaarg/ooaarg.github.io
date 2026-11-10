@@ -41,46 +41,17 @@ export const AREAS: Area[] = [
 
 export interface AreaStats {
   count: number;
-  topTags: string[];
-  latest: Date | null;
 }
 
-/** Compute counts, top tags, and latest date per area from the publications collection. */
-export function computeAreaStats(
-  pubs: CollectionEntry<"publications">[],
-  topN = 3,
-): Record<AreaId, AreaStats> {
+/** Compute publication counts per research area. */
+export function computeAreaStats(pubs: CollectionEntry<"publications">[]): Record<AreaId, AreaStats> {
   const stats: Record<AreaId, AreaStats> = {
-    bandits: { count: 0, topTags: [], latest: null },
-    autobidding: { count: 0, topTags: [], latest: null },
-    dbms: { count: 0, topTags: [], latest: null },
-    optimization: { count: 0, topTags: [], latest: null },
-    misc: { count: 0, topTags: [], latest: null },
+    bandits: { count: 0 },
+    autobidding: { count: 0 },
+    dbms: { count: 0 },
+    optimization: { count: 0 },
+    misc: { count: 0 },
   };
-  const tagFreq: Record<AreaId, Map<string, number>> = {
-    bandits: new Map(),
-    autobidding: new Map(),
-    dbms: new Map(),
-    optimization: new Map(),
-    misc: new Map(),
-  };
-
-  for (const pub of pubs) {
-    const a = pub.data.area as AreaId;
-    stats[a].count += 1;
-    if (!stats[a].latest || pub.data.date > stats[a].latest!) {
-      stats[a].latest = pub.data.date;
-    }
-    for (const tag of pub.data.tags ?? []) {
-      tagFreq[a].set(tag, (tagFreq[a].get(tag) ?? 0) + 1);
-    }
-  }
-
-  for (const id of Object.keys(stats) as AreaId[]) {
-    stats[id].topTags = [...tagFreq[id].entries()]
-      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-      .slice(0, topN)
-      .map(([t]) => t);
-  }
+  for (const pub of pubs) stats[pub.data.area].count += 1;
   return stats;
 }

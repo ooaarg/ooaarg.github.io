@@ -1,6 +1,6 @@
 # Adding a news post
 
-News posts (e.g. _"Three OOAARG papers accepted at NeurIPS 2026"_) appear on `/blog` mixed with publications, sorted by date, and get a dedicated detail page at `/blog/<slug>`. They are **excluded from `/publications` and `/rss.xml`**, which contain publications only.
+News posts (e.g. _"Three OOAARG papers accepted at NeurIPS 2026"_) appear on the news-only `/blog`, sorted by date, and get a dedicated detail page at `/blog/<slug>`. They are **excluded from `/publications` and `/rss.xml`**, which contain publications only.
 
 Each news post is one Markdown file in `src/content/news/`. Filename — without the extension — becomes the URL slug.
 
@@ -38,11 +38,11 @@ and as the lede on the detail page.
 | `image`    |          | path                                   | **Co-located** in `src/content/news/`, referenced relative to the entry (`'./neurips-2026.svg'`). Processed by Astro's `image()` schema helper and emitted via `<Image />` — don't put it under `public/`. Omit for a text-only tile + detail page. |
 | `imageAlt` |          | string (default `''`)                  | Alt text for the image. Required if the image is content-bearing rather than decorative.                                                                                                                                                            |
 | `span`     |          | `2` \| `3` \| `4` \| `6` (default `3`) | How many of 6 grid columns the bento tile takes. The grid auto-expands the last tile of any short row, so you mostly don't need to think about this.                                                                                                |
-| `href`     |          | URL                                    | Optional outbound URL. The current templates label it "Conference" on the tile and "Conference link" on the detail page; the tile's "Read →" link opens the local news detail page.                                                                                         |
+| `href`     |          | URL                                    | Optional outbound URL. The current templates label it "Conference" on the tile and detail page; the tile's "Read →" link opens the local news detail page.                                                                                         |
 
 ## 3. Body conventions
 
-The body is rendered into `/blog/<slug>`. Use plain Markdown without JSX component imports. The math processor is configured globally, but KaTeX CSS is only imported by publication detail pages. If adding math to news, include the required CSS on the news detail route and check rendering.
+The body is rendered into `/blog/<slug>`. Use plain Markdown without JSX component imports. The math processor is configured globally, and the shared body component includes KaTeX CSS for both original and translated news bodies. Check math rendering when adding formulas.
 
 A minimal entry can be just frontmatter — the body is optional.
 

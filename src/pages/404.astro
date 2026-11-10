@@ -23,7 +23,8 @@ const locale = localeFromUrl(Astro.url);
   </section>
 </Site>
 <style>
-  .not-found { padding: clamp(3rem, 8vw, 6rem) 0; }
+  .not-found { position: relative; isolation: isolate; min-height: 60svh; box-sizing: border-box; padding: clamp(3rem, 8vw, 6rem) 0; }
+  .not-found > .container { position: relative; }
   .not-found-content { max-width: 38rem; margin-inline: auto; }
   h1 { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.15; margin-top: 16px; }
   .not-found-description { color: var(--fg-muted); margin-top: 16px; max-width: 44ch; font-size: 1rem; line-height: 1.6; }

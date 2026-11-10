@@ -146,12 +146,6 @@
   align-items: end;
 }
 
-.section-lead {
-  font-size: 1rem;
-  color: var(--fg-muted);
-  max-width: 48ch;
-}
-
 .areas-grid {
   margin: 32px 0 0;
   padding: 0;

@@ -1,6 +1,5 @@
 ---
 import { localeFromUrl, translate } from '../../lib/i18n';
-import { formatDate } from '../../lib/dates';
 import { getCollection } from 'astro:content';
 import Site from '../../layouts/Site.astro';
 import SearchIndex from '../../components/publications/search/SearchIndex.tsx';
@@ -22,9 +21,8 @@ const pubs: IndexedPub[] = all.map((p) => ({
     ...author,
     staff: staffAuthorNames.has(author.name),
   })),
-  date: formatDate(p.data.date, 'en'),
   dateISO: p.data.date.toISOString(),
-  year: p.data.date.getFullYear(),
+  year: p.data.date.getUTCFullYear(),
   venue: p.data.venue,
   type: p.data.type,
   area: p.data.area,
@@ -40,23 +38,32 @@ const locale = localeFromUrl(Astro.url);
   description="Search and filter every OOAARG publication by topic, venue, year, author, or type."
 >
   <script slot="head" is:inline>
-    const searchParams = new URLSearchParams(location.search);
-    if (searchParams.get('sort') === 'oldest' || ['q', 'type', 'area', 'venue', 'year', 'author', 'tag'].some((key) => searchParams.getAll(key).some(Boolean))) {
-      document.documentElement.setAttribute('data-publication-search-pending', '');
-      let pendingTransition;
-      window.addEventListener('pagereveal', (event) => {
-        pendingTransition = event.viewTransition;
-        if (document.querySelector('.publication-search[data-search-ready="true"]')) pendingTransition?.skipTransition();
-      });
-      document.addEventListener('publication-search-ready', () => {
-        pendingTransition?.skipTransition();
-      });
-    }
+    (() => {
+      const searchParams = new URLSearchParams(location.search);
+      if (searchParams.get('sort') === 'oldest' || ['q', 'type', 'area', 'venue', 'year', 'author', 'tag'].some((key) => searchParams.getAll(key).some(Boolean))) {
+        document.documentElement.setAttribute('data-publication-search-pending', '');
+        let pendingTransition;
+        const reveal = () => {
+          document.documentElement.removeAttribute('data-publication-search-pending');
+          pendingTransition?.skipTransition();
+        };
+        // A failed island download must not leave the static catalogue hidden.
+        const fallback = window.setTimeout(reveal, 3000);
+        window.addEventListener('pagereveal', (event) => {
+          pendingTransition = event.viewTransition;
+          if (!document.documentElement.hasAttribute('data-publication-search-pending') || document.querySelector('.publication-search[data-search-ready="true"]')) pendingTransition?.skipTransition();
+        });
+        document.addEventListener('publication-search-ready', () => {
+          window.clearTimeout(fallback);
+          reveal();
+        }, { once: true });
+      }
+    })();
   </script>
   <section class="pubs-hero">
     <div class="container">
       <h1>{translate('Publications', locale)}</h1>
-      <p>{translate('Filter by area, type, author, year, or venue — or just type a few words.', locale)}</p>
+      <p>{translate('Filter by area, type, author, year, or venue. Or just type a few words.', locale)}</p>
     </div>
   </section>
 

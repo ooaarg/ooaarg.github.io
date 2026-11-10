@@ -9,20 +9,13 @@ import groupSymbol from '../assets/ooaarg-symbol.svg?raw';
 
 import '../styles/people.css';
 
-interface Props {
-  topicExamples?: string[];
-}
-const { topicExamples } = Astro.props;
 const all = await getCollection('people');
-const previewPerson = (person: typeof all[number], index: number) => topicExamples?.length
-  ? { ...person, data: { ...person.data, topic: topicExamples[index % topicExamples.length], ru: person.data.ru ? { ...person.data.ru, topic: undefined } : undefined } }
-  : person;
 const byOrder = (a: typeof all[number], b: typeof all[number]) =>
   a.data.order - b.data.order;
 
-const lead = all.find((p) => p.data.group === 'faculty');
+const lead = all.filter((p) => p.data.group === 'faculty').sort(byOrder)[0];
 
-const STAFF_RANK: Record<string, number> = { postdoc: 0, phd: 1, faculty: 2 };
+const STAFF_RANK: Record<string, number> = { faculty: 0, postdoc: 1, phd: 2 };
 const staff = all
   .filter((p) => p.data.group in STAFF_RANK && p.id !== lead?.id)
   .sort((a, b) => {
@@ -51,7 +44,6 @@ const locale = localeFromUrl(Astro.url);
   title="About · OOAARG"
   description="Online Optimization and Applications Research Group: lead, staff, and alumni."
 >
-  <slot name="preview-controls" />
   <section class="people-hero">
     <div class="container about-intro">
       <div class="about-symbol" data-symbol-spin aria-hidden="true" set:html={groupSymbol} />
@@ -76,9 +68,9 @@ const locale = localeFromUrl(Astro.url);
       <div class="container">
         <h2 class="people-section-title">{translate('Staff', locale)}</h2>
         <div class="people-grid">
-          {staff.map((p, index) => (
+          {staff.map((p) => (
             <a class="person-card-link" href={localizedHref(`/about/${p.id}`, locale)}>
-              <PersonCard person={previewPerson(p, index)} />
+              <PersonCard person={p} />
             </a>
           ))}
         </div>
@@ -97,9 +89,9 @@ const locale = localeFromUrl(Astro.url);
                 <span class="partner-org-name"><LocalizedText en={org} ru={members.find((p) => p.data.ru?.org)?.data.ru?.org} /></span>
               </div>
               <div class="people-grid">
-                {members.map((p, index) => (
+                {members.map((p) => (
                   <a class="person-card-link" href={localizedHref(`/about/${p.id}`, locale)}>
-                    <PersonCard person={previewPerson(p, index)} />
+                    <PersonCard person={p} />
                   </a>
                 ))}
               </div>
@@ -115,9 +107,9 @@ const locale = localeFromUrl(Astro.url);
       <div class="container">
         <h2 class="people-section-title">{translate('Alumni', locale)}</h2>
         <div class="people-grid">
-          {alumni.map((p, index) => (
+          {alumni.map((p) => (
             <a class="person-card-link" href={localizedHref(`/about/${p.id}`, locale)}>
-              <PersonCard person={previewPerson(p, index)} />
+              <PersonCard person={p} />
             </a>
           ))}
         </div>

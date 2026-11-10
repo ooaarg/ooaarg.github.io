@@ -27,7 +27,7 @@ export function getPersonPubs(person: Person, allPubs: Pub[]): Pub[] {
 export function groupPubsByYear(pubs: Pub[]): Array<[number, Pub[]]> {
   const buckets = new Map<number, Pub[]>();
   for (const p of pubs) {
-    const y = p.data.date.getFullYear();
+    const y = p.data.date.getUTCFullYear();
     const arr = buckets.get(y) ?? [];
     arr.push(p);
     buckets.set(y, arr);

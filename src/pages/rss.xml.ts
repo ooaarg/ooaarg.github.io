@@ -8,13 +8,13 @@ export async function GET(context: APIContext) {
   return rss({
     title: "OOAARG — Publications",
     description: "Papers, preprints, code, and talks from the OOAARG research group.",
-    site: context.site ?? "https://ooaarg.github.io",
+    site: new URL("/en/", context.site ?? "https://ooaarg.github.io").href,
     items: all.map((p) => ({
       title: p.data.title,
       pubDate: p.data.date,
       description: p.data.summary,
       author: p.data.authors.join(", "),
-      link: `/publications/${p.id}/`,
+      link: `/en/publications/${p.id}/`,
       categories: [p.data.tag, p.data.area, ...p.data.tags],
     })),
     customData: "<language>en-us</language>",

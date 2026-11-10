@@ -1,41 +1,47 @@
-// Render /public/favicon.svg to PNG (multiple sizes) and JPG.
+// Build the black-and-white favicon from the shared group symbol.
 // Run with: bun scripts/build-favicon.mjs
 import sharp from "sharp";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PUB = join(__dirname, "..", "public");
-const SRC = join(PUB, "favicon.svg");
+const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+const publicDir = join(root, "public");
+const symbol = readFileSync(join(root, "src/assets/ooaarg-symbol.svg"), "utf8");
+const [, viewBox] = symbol.match(/viewBox="([^"]+)"/);
+const [, , width, height] = viewBox.split(/\s+/).map(Number);
+const scale = 224 / Math.max(width, height);
+const x = (256 - width * scale) / 2;
+const y = (256 - height * scale) / 2;
+const paths = symbol.match(/<path\b[^>]*\/>/g).join("\n");
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <circle cx="128" cy="128" r="128" fill="#000"/>
+  <g fill="#fff" transform="translate(${x} ${y}) scale(${scale})">
+${paths}
+  </g>
+</svg>\n`;
+writeFileSync(join(publicDir, "favicon.svg"), svg);
 
-const BRAND_RED = "#dc2626";
-const svg = readFileSync(SRC, "utf8").replace(/oklch\([^)]+\)/g, BRAND_RED);
-
-const PNG_SIZES = [16, 32, 48, 64, 96, 180, 192, 512];
-
-for (const size of PNG_SIZES) {
-  const out = join(PUB, `favicon-${size}.png`);
-  const buf = await sharp(Buffer.from(svg), { density: Math.max(72, size * 4) })
-    .resize(size, size, {
-      fit: "contain",
-      background: { r: 0, g: 0, b: 0, alpha: 0 },
-    })
-    .png({ compressionLevel: 9 })
-    .toBuffer();
-  writeFileSync(out, buf);
-  console.log(`Wrote ${out} (${buf.length} bytes)`);
+const render = (size) => sharp(Buffer.from(svg), { density: 288 }).resize(size, size).png().toBuffer();
+for (const size of [180, 512]) {
+  writeFileSync(join(publicDir, `favicon-${size}.png`), await render(size));
 }
 
-const JPG_SIZE = 512;
-const jpgOut = join(PUB, `favicon-${JPG_SIZE}.jpg`);
-const jpgBuf = await sharp(Buffer.from(svg), { density: JPG_SIZE * 4 })
-  .resize(JPG_SIZE, JPG_SIZE, {
-    fit: "contain",
-    background: { r: 10, g: 10, b: 10, alpha: 1 },
-  })
-  .flatten({ background: { r: 10, g: 10, b: 10 } })
-  .jpeg({ quality: 92 })
-  .toBuffer();
-writeFileSync(jpgOut, jpgBuf);
-console.log(`Wrote ${jpgOut} (${jpgBuf.length} bytes)`);
+const sizes = [16, 32, 48];
+const images = await Promise.all(sizes.map(render));
+const directory = Buffer.alloc(6 + 16 * sizes.length);
+directory.writeUInt16LE(1, 2);
+directory.writeUInt16LE(sizes.length, 4);
+let offset = directory.length;
+images.forEach((image, index) => {
+  const entry = 6 + index * 16;
+  directory[entry] = sizes[index];
+  directory[entry + 1] = sizes[index];
+  directory.writeUInt16LE(1, entry + 4);
+  directory.writeUInt16LE(32, entry + 6);
+  directory.writeUInt32LE(image.length, entry + 8);
+  directory.writeUInt32LE(offset, entry + 12);
+  offset += image.length;
+});
+writeFileSync(join(publicDir, "favicon.ico"), Buffer.concat([directory, ...images]));
+console.log("Built SVG, ICO (16/32/48 px), and PNG (180/512 px) favicons.");

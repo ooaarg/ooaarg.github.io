@@ -1,6 +1,4 @@
 ---
-import { localeFromUrl } from '../../lib/i18n';
-import { contentText } from '../../lib/content-language';
 import LocalizedText from '../LocalizedText.astro';
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
@@ -28,20 +26,19 @@ const PHOTO_MAP: Record<string, ImageMetadata> = Object.fromEntries(
   }),
 );
 const photo = PHOTO_MAP[id];
-const locale = localeFromUrl(Astro.url);
 ---
 
 <div class="avatar">
   {photo ? (
     <Image
       src={photo}
-      alt={contentText(data.name, data.ru?.name, locale)}
+      alt=""
       widths={[240, 360, 560]}
       sizes="(max-width: 900px) 50vw, 280px"
       class="avatar-photo"
       loading={loading}
     />
   ) : (
-    <div class="initials"><LocalizedText en={data.initials} ru={data.ru?.initials} /></div>
+    <div class="initials" aria-hidden="true"><LocalizedText en={data.initials} ru={data.ru?.initials} /></div>
   )}
 </div>

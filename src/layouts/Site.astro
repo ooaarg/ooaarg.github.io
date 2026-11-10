@@ -45,8 +45,7 @@ const { title, description, active, titleRu, descriptionRu } = Astro.props;
     <link rel="apple-touch-icon" href="/favicon-180.png" sizes="180x180" />
     <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
     {locale === 'ru' && <link rel="preload" href={interCyrillic} as="font" type="font/woff2" crossorigin />}
-    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0a0a" />
     <SeoHead title={title} description={description} titleRu={titleRu} descriptionRu={descriptionRu} />
     <slot name="head" />
 
@@ -78,6 +77,8 @@ const { title, description, active, titleRu, descriptionRu } = Astro.props;
           } catch (_) {
             document.documentElement.setAttribute('data-theme', 'dark');
           }
+          document.querySelector('meta[name="theme-color"]')?.setAttribute('content',
+            document.documentElement.getAttribute('data-theme') === 'light' ? '#fafaf9' : '#0a0a0a');
         }
         applyTheme();
         // Fragment destinations should appear at their final scroll position,
@@ -105,11 +106,6 @@ const { title, description, active, titleRu, descriptionRu } = Astro.props;
         window.addEventListener('pageshow', function (event) {
           if (event.persisted) applyTheme();
         });
-        // Stale hash-route mitigation: rewrite #/foo → /foo (legacy prototype links)
-        if (location.hash && location.hash.startsWith('#/')) {
-          var newPath = location.hash.slice(1);
-          location.replace(newPath);
-        }
       })();
     </script>
   </head>

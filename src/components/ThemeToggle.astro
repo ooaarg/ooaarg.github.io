@@ -48,6 +48,8 @@ const locale = localeFromUrl(Astro.url);
     const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
     root.classList.add('theme-switching');
     root.dataset.theme = next;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content',
+      next === 'light' ? '#fafaf9' : '#0a0a0a');
     // Commit the new palette with transitions suppressed before restoring hover feedback.
     // Synchronous cleanup also keeps rapid clicks independent of pending animation frames.
     void root.offsetHeight;

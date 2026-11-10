@@ -12,8 +12,6 @@ import { getAuthorMap, resolveAuthors } from '../../lib/people';
 import { paperUrl, doiOf, extraLinks } from '../../lib/pubs';
 import { citationKind } from '../../lib/bibtex';
 
-import 'katex/dist/katex.min.css';
-
 export async function getStaticPaths() {
   const pubs = await getCollection('publications');
   return pubs.map((pub) => ({
@@ -117,7 +115,7 @@ const locale = localeFromUrl(Astro.url);
     {extraLinks(data).map((l) => (
       <a class="btn" href={localizedHref(l.url, locale)} target="_blank" rel="noopener"><LocalizedText en={l.label} ru={data.ru?.links?.[l.label]} /></a>
     ))}
-    <CiteButton initialLocale={locale} client:visible pub={citable} size="md" label="Cite" />
+    <CiteButton initialLocale={locale} client:visible pub={citable} />
     <a class="btn" href={localizedHref(bibtexPath, locale)} download={`${id}.bib`}><svg class="publication-action-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="none"><path d="M12 17V3M18 11L12 17L6 11M19 21H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg><span>{translate('Download .bib', locale)}</span></a>
   </Fragment>
 

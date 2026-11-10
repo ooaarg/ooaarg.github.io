@@ -14,7 +14,7 @@ interface Props {
 
 const { item, span: spanOverride, loading = 'lazy' } = Astro.props;
 const { data, id } = item;
-const year = data.date.getFullYear();
+const year = data.date.getUTCFullYear();
 const span = spanOverride ?? data.span ?? 3;
 const detailHref = `/blog/${id}`;
 const locale = localeFromUrl(Astro.url);

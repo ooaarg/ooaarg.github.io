@@ -66,3 +66,20 @@ test("publication counts use English singular and Russian plural forms", () => {
   for (const count of [0, 5, 11, 12, 14, 27, 111]) assert.equal(publicationNoun(count, "ru"), "публикаций");
   assert.equal(translate("No publications found", "ru"), "Публикации не найдены");
 });
+
+test("dots in filters or fragments do not turn page links into downloads", () => {
+  for (const href of [
+    "/publications?venue=arXiv.org",
+    "/publications?tag=web%202.0",
+    "/publications?tag=web+2.0#results",
+    "/publications#version.2",
+  ]) {
+    const expected = "/ru" + href.replace("%20", "+");
+    assert.equal(localizedHref(href, "ru"), expected);
+    assert.equal(localizedHref("/en" + href, "ru"), expected);
+  }
+  assert.equal(
+    localizedHref("/publications/pub-25.bib?download=1#citation", "ru"),
+    "/publications/pub-25.bib?download=1#citation",
+  );
+});

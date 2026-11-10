@@ -12,6 +12,7 @@ const LINKS: NavLink[] = [
   { href: "/blog", label: "Blog" },
   { href: "/publications", label: "Publications" },
   { href: "/about", label: "About" },
+  { href: "/#join", label: "Contact" },
 ];
 
 interface Props {
@@ -20,12 +21,12 @@ interface Props {
 }
 
 const MenuIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+  <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
     <g fill="none">
       <path
         d="M4 5H20M4 12H20M4 19H20"
         stroke="currentColor"
-        stroke-width="2"
+        stroke-width="1.5"
         stroke-linecap="round"
         stroke-linejoin="round"
       />
@@ -34,12 +35,12 @@ const MenuIcon = () => (
 );
 
 const CloseIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+  <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
     <g fill="none">
       <path
-        d="M18 6L6 18M6 6L18 18"
+        d="M20 4L4 20M4 4L20 20"
         stroke="currentColor"
-        stroke-width="2"
+        stroke-width="1.5"
         stroke-linecap="round"
         stroke-linejoin="round"
       />
@@ -90,7 +91,7 @@ export default function MobileNav({ initialLocale, active }: Props) {
         </a>
         <button
           type="button"
-          className="btn btn-ghost btn-icon"
+          className="nav-icon-control mobile-nav-close"
           autoFocus
           aria-label={t("Close menu")}
           onClick={() => setOpen(false)}
@@ -119,7 +120,7 @@ export default function MobileNav({ initialLocale, active }: Props) {
       <button
         ref={triggerRef}
         type="button"
-        className="btn btn-ghost btn-icon mobile-only mobile-nav-trigger"
+        className="nav-icon-control mobile-only mobile-nav-trigger"
         aria-label={t("Open menu")}
         aria-expanded={open}
         aria-controls="mobile-nav-sheet"
